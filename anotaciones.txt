@@ -1,0 +1,11 @@
+Mejor una herencia para separar los tipos por si en el futuro se necesita crear nuevos y mejores robots con otras caracteristicas.
+
+Antes de moverse deberia poder calcular cuanta bateria gasta para ver si llega o moverse hasta que se queda sin bateria (la segunda opcion parece mejor)
+
+Cuartel y operador 2 clases, operador es abstract y heredan de ahi UAV, K9 y M8
+
+Para la proxima hacer:
+
+CambiarLocalizacion
+TransferirCargaDeBateria
+TransferirCargaFisica
