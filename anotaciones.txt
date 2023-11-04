@@ -9,3 +9,10 @@ Para la proxima hacer:
 CambiarLocalizacion
 TransferirCargaDeBateria
 TransferirCargaFisica
+
+===========================================================================
+Estado del operador podria ser un Enum o una coleccion para conocer más estados conjuntos --> evaluar mejor opcion!
+
+Velocidad actual puede ser calculable ya que tenemos el 5% calculado en algun lado y por regla de 3 podemos restaurar el 100%
+
+factory method y abstract factory
