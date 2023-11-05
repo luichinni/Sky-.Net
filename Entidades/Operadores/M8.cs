@@ -8,5 +8,10 @@ namespace SkyNet.Entidades.Operadores
 {
     class M8 : Operador
     {
+        public M8(string id) : base(id)
+        {
+            bateria.InicializarBateria(12250);
+            cargaMax = 250;
+        }
     }
 }

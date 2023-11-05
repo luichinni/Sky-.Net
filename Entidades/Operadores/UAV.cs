@@ -8,5 +8,10 @@ namespace SkyNet.Entidades.Operadores
 {
     class UAV : Operador
     {
+        public UAV(string id) : base(id)
+        {
+            bateria.InicializarBateria(4000);
+            cargaMax = 5;
+        }
     }
 }
