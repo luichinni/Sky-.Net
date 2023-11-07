@@ -8,5 +8,10 @@ namespace SkyNet.Entidades.Mundiales
 {
     class Cuartel
     {
+        private string id;
+        public string Identificacion()
+        {
+            return id;
+        }
     }
 }
