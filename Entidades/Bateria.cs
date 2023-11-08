@@ -21,6 +21,11 @@ namespace SkyNet.Entidades
             return bateriaActual;
         }
 
+        public double GetBateriaMax()
+        {
+            return bateriaMax;
+        }
+
         public void CargarBateria(double cantBateria)
         {
 
