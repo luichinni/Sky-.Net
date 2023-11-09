@@ -3,9 +3,8 @@ using SkyNet.Entidades.Operadores;
 
 Console.WriteLine("Hello, World!");
 
-M8 m = new M8(GenerarID());
 
-Console.WriteLine(m.GetBateria());
+
 
 static string GenerarID()
 {

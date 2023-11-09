@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkyNet.Entidades.Mundiales;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,8 @@ namespace SkyNet.Entidades.Operadores
 {
     class UAV : Operador
     {
-        public UAV(string id) : base(id)
+        public UAV(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
         {
-            bateria.InicializarBateria(4000);
             cargaMax = 5;
         }
     }

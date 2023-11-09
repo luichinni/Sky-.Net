@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkyNet.Entidades.Mundiales;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,8 @@ namespace SkyNet.Entidades.Operadores
 {
     class K9 : Operador
     {
-        public K9(string id) : base(id)
+        public K9(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
         {
-            bateria.InicializarBateria(6500);
             cargaMax = 40;
         }
     }

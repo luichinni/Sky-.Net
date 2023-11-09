@@ -9,9 +9,15 @@ namespace SkyNet.Entidades.Mundiales
     class Cuartel
     {
         private string id;
+        private Localizacion ubicacion;
         public string Identificacion()
         {
             return id;
+        }
+
+        public Localizacion GetUbicacion()
+        {
+            return ubicacion;
         }
     }
 }

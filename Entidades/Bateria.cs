@@ -11,9 +11,10 @@ namespace SkyNet.Entidades
     {
         private double bateriaMax, bateriaActual;
 
-        public Bateria()
+        public Bateria(double bateriaMax)
         {
-
+            this.bateriaMax = bateriaMax;
+            bateriaActual = bateriaMax;
         }
 
         public double ConsultarBateria()
@@ -26,6 +27,7 @@ namespace SkyNet.Entidades
             return bateriaMax;
         }
 
+
         public void CargarBateria(double cantBateria)
         {
 
@@ -36,10 +38,11 @@ namespace SkyNet.Entidades
 
         }
 
-        public void CargarBateriaMax()
+        public void LlenarBateria()
         {
             bateriaActual = bateriaMax;
         }
+
 
         public void ConsumirBateria(double cantBateria)
         {
@@ -48,21 +51,6 @@ namespace SkyNet.Entidades
             {
                 bateriaActual -= cantBateria;
             }
-        }
-
-        public bool EsPosibleTransferir(Operador robot, double cantBateria)
-        {
-
-            return true;
-
-        }
-
-
-        public void InicializarBateria(double cantBateria)
-        {
-            bateriaMax = cantBateria;
-            bateriaActual = cantBateria;
-
         }
     }
 }

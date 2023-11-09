@@ -13,17 +13,19 @@ namespace SkyNet.Entidades.Operadores
 
         protected Bateria bateria;
 
-        protected double cargaMax, cargaActual, velActual;
+        protected double cargaMax, cargaActual, velocidadOptima;
+
+        protected Cuartel cuartel;
 
         protected Localizacion ubicacion;
 
-        public Operador(string id)
+        public Operador(string id, Bateria bateria, Cuartel cuartel)
         {
-            bateria = new Bateria();
             this.id = id;
-            velActual = 300;
-            ubicacion = new Localizacion(0, 0);   // Provisorio, se instancia en otro lado
-
+            this.bateria = bateria;
+            this.cuartel = cuartel;
+            velocidadOptima = 300;
+            ubicacion = cuartel.GetUbicacion();
         }
 
         public void Mover(Localizacion nuevaUbicacion)
@@ -35,10 +37,8 @@ namespace SkyNet.Entidades.Operadores
                 ubicacion = nuevaUbicacion;
 
                 bateria.ConsumirBateria(CalcularGastoDeBateria(distancia));
-
-                //Agregar a lista de nueva ubicacion y quitar de lista de ubicación vieja
-
             }
+
             else
             {
                 Console.WriteLine("No alcanza la bateria para llegar a esa ubicación");
@@ -47,16 +47,12 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
-        public Localizacion getUbicacion()
+        public void VolverAlCuartel()  // Método Prescindible, se puede usar directamente Mover(ubicacionCuartel)
         {
-            return ubicacion;
+            Localizacion nuevaUbicacion = cuartel.GetUbicacion();
 
-        }
+            Mover(nuevaUbicacion);
 
-        public void RetornarCuartel()
-        {
-            // Ubicación del cuartel?
-            //Actualizar Batería
         }
 
         public void TransferirBateria(Operador robot, double cantBateria)
@@ -71,12 +67,11 @@ namespace SkyNet.Entidades.Operadores
 
                 else Console.WriteLine("No se puede realizar la transferencia, revisar límites de batería");
 
-              // Si la transferencia sobrepasa la carga Maxima se transfiere hasta que llegue a la carga maxima?
-              // Si quien entrega la bateria tiene menos de la que se quiere transferir se entrega hasta que quede en 0?
-              // o no se transfiere nada? 
+                // Se envía la batería que es posible pasar? No se envía nada?
             }
 
             else Console.WriteLine("No se puede realizar la transferencia por que no están en la misma ubicación");
+
 
         }
 
@@ -88,11 +83,7 @@ namespace SkyNet.Entidades.Operadores
                 {
                     robot.cargaActual += cantidad;
 
-                    robot.ActualizarVelocidad();
-
                     cargaActual -= cantidad;
-
-                    ActualizarVelocidad();
                 }
 
                 else Console.WriteLine("No se puede realizar la transferencia, revisar límites de carga");
@@ -104,29 +95,29 @@ namespace SkyNet.Entidades.Operadores
             else Console.WriteLine("No se encuentran en la misma ubicación");
         }
 
-        public void Descargar()
-        {
-            // Considerar que esté en el cuartel. Donde se almacena lo que se descarga?
 
-            cargaActual = 0;
-            ActualizarVelocidad();
+        public double ActualizarVelocidad()
+        {
+            double porcentajeCarga = cargaActual / cargaMax;
+
+            double porcentajeAReducir = porcentajeCarga * 0.05 / 0.1;
+
+            double nuevaVelocidad = velocidadOptima - velocidadOptima * porcentajeAReducir;
+
+            return nuevaVelocidad;
+
         }
 
-        public void RecargarBateria()
-        {
-            bateria.CargarBateriaMax();
-        }
-
-        public void ConsumirEnergia(double cantBateria)
-        {
-            bateria.ConsumirBateria(cantBateria);
-        }
 
         public double CalcularGastoDeBateria(int distancia)
         {
-            // calculos
+            double velocidad = ActualizarVelocidad();
 
-            return 0;
+            double tiempo = distancia / velocidad;
+
+            double gastoDeBateria = tiempo * 1000;
+
+            return gastoDeBateria;
         }
 
         public bool esPosibleTransferirBateria(Operador robot, double cantBateria)
@@ -142,7 +133,36 @@ namespace SkyNet.Entidades.Operadores
             else return false;
         }
 
+        public void RecargarBateria()
+        {
+            bateria.LlenarBateria();
+        }
 
+        public void ConsumirEnergia(double cantBateria)
+        {
+            bateria.ConsumirBateria(cantBateria);
+        }
+
+        public void Descargar()
+        {
+            cargaActual = 0;
+
+            // Donde se almacena lo que se descarga?
+
+        }
+
+        public Localizacion getUbicacion()
+        {
+            return ubicacion;
+
+        }
+
+        public string GetId() { return id; }
+
+        public double GetBateria()
+        {
+            return bateria.ConsultarBateria();
+        }
 
         public string Identificacion()
         {
@@ -160,28 +180,6 @@ namespace SkyNet.Entidades.Operadores
             }
 
             return id;
-        }
-
-        public int CalcularDistancia(Localizacion nuevaUbicacion)
-        {
-            int distancia = ubicacion.CalcularDistancia(nuevaUbicacion);
-
-            return distancia;
-        }
-
-       
-
-        public string GetId() { return id; }
-
-        public double GetBateria()
-        {
-            return bateria.ConsultarBateria();
-        }
-
-        public void ActualizarVelocidad()
-        {
-            // Reducir 5% por cada 10% de carga
-
         }
     }
 }
