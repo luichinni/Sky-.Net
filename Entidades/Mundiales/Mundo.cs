@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Mundiales
 {
-    class Mundo
+    public class Mundo
     {
         private static double _porcentajeAgua = 0.1;// 10% de las localizaciones libres son agua
         public static int PorcentajeDeAgua
