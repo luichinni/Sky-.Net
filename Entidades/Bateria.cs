@@ -47,7 +47,7 @@ namespace SkyNet.Entidades
         public void ConsumirBateria(double cantBateria)
         {
 
-            if (bateriaActual - cantBateria >= 0)
+            if (bateriaActual - cantBateria > 0)
             {
                 bateriaActual -= cantBateria;
             }
