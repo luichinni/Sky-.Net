@@ -7,17 +7,27 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Mundiales
 {
-    class Localizacion
+    public class Localizacion
     {
         private int coordX, coordY;
         private Cuartel cuartel;
         private Dictionary<string, Operador> operadores;
+        private EnumTiposDeZona tipoZona;
 
-        public Localizacion(int coordX, int coordY)
+        public Localizacion(int coordX, int coordY, EnumTiposDeZona tipoZona)
         {
             this.coordX = coordX;
             this.coordY = coordY;
             operadores = new Dictionary<string, Operador>();
+            this.tipoZona = tipoZona;
+        }
+        public EnumTiposDeZona GetTipoZona()
+        {
+            return tipoZona;
+        }
+        public void SetTipoZona(EnumTiposDeZona tipoZona)
+        {
+            this.tipoZona = tipoZona;
         }
         public void Salir(string id)
         {
@@ -40,6 +50,7 @@ namespace SkyNet.Entidades.Mundiales
             if (!TieneCuartel())
             {
                 this.cuartel = cuartel;
+                this.tipoZona = EnumTiposDeZona.Cuartel;
                 pudo = true;
             }
             return pudo;
