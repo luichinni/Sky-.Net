@@ -1,4 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using SkyNet.CommandPattern;
+using SkyNet.CommandPattern.Comandos;
 using SkyNet.Entidades.Mundiales;
 using SkyNet.Entidades.Operadores;
 

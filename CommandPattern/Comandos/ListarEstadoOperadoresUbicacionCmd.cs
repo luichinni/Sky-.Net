@@ -4,10 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SkyNet.CommandPattern;
+using SkyNet.Entidades.Mundiales;
 
 namespace SkyNet.CommandPattern.Comandos
 {
-    class ListarEstadoOperadoresUbicacionCmd : Comando
+    public class ListarEstadoOperadoresUbicacionCmd : Comando
     {
+        public ListarEstadoOperadoresUbicacionCmd(string nombre, string descripcion) : base(nombre, descripcion)
+        {
+        }
+
+        public override void Ejecutar(Mundo m, Cuartel c)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

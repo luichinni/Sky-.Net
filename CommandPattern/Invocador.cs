@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.CommandPattern
 {
-    class Invocador
+    public class Invocador
     {
     }
 }
