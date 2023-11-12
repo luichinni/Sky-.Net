@@ -10,7 +10,17 @@ namespace SkyNet.Entidades.Mundiales
 {
     class Mundo
     {
-        private static double _porcentajeVertederos = 0.1;// 10% de las localizaciones libres son vertederos
+        private static double _porcentajeAgua = 0.1;// 10% de las localizaciones libres son agua
+        public static int PorcentajeDeAgua
+        {
+            get => (int)_porcentajeAgua * 100;
+            set
+            {
+                if (value <= 100 || value >= 0)
+                    _porcentajeAgua = value / 100.0;
+            }
+        }
+        private static double _porcentajeVertederos = 0.08;// 8% de las localizaciones libres son vertederos
         public static int PorcentajeDeVertederos
         {
             get => (int)_porcentajeVertederos * 100;
@@ -78,6 +88,22 @@ namespace SkyNet.Entidades.Mundiales
             GenerarPuntosDeReciclaje();
             // generamos vertederos
             GenerarVertederos();
+            // generamos lagos
+            GenerarLagos();
+        }
+        private void GenerarLagos()
+        {
+            Random rnd = new Random();
+            int cantAgua = (int)(ContarLocalizacionesLibres() * _porcentajeAgua);
+            IVertice<Localizacion> vertice;
+            for (int i = 0; i < cantAgua; i++)
+            {
+                mapamundi.TryGetValue($"{rnd.Next(MaxCoordX)}{rnd.Next(MaxCoordY)}", out vertice);
+                if ((int)vertice.GetDato().GetTipoZona() <= 3)
+                {
+                    vertice.GetDato().SetTipoZona(EnumTiposDeZona.Lago);
+                }
+            }
         }
         private void GenerarVertederos()
         {
