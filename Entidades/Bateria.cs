@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades
 {
-    class Bateria
+    public class Bateria
     {
         private double bateriaMax, bateriaActual;
 
