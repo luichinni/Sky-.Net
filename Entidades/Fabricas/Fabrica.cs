@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Fabricas
 {
-    abstract class Fabrica
+    public abstract class Fabrica
     {
     }
 }
