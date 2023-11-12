@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Mundiales
 {
-    class Cuartel
+    public class Cuartel
     {
         private string id;
         private Localizacion ubicacion;
