@@ -12,18 +12,28 @@ for (int i=0; i<Mundo.MaxCoordX*3; i+=3)
 {
     for(int j=0; j<Mundo.MaxCoordY*2; j+=2)
     {
-        c = (ConsoleColor)Enum.GetValues(typeof(EnumColoresZona)).GetValue((int)mundito.GetLocalizacion(i/3,j/2).GetTipoZona());
+        c = GetConsoleColor(mundito.GetLocalizacion(i/3,j/2).GetTipoZona().ToString());
         Console.BackgroundColor = c;
-        Console.ForegroundColor = ConsoleColor.White;
-        WriteAt(mundito.GetLocalizacion(i / 3, j / 2).GetTipoZona().ToString()[0].ToString(), i, j);
-        WriteAt(mundito.GetLocalizacion(i / 3, j / 2).GetTipoZona().ToString()[0].ToString(), i+1, j);
-        WriteAt(mundito.GetLocalizacion(i / 3, j / 2).GetTipoZona().ToString()[0].ToString(), i+2, j);
-        WriteAt(mundito.GetLocalizacion(i / 3, j / 2).GetTipoZona().ToString()[0].ToString(), i, j+1);
-        WriteAt(mundito.GetLocalizacion(i / 3, j / 2).GetTipoZona().ToString()[0].ToString(), i + 1, j+1);
-        WriteAt(mundito.GetLocalizacion(i / 3, j / 2).GetTipoZona().ToString()[0].ToString(), i + 2, j+1);
+        Console.ForegroundColor = c;
+        WriteAt("@", i, j);
+        WriteAt("@", i+1, j);
+        WriteAt("@", i+2, j);
+        WriteAt("@", i, j+1);
+        WriteAt("@", i + 1, j+1);
+        WriteAt("@", i + 2, j+1);
         //Console.WriteLine($"POS ({i},{j}) => {mundito.GetLocalizacion(i, j).GetTipoZona()}");
     }
 }
+
+foreach (EnumTiposDeZona zona in Enum.GetValues(typeof(EnumTiposDeZona)))
+{
+    Console.ForegroundColor = GetConsoleColor(zona.ToString());
+    Console.BackgroundColor = Console.ForegroundColor;
+    WriteAt("@", (Mundo.MaxCoordX*3)+3, ((int)zona) + 1);
+    Console.ResetColor();
+    WriteAt(zona.ToString(), (Mundo.MaxCoordX * 3) + 4, ((int)zona) + 1);
+}
+WriteAt("", 0, 22);
 
 Console.ReadKey();
 
@@ -42,6 +52,22 @@ void WriteAt(string s, int x, int y)
     }
 }
 
+ConsoleColor GetConsoleColor(string zona)
+{
+    List<ConsoleColor> colors = new List<ConsoleColor>();
+    List<string> nombres = new List<string>();
+    Array arr = Enum.GetValues(typeof(EnumColoresZona));
+    Array arrNombre = Enum.GetNames(typeof(EnumColoresZona));
+    foreach (ConsoleColor cc in arr)
+    {
+        colors.Add(cc);
+    }
+    foreach (string nombre in arrNombre)
+    {
+        nombres.Add(nombre);
+    }
+    return colors[nombres.IndexOf(zona)];
+}
 /*
 static string GenerarID()
 {
