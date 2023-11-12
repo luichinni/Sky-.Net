@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Operadores
 {
-    abstract class Operador
+    public abstract class Operador
     {
         protected string id;
 

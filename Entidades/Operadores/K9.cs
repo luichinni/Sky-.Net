@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Operadores
 {
-    class K9 : Operador
+    public class K9 : Operador
     {
         public K9(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
         {
