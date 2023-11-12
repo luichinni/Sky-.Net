@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace SkyNet.CommandPattern
 {
-    abstract class Menu
+    public abstract class Menu
     {
+        protected string titulo;
+        protected string[] opciones;
+        public Menu(string[] opciones, string titulo="")
+        {
+            this.opciones = opciones;
+            if (titulo != "") this.titulo = titulo;
+        }
+
+        public abstract void Mostrar();
+        public abstract string GetSeleccion();
     }
 }
