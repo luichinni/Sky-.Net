@@ -11,7 +11,7 @@ string seleccion;
 Mundo mundito = Mundo.GetInstance();
 Cuartel cuartelito = null;
 
-/// SetComandos
+/// SetComandos -> PODRIA HACERSE DIFERENTE pero ya ta
 Invocador invocador = new Invocador();
 invocador.AgregarComando(new AgregarReservaCmd("Agregar Operador a Reserva", "Se lleva un operador a cuartel y se pone en reserva"));
 invocador.AgregarComando(new CargarSimulacionCmd("Cargar Simulacion", "Carga una simuacion antigua desde memoria"));
