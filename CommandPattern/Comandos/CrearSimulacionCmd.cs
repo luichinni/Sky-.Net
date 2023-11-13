@@ -15,7 +15,7 @@ namespace SkyNet.CommandPattern.Comandos
 
         public override void Ejecutar(Mundo m, Cuartel c)
         {
-            throw new NotImplementedException();
+            m.IniciarSimulacion();
         }
     }
 }
