@@ -7,22 +7,22 @@ using SkyNet.Entidades.Operadores;
 int origRow = Console.CursorTop;
 int origCol = Console.CursorLeft;
 Random rand = new Random();
+Mundo.MaxCoordX = 40;
+Mundo.MaxCoordY = 25;
 Mundo mundito = Mundo.GetInstance();
 ConsoleColor c;
-
-for (int i=0; i<Mundo.MaxCoordX*3; i+=3)
+int nroCuadrante = 1;
+Console.WriteLine($"\t\tSeccion {nroCuadrante}");
+for (int i=0; i<Mundo.MaxCoordX*2; i+=2)
 {
-    for(int j=0; j<Mundo.MaxCoordY*2; j+=2)
+    for(int j=0; j<Mundo.MaxCoordY; j++)
     {
-        c = GetConsoleColor(mundito.GetLocalizacion(i/3,j/2).GetTipoZona().ToString());
+        c = GetConsoleColor(mundito.GetLocalizacion(i/2,j).GetTipoZona().ToString());
         Console.BackgroundColor = c;
         Console.ForegroundColor = c;
-        WriteAt("@", i, j);
-        WriteAt("@", i+1, j);
-        WriteAt("@", i+2, j);
-        WriteAt("@", i, j+1);
-        WriteAt("@", i + 1, j+1);
-        WriteAt("@", i + 2, j+1);
+        WriteAt("@", i+1, j+1);
+        WriteAt("@", i+2, j + 1);
+
         //Console.WriteLine($"POS ({i},{j}) => {mundito.GetLocalizacion(i, j).GetTipoZona()}");
     }
 }
@@ -31,11 +31,11 @@ foreach (EnumTiposDeZona zona in Enum.GetValues(typeof(EnumTiposDeZona)))
 {
     Console.ForegroundColor = GetConsoleColor(zona.ToString());
     Console.BackgroundColor = Console.ForegroundColor;
-    WriteAt("@", (Mundo.MaxCoordX*3)+3, ((int)zona) + 1);
+    WriteAt("@", (Mundo.MaxCoordX*2)+2, ((int)zona) + 1);
     Console.ResetColor();
-    WriteAt(zona.ToString(), (Mundo.MaxCoordX * 3) + 4, ((int)zona) + 1);
+    WriteAt(zona.ToString(), (Mundo.MaxCoordX * 2) + 3, ((int)zona) + 1);
 }
-WriteAt("", 0, 22);
+WriteAt("", 0, Mundo.MaxCoordY+2);
 
 Console.ReadKey();
 
