@@ -13,7 +13,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
         }
 
-        public override void Ejecutar(Mundo m, Cuartel c)
+        public override void Ejecutar(Mundo m, ref Cuartel c)
         {
             m.IniciarSimulacion();
         }

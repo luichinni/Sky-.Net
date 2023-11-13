@@ -17,7 +17,7 @@ namespace SkyNet.CommandPattern
         public Comando GetComando(string nombreCmd) // obtener comando
         {
             Comando cmdRet;
-            comandos.TryGetValue(nombreCmd, out cmdRet);
+            if(!comandos.TryGetValue(nombreCmd, out cmdRet)) cmdRet = null;
             return cmdRet;
         }
         public void AgregarComando(Comando c) // agregar uno
