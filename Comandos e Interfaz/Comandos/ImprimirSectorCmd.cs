@@ -18,7 +18,9 @@ namespace SkyNet.CommandPattern.Comandos
             ConsoleColor color;
             int[] coord = GetCoordenadas(Mundo.MaxCoordX,Mundo.MaxCoordY);
             Console.Clear();
-            Console.WriteLine($"\t\tSeccion x1={coord[0]},y1={coord[1]} hasta x2={coord[2]},y={coord[3]}");
+            ConsoleHelper.WriteAt($"\t\tSeccion x1={coord[0]},y1={coord[1]} hasta x2={coord[2]},y={coord[3]}",0,0);
+            ImprimirCoordX(coord[0], coord[2]);
+            ImprimirCoordY(coord[1], coord[3]);
             for (int i = coord[0]; i <= coord[2]; i ++)
             {
                 for (int j = coord[1]; j <= coord[3]; j++)
@@ -42,6 +44,44 @@ namespace SkyNet.CommandPattern.Comandos
                 ConsoleHelper.WriteAt(zona.ToString(), (coord[2] - coord[0]) * 2 + 6, ((int)zona) + 2);
             }
             ConsoleHelper.WriteAt("", 0, (coord[3] - coord[1]) + 4);
+        }
+        private void ImprimirCoordX(int inicio, int final)
+        {
+            Random rnd = new Random();
+            for (int i = inicio; i <= final; i++) 
+            { /// hacemos colores intercalados para las coordenadas, de más está decir que no está pensado para coordenadas
+              /// de mas de dos cifras, es mejorable pero tampoco me voy a matar en eso
+                if (i % 2 == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                ConsoleHelper.WriteAt(i.ToString().PadLeft(2), (i - inicio) * 2 + 2, 1);
+            }
+        }
+        private void ImprimirCoordY(int inicio, int final)
+        {
+            Random rnd = new Random();
+            for (int i = inicio; i <= final; i++)
+            { /// hacemos colores intercalados para las coordenadas, de más está decir que no está pensado para coordenadas
+              /// de mas de dos cifras, es mejorable pero tampoco me voy a matar en eso
+                if (i % 2 == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                ConsoleHelper.WriteAt(i.ToString().PadLeft(2), 0, (i - inicio)+2);
+            }
         }
         private int[] GetCoordenadas(int maxX, int maxY)
         {
