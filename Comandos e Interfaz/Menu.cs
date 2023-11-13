@@ -8,12 +8,14 @@ namespace SkyNet.CommandPattern
 {
     public abstract class Menu
     {
-        protected string titulo;
-        protected string[] opciones;
-        public Menu(string[] opciones, string titulo="")
+        public string Titulo { get; set; }
+        public string[] Opciones { get; set; }
+        public char Decorador { get; set; }
+        public Menu(string[] opciones, string titulo="", char decorador = ' ')
         {
-            this.opciones = opciones;
-            if (titulo != "") this.titulo = titulo;
+            Opciones = opciones;
+            if (titulo != "") Titulo = titulo;
+            Decorador = decorador;
         }
 
         public abstract void Mostrar();

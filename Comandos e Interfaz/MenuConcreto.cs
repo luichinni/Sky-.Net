@@ -8,24 +8,24 @@ namespace SkyNet.CommandPattern
 {
     public class MenuConcreto : Menu
     {
-        public MenuConcreto(string[] opciones, string titulo="") : base(opciones,titulo){ }
+        public MenuConcreto(string[] opciones, string titulo="", char decorador = ' ') : base(opciones,titulo,decorador){ }
         public override string GetSeleccion()
         {
-            string seleccion = (opciones.Length + 1).ToString();
-            while (!EsNumerico(seleccion) || int.Parse(seleccion) < 0 || int.Parse(seleccion) > opciones.Length - 1)
+            string seleccion = (Opciones.Length + 1).ToString();
+            while (!EsNumerico(seleccion) || int.Parse(seleccion) < 0 || int.Parse(seleccion) > Opciones.Length - 1)
             {
                 Console.WriteLine("Seleccione una opcion: ");
                 seleccion = Console.ReadLine();
             }
-            return opciones[int.Parse(seleccion)];
+            return Opciones[int.Parse(seleccion)];
         }
 
         public override void Mostrar()
         {
-            Console.WriteLine(titulo);
-            for(int i = 0; i < opciones.Length; i++)
+            Console.WriteLine(Titulo.PadLeft(Titulo.Length+6,Decorador).PadRight(Titulo.Length+12,Decorador));
+            for(int i = 0; i < Opciones.Length; i++)
             {
-                Console.WriteLine(i+". "+opciones[i]);
+                Console.WriteLine(i+". "+Opciones[i]);
             }
         }
         private bool EsNumerico(string str)
