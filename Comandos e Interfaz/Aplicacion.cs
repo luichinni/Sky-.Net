@@ -45,12 +45,13 @@ namespace SkyNet.CommandPattern
 
             while (!fin)
             {
+                Console.ResetColor();
                 _menu.Mostrar();
                 seleccion = _menu.GetSeleccion();
-                if(seleccion != _salida)
+                if (seleccion != _salida && seleccion != "Limpiar Pantalla")
                 { /// si no es salida intentamos ejecutar comando y ver si hay otro menu
                     cmd = _invocador.GetComando(seleccion);
-                    if(cmd != null)
+                    if (cmd != null)
                         cmd.Ejecutar(mundo, ref cuartelActual);
 
                     if (_titulos.Contains(seleccion))
@@ -58,7 +59,9 @@ namespace SkyNet.CommandPattern
                         _menu.Titulo = seleccion;
                         _menu.Opciones = GetOpciones(seleccion);
                     }
-                }else fin = true; /// si la salida
+                }
+                else if (seleccion == "Limpiar Pantalla") Console.Clear();
+                else fin = true; /// si la salida
             }
         }
         private string[] GetOpciones(string titulo)
@@ -72,6 +75,8 @@ namespace SkyNet.CommandPattern
                 Array.Resize(ref op, op.Length + 1);
                 op[op.Length - 1] = _salida;
             }
+            Array.Resize(ref op, op.Length + 1);
+            op[op.Length - 1] = "Limpiar Pantalla";
             return op;
         }
         public void AgregarMenu(string titulo, string[] opciones) 
