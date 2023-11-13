@@ -21,6 +21,7 @@ invocador.AgregarComando(new CrearSimulacionCmd("Crear Simulacion", "Crea una nu
 invocador.AgregarComando(new DescargarEnCuartelCmd("Descargar Operador en Cuartel", "Se descarga la carga fisica del operador en su cuartel"));
 invocador.AgregarComando(new GuardarSimulacionCmd("Guardar Simulacion", "Se almacena en memoria el estado actual de la simulacion"));
 invocador.AgregarComando(new ImprimirSectorCmd("Cargar Mapa de Sector", "Carga el fragmento de sector en la interfaz"));
+invocador.AgregarComando(new LimpiarPantallaCmd("Limpiar Pantalla", "Limpia la pantalla xd"));
 invocador.AgregarComando(new ListarEstadoOperadoresCmd("Listar Estado de Operadores", "Se lista el estado fisico de los operadores"));
 invocador.AgregarComando(new ListarEstadoOperadoresUbicacionCmd("Listar Estado de Operadores En Ubicacion", "Se lista el estado de operadores en cierta ubicacion"));
 invocador.AgregarComando(new MoverOperadorCmd("Mover Operador a Nueva Ubicacion","Se intenta posicionar un operador en una nueva localizacion"));
@@ -51,6 +52,7 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Cuartel"
     }},
     { "Cuartel" , new string[] {
+        "Cargar Mapa de Sector",
         "Agregar Operador a Reserva",
         "Quitar Operador de Reserva",
         "Descargar Operador en Cuartel",

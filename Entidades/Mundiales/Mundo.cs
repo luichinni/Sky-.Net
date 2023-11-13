@@ -45,11 +45,12 @@ namespace SkyNet.Entidades.Mundiales
         private Dictionary<string,IVertice<Localizacion>> mapamundi; // vertices del mundo
         private Mundo() 
         { 
-            mapamundi = new Dictionary<string, IVertice<Localizacion>>();
+            //mapamundi = new Dictionary<string, IVertice<Localizacion>>();
             //GenerarMundo();
         }
         public void IniciarSimulacion()
         {
+            mapamundi = new Dictionary<string, IVertice<Localizacion>>();
             GenerarMundo();
         }
         private void GenerarMundo()
