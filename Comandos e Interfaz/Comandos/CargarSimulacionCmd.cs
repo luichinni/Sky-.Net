@@ -15,7 +15,7 @@ namespace SkyNet.CommandPattern.Comandos
 
         public override void Ejecutar(Mundo m, ref Cuartel c)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

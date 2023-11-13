@@ -48,7 +48,7 @@ namespace SkyNet.CommandPattern
                 Console.ResetColor();
                 _menu.Mostrar();
                 seleccion = _menu.GetSeleccion();
-                if (seleccion != _salida && seleccion != "Limpiar Pantalla")
+                if (seleccion != _salida && seleccion != "Limpiar Pantalla" && seleccion != "Ayuda Comandos")
                 { /// si no es salida intentamos ejecutar comando y ver si hay otro menu
                     cmd = _invocador.GetComando(seleccion);
                     if (cmd != null)
@@ -61,8 +61,20 @@ namespace SkyNet.CommandPattern
                     }
                 }
                 else if (seleccion == "Limpiar Pantalla") Console.Clear();
+                else if (seleccion == "Ayuda Comandos") MostrarDescripciones();
                 else fin = true; /// si la salida
             }
+        }
+        private void MostrarDescripciones()
+        {
+            Comando c;
+            Console.WriteLine("Informacion");
+            foreach (string s in _menu.Opciones)
+            {
+                c = _invocador.GetComando(s);
+                if (c != null) Console.WriteLine(s+": "+c.Descripcion);
+            }
+            Console.WriteLine();
         }
         private string[] GetOpciones(string titulo)
         {
@@ -75,7 +87,8 @@ namespace SkyNet.CommandPattern
                 Array.Resize(ref op, op.Length + 1);
                 op[op.Length - 1] = _salida;
             }
-            Array.Resize(ref op, op.Length + 1);
+            Array.Resize(ref op, op.Length + 2);
+            op[op.Length - 2] = "Ayuda Comandos";
             op[op.Length - 1] = "Limpiar Pantalla";
             return op;
         }
