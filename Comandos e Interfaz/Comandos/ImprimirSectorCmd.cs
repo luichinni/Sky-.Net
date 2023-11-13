@@ -43,7 +43,9 @@ namespace SkyNet.CommandPattern.Comandos
                 Console.ResetColor();
                 ConsoleHelper.WriteAt(zona.ToString(), (coord[2] - coord[0]) * 2 + 6, ((int)zona) + 2);
             }
-            ConsoleHelper.WriteAt("", 0, (coord[3] - coord[1]) + 4);
+            if (coord[3] - coord[1] > Enum.GetValues(typeof(EnumTiposDeZona)).Length)  
+                ConsoleHelper.WriteAt("", 0, (coord[3] - coord[1]) + 4);
+            else ConsoleHelper.WriteAt("", 0, Enum.GetValues(typeof(EnumTiposDeZona)).Length + 4);
         }
         private void ImprimirCoordX(int inicio, int final)
         {
