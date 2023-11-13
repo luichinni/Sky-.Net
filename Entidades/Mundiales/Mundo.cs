@@ -46,6 +46,10 @@ namespace SkyNet.Entidades.Mundiales
         private Mundo() 
         { 
             mapamundi = new Dictionary<string, IVertice<Localizacion>>();
+            //GenerarMundo();
+        }
+        public void IniciarSimulacion()
+        {
             GenerarMundo();
         }
         private void GenerarMundo()
