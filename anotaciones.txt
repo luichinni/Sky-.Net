@@ -19,3 +19,7 @@ factory method y abstract factory
 
 ==========================================================================
 JSON SERIALIZER
+
+==========================================================================
+
+Se podria hacer que cada debuff retorne un diccionario de object donde cada pos corresponde a cada atributo del operador y segun el debuff retorna el nuevo valor donde la key es el nombre del atributo
