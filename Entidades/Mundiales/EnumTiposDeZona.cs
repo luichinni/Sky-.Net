@@ -8,10 +8,10 @@ namespace SkyNet.Entidades.Mundiales
 {
     public enum EnumTiposDeZona
     {
-        TerrenoBaldio,
         Planicie,
         Bosque,
         SectorUrbano,
+        TerrenoBaldio,
         Lago,
         Vertedero,
         VertederoElectronico,

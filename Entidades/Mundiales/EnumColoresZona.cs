@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace SkyNet.Entidades.Mundiales
 {
     public enum EnumColoresZona
-    {        
-        TerrenoBaldio = ConsoleColor.Gray,
+    {
         Planicie = ConsoleColor.Green,
         Bosque = ConsoleColor.DarkGreen,
         SectorUrbano = ConsoleColor.DarkGray,
+        TerrenoBaldio = ConsoleColor.Gray,
         Lago = ConsoleColor.Cyan,
         Vertedero = ConsoleColor.Yellow,
         VertederoElectronico = ConsoleColor.DarkYellow,
