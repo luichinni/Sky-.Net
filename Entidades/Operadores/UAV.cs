@@ -12,6 +12,8 @@ namespace SkyNet.Entidades.Operadores
         public UAV(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
         {
             cargaMax = 5;
+            velocidadOptima = 50;
+            bateria.InicializarBateria(4000);
         }
     }
 }

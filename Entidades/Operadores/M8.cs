@@ -12,6 +12,8 @@ namespace SkyNet.Entidades.Operadores
         public M8(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
         {
             cargaMax = 250;
+            velocidadOptima = 200;
+            bateria.InicializarBateria(12250);
         }
     }
 }

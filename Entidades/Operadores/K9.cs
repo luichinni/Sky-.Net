@@ -12,6 +12,8 @@ namespace SkyNet.Entidades.Operadores
         public K9(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
         {
             cargaMax = 40;
+            velocidadOptima = 100;
+            bateria.InicializarBateria(6500);
         }
     }
 }

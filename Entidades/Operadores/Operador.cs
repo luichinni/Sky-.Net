@@ -24,7 +24,6 @@ namespace SkyNet.Entidades.Operadores
             this.id = id;
             this.bateria = bateria;
             this.cuartel = cuartel;
-            velocidadOptima = 300;
             ubicacion = cuartel.GetUbicacion();
         }
 
