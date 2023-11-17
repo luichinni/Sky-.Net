@@ -10,9 +10,9 @@ namespace SkyNet.Entidades.Mundiales
     {
         Planicie,
         Bosque,
+        Lago,
         SectorUrbano,
         TerrenoBaldio,
-        Lago,
         Vertedero,
         VertederoElectronico,
         Cuartel,

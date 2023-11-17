@@ -10,9 +10,9 @@ namespace SkyNet.Entidades.Mundiales
     {
         Planicie = ConsoleColor.Green,
         Bosque = ConsoleColor.DarkGreen,
+        Lago = ConsoleColor.Cyan,
         SectorUrbano = ConsoleColor.DarkGray,
         TerrenoBaldio = ConsoleColor.Gray,
-        Lago = ConsoleColor.Cyan,
         Vertedero = ConsoleColor.Yellow,
         VertederoElectronico = ConsoleColor.DarkYellow,
         Cuartel = ConsoleColor.Magenta,

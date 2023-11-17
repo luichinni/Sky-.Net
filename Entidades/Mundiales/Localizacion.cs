@@ -9,16 +9,18 @@ namespace SkyNet.Entidades.Mundiales
 {
     public class Localizacion
     {
+        public string Pos { get; private set; }
         private int coordX, coordY;
-        private Cuartel cuartel;
-        private Dictionary<string, Operador> operadores;
+        private string cuartelId = null;
+        private HashSet<string> operadores;
         private EnumTiposDeZona tipoZona;
 
         public Localizacion(int coordX, int coordY, EnumTiposDeZona tipoZona)
         {
             this.coordX = coordX;
             this.coordY = coordY;
-            operadores = new Dictionary<string, Operador>();
+            Pos = $"x{coordX}y{coordY}";
+            operadores = new HashSet<string>();
             this.tipoZona = tipoZona;
         }
         public EnumTiposDeZona GetTipoZona()
@@ -31,7 +33,7 @@ namespace SkyNet.Entidades.Mundiales
         }
         public void Salir(string id)
         {
-            if (operadores.ContainsKey(id)) // si existe el operador
+            if (operadores.Contains(id)) // si existe el operador
             {
                 operadores.Remove(id); // lo saca de la ubicacion
             }
@@ -39,9 +41,9 @@ namespace SkyNet.Entidades.Mundiales
         public void Entrar(Operador o)
         {
             // si no es nulo y no está en la ubicacion
-            if (o != null && !operadores.ContainsKey(o.Identificacion()))
+            if (o != null && !operadores.Contains(o.Identificacion()))
             {
-                operadores.Add(o.Identificacion(), o); // lo agrega a la ubicacion
+                operadores.Add(o.Identificacion()); // lo agrega a la ubicacion
             }
         }
         public bool IntentarEstablecerCuartel(Cuartel cuartel)
@@ -49,7 +51,7 @@ namespace SkyNet.Entidades.Mundiales
             bool pudo = false;
             if (!TieneCuartel())
             {
-                this.cuartel = cuartel;
+                this.cuartelId = cuartel.Identificacion();
                 this.tipoZona = EnumTiposDeZona.Cuartel;
                 pudo = true;
             }
@@ -57,13 +59,13 @@ namespace SkyNet.Entidades.Mundiales
         }
         public Cuartel GetCuartel()
         {
-            return cuartel;
+            return (TieneCuartel()) ? Mundo.GetInstance().GetCuartel(coordX,coordY) : null;
         }
         public bool TieneCuartel()
         {
-            return cuartel != null;
+            return cuartelId != null;
         }
-        public Dictionary<string,Operador> GetOperadores()
+        public HashSet<string> GetOperadores()
         {
             return operadores;
         }

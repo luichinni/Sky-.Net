@@ -16,7 +16,7 @@ namespace SkyNet.CommandPattern.Comandos
         public override void Ejecutar(Mundo m, ref Cuartel c)
         {
             ConsoleColor color;
-            int[] coord = GetCoordenadas(Mundo.MaxCoordX,Mundo.MaxCoordY);
+            int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX,Mundo.GetInstance().MaxCoordY);
             Console.Clear();
             ConsoleHelper.WriteAt($"\t\tSeccion x1={coord[0]},y1={coord[1]} hasta x2={coord[2]},y={coord[3]}",0,0);
             ImprimirCoordX(coord[0], coord[2]);
@@ -90,7 +90,7 @@ namespace SkyNet.CommandPattern.Comandos
             /// Conseguimos las coordenadas de la vista
             Console.Clear();
             Console.WriteLine("Ingrese separado por comas y en orden x1,y1,x2,y2 el rango de mapa que quiere ver");
-            Console.WriteLine($"Tamaño de la simulacion actual: 0,0 -> {Mundo.MaxCoordX-1},{Mundo.MaxCoordY-1}");
+            Console.WriteLine($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX-1},{Mundo.GetInstance().MaxCoordY-1}");
             Console.WriteLine("Nota: Maximo de diferencia x1-x2 es de 40 y de y1-y2 es de 25");
             string coords = Console.ReadLine();
             string[] coordsSplit = coords.Replace(" ","").Split(','); // quita blancos innecesarios y separa por comas
@@ -126,7 +126,7 @@ namespace SkyNet.CommandPattern.Comandos
         private bool ComprobarMaximos(string[] str)
         {
             bool valido = false;
-            if (int.Parse(str[0]) < Mundo.MaxCoordX && int.Parse(str[1]) < Mundo.MaxCoordY && int.Parse(str[2]) < Mundo.MaxCoordX && int.Parse(str[3]) < Mundo.MaxCoordY)
+            if (int.Parse(str[0]) < Mundo.GetInstance().MaxCoordX && int.Parse(str[1]) < Mundo.GetInstance().MaxCoordY && int.Parse(str[2]) < Mundo.GetInstance().MaxCoordX && int.Parse(str[3]) < Mundo.GetInstance().MaxCoordY)
                 valido = true;
             return valido;
         }

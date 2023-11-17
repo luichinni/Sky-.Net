@@ -3,6 +3,7 @@ using SkyNet.Entidades.Grafo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,76 +11,147 @@ namespace SkyNet.Entidades.Mundiales
 {
     public class Mundo
     {
-        public static int PorcentajeVertederoNormal { get; set; } = 50; // 50% vertederos normales
-        public static int PorcentajeVertederoElectronico { get; set; } = 50; // 50% vertederos electronicos
-        public static int PorcentajeUrbanismo { get; set; } = 10;// 8% urbanismos
-        public static int PorcentajeBaldios { get; set; } = 10;// 8% baldios
-        public static int PorcentajeBosques { get; set; } = 30;// 30% bosques
-        public static int PorcentajePlanicies { get; set; } = 50;// 50% planicies
+        public int[] PrioridadZonal { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
+        public int[] ExtensionZonal { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
+        public int[] ExpansionZonal { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
+        public int[] MaximaAparicion { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
+        public int MaxCoordX { get; set; } = 100; // maximo tamaño en x
+        public int MaxCoordY { get; set; } = 100; // maximo tamaño en y
 
-        private static double _porcentajeAgua = 0.1;// 10% de las localizaciones libres son agua
-        public static int PorcentajeDeAgua
-        {
-            get => (int)_porcentajeAgua * 100;
-            set
-            {
-                if (value <= 100 || value >= 0)
-                    _porcentajeAgua = value / 100.0;
-            }
-        }
-        private static double _porcentajeVertederos = 0.08;// 8% de las localizaciones libres son vertederos
-        public static int PorcentajeDeVertederos
-        {
-            get => (int)_porcentajeVertederos * 100;
-            set
-            {
-                if (value <= 100 || value >= 0)
-                    _porcentajeVertederos = value/100.0;
-            }
-        }
-        public static int MaxCoordX { get; set; } = 10; // maximo tamaño en x
-        public static int MaxCoordY { get; set; } = 10; // maximo tamaño en y
-        public static int MaxSitiosReciclaje { get; set; } = 5; // cantidad maxima de sitios de reciclaje
         static Mundo instancia;
-        //private IGrafo<Localizacion> mundo;
-        private Dictionary<string,IVertice<Localizacion>> mapamundi; // vertices del mundo
-        private Mundo() 
-        { 
-            //mapamundi = new Dictionary<string, IVertice<Localizacion>>();
-            //GenerarMundo();
+
+        private IGrafo<Localizacion> mundo;
+        private Dictionary<string, IVertice<Localizacion>> mapamundi; // vertices del mundo
+        private Mundo()
+        {
         }
         public void IniciarSimulacion()
         {
-            mapamundi = new Dictionary<string, IVertice<Localizacion>>();
             GenerarMundo();
+        }
+        public void ReanudarSimulacion()
+        {
+            /// a implementar
+            /// ExtensionZonal = deserealizar
+            /// ExpansionZonal = deserealizar
+            /// MaximaAparicion = deserealizar
+            /// PrioridadZonal = deserealizar
+            /// MaxCoordX = deserealizar
+            /// MaxCoordY = deserealizar
+            /// InicializarGrafo
+            /// ConectarUbicaciones
+            /// diccionarioAux = deserealizar
+            /// for 0 .. MaxX
+            ///     for 0 .. MaxY
+            ///         mapamundi.TryGetValue($"x{MaxX}y{MaxY}",out vertice)
+            ///         diccionarioAux.TryGetValue($"x{MaxX}y{MaxY}",out verticeAux)
+            ///         vertice.SetDato(verticeAux.GetDato())
         }
         private void GenerarMundo()
         {
-            // Generamos todo el mundo como baldio,planicie,bosque o sector urbano (luego se agrega lo que falta)
-            InicializarMundoMundial();
-            // conectamos todo el grafo
+            InicializarGrafo();
             ConectarUbicacionesEnElGrafo();
-            // generamos los puntos de reciclaje
-            GenerarPuntosDeReciclaje();
-            // generamos vertederos
-            GenerarVertederos();
-            // generamos lagos
-            GenerarLagos();
+            InicializarMundoMundial();
         }
-        private void InicializarMundoMundial()
+        private void InicializarGrafo()
         {
-            // Generamos todo el mundo como baldio,planicie,bosque o sector urbano (luego se agrega lo que falta)
-            EnumTiposDeZona zona;
+            mapamundi = new Dictionary<string, IVertice<Localizacion>>();
+            mundo = new GrafoImplListAdy<Localizacion>();
             for (int i = 0; i < MaxCoordX; i++)
             {
                 for (int j = 0; j < MaxCoordY; j++)
                 {
-                    zona = GetZonaSinDebuff();
-                    IVertice<Localizacion> v = new VerticeListaAdy<Localizacion>(new Localizacion(i, j, zona));
-                    //mundo.AgregarVertice(v);
+                    // la zona con prioridad 0 es la base del mundo
+                    IVertice<Localizacion> v = new VerticeListaAdy<Localizacion>(new Localizacion(i, j, (EnumTiposDeZona)PrioridadZonal[0]));
+                    mundo.AgregarVertice(v);
                     mapamundi.Add($"x{i}y{j}", v);
                 }
             }
+        }
+        private void InicializarMundoMundial()
+        {
+            Queue<IVertice<Localizacion>> colaZonal;
+            Random rnd = new Random();
+            List<IVertice<Localizacion>> disponibles = mapamundi.Values.ToList();
+            HashSet<IVertice<Localizacion>> visitados = new HashSet<IVertice<Localizacion>>();
+            for (int i = 0; i < ExpansionZonal.Length; i++) // Para cada zona
+            {
+                for (int j = 0; j < MaximaAparicion[PrioridadZonal[i]]; j++) // Mientras tenga aparicion
+                {
+                    int expansion = ExpansionZonal[PrioridadZonal[i]]; // tomamos cuanto debe extenderse
+                    IVertice<Localizacion> verticeActual;
+                    int indiceSig = rnd.Next(disponibles.Count); // tomamos una localizacion inicial disponible al azar
+                    verticeActual = disponibles[indiceSig];
+                    disponibles.RemoveAt(indiceSig); // la quitamos de las disponibles
+                    // obtenemos la extension inicial de la zona
+                    colaZonal = GetExtensionNucleoZona(ExtensionZonal[PrioridadZonal[i]], verticeActual, visitados);
+                    colaZonal.Enqueue(null); // separador de nivel
+                    while (colaZonal.Count > 0 && expansion > 0) // mientras haya localizaciones por iniciar
+                    {
+                        verticeActual = colaZonal.Dequeue(); // la sacamos de la cola
+                        if(verticeActual != null) // si no es un separador de nivel
+                        {
+                            verticeActual.GetDato().SetTipoZona((EnumTiposDeZona)PrioridadZonal[i]); // establecemos el tipo de zona correspondiente
+                            foreach (IArista<Localizacion> arista in mundo.ListaDeAdyacentes(verticeActual))
+                            { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
+                              // lo encola para luego procesarlo y lo visita para bloquearlo
+                                if (!visitados.Contains(arista.GetVerticeDestino()) && expansion > 1)
+                                {
+                                    colaZonal.Enqueue(arista.GetVerticeDestino());
+                                    visitados.Add(arista.GetVerticeDestino());
+                                }
+                                    
+                            }
+                        }
+                        else
+                        { // si se termina un nivel, se disminuye la expansion y se encola otro separador
+                            expansion--;
+                            colaZonal.Enqueue(null);
+                        }
+                    }
+                    
+                }
+                
+
+            }
+        }
+        private Queue<IVertice<Localizacion>> GetExtensionNucleoZona(int extension,IVertice<Localizacion> vertice, HashSet<IVertice<Localizacion>> visitados)
+        {
+            Queue<IVertice<Localizacion>> cola;
+            /// Se genera el nucleo lineal del tipo de zona a partir de un algoritmo DFS
+            if (extension > 0)
+            {
+                Random rnd = new Random();
+                /// Agregamos el vertice actual a lista de visitados
+                visitados.Add(vertice);
+
+                /// Buscamos siguiente vertice, si ya fue visitado se busca otro, en caso de 
+                /// que todos los adyacentes hayan sido visitados, se deja de buscar y se retorna
+                /// directamente lo que se tiene hasta el momento
+                List<IArista<Localizacion>> adyacentes = mundo.ListaDeAdyacentes(vertice);
+                int indice = rnd.Next(adyacentes.Count-1);// le restrinjo un lado para evitar cuadrados?
+                IVertice<Localizacion> siguiente = adyacentes[indice].GetVerticeDestino();
+                int intentos = 1;
+                while (visitados.Contains(siguiente) && intentos < adyacentes.Count) 
+                {
+                    if (indice < adyacentes.Count-1) indice++;
+                    else indice = 0;
+                    adyacentes[indice].GetVerticeDestino();
+                    intentos++;
+                }
+
+                /// Recibimos la cola del resto del dfs y guardamos nuestro vertice, en caso de no poder
+                /// seguir creamos la cola
+                if (visitados.Contains(siguiente)) cola = new Queue<IVertice<Localizacion>>();
+                else cola = GetExtensionNucleoZona(extension - 1, siguiente, visitados);
+                cola.Enqueue(vertice);
+            }
+            else
+            {
+                cola = new Queue<IVertice<Localizacion>>();
+                cola.Enqueue(vertice);
+            }
+            return cola;
         }
         private void ConectarUbicacionesEnElGrafo()
         {
@@ -133,90 +205,7 @@ namespace SkyNet.Entidades.Mundiales
                 }
             }
         }
-        private EnumTiposDeZona GetZonaSinDebuff()
-        {
-            EnumTiposDeZona zonaRet;
-            Random rnd = new Random();
-            /// Se suman todos los porcentajes de aparicion en tramos para poder mapearlos en el if
-            /// el porcentaje total se randomiza para obtener un valor que sirva para mapear
-            /// por ejemplo:
-            ///     urbanismo = 10%
-            ///     baldio = 10%
-            ///     bosque = 40%
-            ///     planicie = 50%
-            /// si bien el resultado total es 110, el valor randomizado se hace sobre el 100% del total
-            /// siendo 110 - 100%, supongamos que sale 57, dada la suma 10+10 = 20, 20 + 40 = 60, el 57
-            /// corresponde al bioma de bosque.
-            /// Nota: no es escalable a más biomas, tarea para casa resolver ese problema jaja
-            int rangoUrbano_Baldio = PorcentajeUrbanismo + PorcentajeBaldios;
-            int rangoBaldio_Bosque = rangoUrbano_Baldio + PorcentajeBosques;
-            int porcentajesTotal = rangoBaldio_Bosque + PorcentajePlanicies;
-            int n = rnd.Next(porcentajesTotal);
-            if (n >= 0 && n < PorcentajeBaldios) zonaRet = EnumTiposDeZona.SectorUrbano;
-            else if (n >= PorcentajeBaldios && n < rangoUrbano_Baldio) zonaRet = EnumTiposDeZona.TerrenoBaldio;
-            else if (n >= rangoUrbano_Baldio && n < rangoBaldio_Bosque) zonaRet = EnumTiposDeZona.Bosque;
-            else zonaRet = EnumTiposDeZona.Planicie;
-            return zonaRet;
-        }
-        private void GenerarLagos()
-        {
-            /// Genera lagos a partir de las ubicaciones sin debuff multiplicado por el porcentaje maximo de aparicion
-            /// luego aleatoriamente se intenta cubrir ese porcentaje (nada asegura que se llegue al maximo, solo lo intenta)
-            Random rnd = new Random();
-            int cantAgua = (int)(ContarLocalizacionesLibres() * _porcentajeAgua);
-            IVertice<Localizacion> vertice;
-            for (int i = 0; i < cantAgua; i++)
-            {
-                mapamundi.TryGetValue($"x{rnd.Next(MaxCoordX)}y{rnd.Next(MaxCoordY)}", out vertice);
-                if ((int)vertice.GetDato().GetTipoZona() <= 3)
-                {
-                    vertice.GetDato().SetTipoZona(EnumTiposDeZona.Lago);
-                }
-            }
-        }
-        private void GenerarVertederos()
-        {
-            /// Genera vertederos a partir de las ubicaciones sin debuff multiplicado por el porcentaje maximo de aparicion
-            /// luego aleatoriamente se intenta cubrir ese porcentaje (nada asegura que se llegue al maximo, solo lo intenta)
-            /// también se selecciona con determinada probabilidad un tipo de vertedero o el otro
-            Random rnd = new Random();
-            int cantVertederos = (int)(ContarLocalizacionesLibres() * _porcentajeVertederos);
-            int porcentajeVertederos = PorcentajeVertederoNormal + PorcentajeVertederoElectronico;
-            IVertice<Localizacion> vertice;
-            for (int i = 0; i < cantVertederos ; i++)
-            {
-                mapamundi.TryGetValue($"x{rnd.Next(MaxCoordX)}y{rnd.Next(MaxCoordY)}", out vertice);
-                if ((int)vertice.GetDato().GetTipoZona() <= 2)
-                {
-                    int n = rnd.Next(porcentajeVertederos);
-                    if (n < PorcentajeVertederoNormal) vertice.GetDato().SetTipoZona(EnumTiposDeZona.Vertedero);
-                    else vertice.GetDato().SetTipoZona(EnumTiposDeZona.VertederoElectronico);
-                }
-            }
-        }
-        private int ContarLocalizacionesLibres()
-        {
-            /// Cuenta las localizaciones sin debuff que siempre están al comienzo del enum
-            /// Tarea: hacer q ese 2 no este hardcodeado
-            int contador = 0;
-            foreach(KeyValuePair<string,IVertice<Localizacion>> vl in mapamundi)
-            {
-                if ((int)vl.Value.GetDato().GetTipoZona() <= 2) contador++;
-            }
-            return contador;
-        }
-        private void GenerarPuntosDeReciclaje()
-        {
-            /// Se genera un numero aleatorio de sitios de reciclaje basado en el numero maximo posible
-            Random rnd = new Random();
-            int cantReciclajes = rnd.Next(MaxSitiosReciclaje) + 1;
-            IVertice<Localizacion> vertice;
-            for (int i = 0; i < cantReciclajes; i++)
-            {
-                mapamundi.TryGetValue($"x{rnd.Next(MaxCoordX)}y{rnd.Next(MaxCoordY)}", out vertice);
-                vertice.GetDato().SetTipoZona(EnumTiposDeZona.SitioReciclaje);
-            }
-        }
+        
         private Fabrica fabrica;
         public static Mundo GetInstance() 
         {
