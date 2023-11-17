@@ -9,6 +9,7 @@ namespace SkyNet.Entidades.Grafo
     public interface IVertice <T>
     {
         public T GetDato();
+        public void SetDato(T dato);
         public int GetPosicion();
         public void SetPosicion(int pos);
         public void Conectar(IVertice<T> vertice);

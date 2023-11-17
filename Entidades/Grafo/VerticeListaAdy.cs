@@ -16,6 +16,10 @@ namespace SkyNet.Entidades.Grafo
             this.adyacentes = new List<IArista<T>>();
             this.dato = dato;
         }
+        public void SetDato(T dato)
+        {
+            this.dato = dato;
+        }
         public void Conectar(IVertice<T> vertice)
         {
             IArista<T> arista = ObtenerArista(vertice);
