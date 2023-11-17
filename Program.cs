@@ -101,6 +101,10 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Crear Cuartel",
         "Cuartel"
     }},
+    { "Cambiar Cuartel" , new string[] {
+        "Crear Cuartel",
+        "Cuartel"
+    }},
     { "Cuartel" , new string[] {
         "Cargar Mapa de Sector",
         "Agregar Operador a Reserva",
@@ -117,13 +121,14 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Transferir Bateria entre Operadores",
         "Transferir Carga entre Operadores",
         "Guardar Simulacion",
+        "Cambiar Cuartel",
         "Sky .Net Menu Simulaciones"
     }},
 };
 List<string> titulos = opciones.Keys.ToList();
 Menu menu = new MenuConcreto(null,null,'-');
 
-Aplicacion app = new Aplicacion(menu,invocador,titulos,opciones);
+Aplicacion app = new Aplicacion(menu,invocador,titulos,opciones,"Cerrar Programa");
 /// Fin inicializacion
 
 app.MainLoop();
