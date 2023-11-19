@@ -13,7 +13,8 @@ namespace SkyNet.Entidades.Operadores
         {
             cargaMax = 5;
             velocidadOptima = 50;
-            bateria.InicializarBateria(4000);
+            bateria.BateriaMax = 4000;
+            bateria.BateriaActual = 4000;
         }
     }
 }

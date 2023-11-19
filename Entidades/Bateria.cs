@@ -16,6 +16,18 @@ namespace SkyNet.Entidades
 
         }
 
+        public double BateriaMax
+        {
+            set { bateriaMax = value; }
+            get { return bateriaActual; }
+        }
+
+        public double BateriaActual
+        {
+            set { bateriaActual = value; }
+            get { return bateriaActual; }
+        }
+
         public double ConsultarBateria()
         {
             return bateriaActual;
@@ -50,12 +62,6 @@ namespace SkyNet.Entidades
             {
                 bateriaActual -= cantBateria;
             }
-        }
-
-        public void InicializarBateria(double cantBateria)
-        {
-            bateriaMax = cantBateria;
-            bateriaActual = cantBateria;
         }
     }
 }
