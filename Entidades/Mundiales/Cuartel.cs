@@ -12,12 +12,7 @@ namespace SkyNet.Entidades.Mundiales
     {
         private string id;
         private Localizacion ubicacion;
-       // Primer intento, paciencia por favor hahahaha 
-       // La primera premisa es Listar el Estado de todos los operadores
-       // Cree el Enum de los estados, pero debería ir dentro del operador
-       // o colocamos por default el estado inicial inactivo
-       // private Dictionary<string, Operador> ListaDeOperadores = new Dictionary<string, Operador>();
-        
+        private Dictionary<string, Operador> operadores = new Dictionary<string, Operador>();
 
 
         public string Identificacion()
@@ -30,15 +25,30 @@ namespace SkyNet.Entidades.Mundiales
             return ubicacion;
         }
 
-       /* 
-        public ListarOperadores(Dictionary<string, Operador> ListaDeOperadores)
-        {
-            foreach (KeyValuePair<string, Operador> operador in ListaDeOperadores)
-            { 
-            Console.WriteLine(ListaDeOperadores)
-            }
-        }*/
+        // Listado de Operadores por localización 
 
+        public List<Operador> ListarOperadoresPorUbicacion(Localizacion ubicacion)
+        {
+            List<Operador> operadoresEnUbicacion = new List<Operador>();
+
+            foreach (Operador operador in operadores.Values)
+            {
+                if (operador.getUbicacion().Equals(ubicacion))
+                {
+                    operadoresEnUbicacion.Add(operador);
+                }
+            }
+            return operadoresEnUbicacion;
+        }
+
+        // Hacer un Total Recall (llamado y retorno)
+        public void TotalRecall()
+        {
+            foreach (Operador operador in operadores.Values)
+            {
+                operador.VolverAlCuartel();
+            }
+        }
 
 
     }
