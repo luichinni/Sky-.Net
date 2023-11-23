@@ -99,7 +99,7 @@ namespace SkyNet.CommandPattern
         }
         public void AgregarMenu(string titulo, string[] opciones) 
         {
-            if (opciones != null && titulo != null) 
+            if (opciones != null && titulo != null && !_titulos.Contains(titulo)) 
             { 
                 _titulos.Add(titulo);
                 _opciones.Add(titulo, opciones);
