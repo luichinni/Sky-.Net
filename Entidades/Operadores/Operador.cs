@@ -19,12 +19,23 @@ namespace SkyNet.Entidades.Operadores
 
         protected Localizacion ubicacion;
 
+        protected Dictionary<string, bool> daños;
+
         public Operador(string id, Bateria bateria, Cuartel cuartel)
         {
             this.id = id;
             this.bateria = bateria;
             this.cuartel = cuartel;
             ubicacion = cuartel.GetUbicacion();
+            daños = new Dictionary<string, bool>
+            {
+                { "MotorComprometido",false },
+                { "ServoAtascado",false },
+                { "BateriaPerforada",false },
+                { "PuertoBateriaDesconectado",false },
+                { "PinturaRayada",false }
+
+            };
         }
 
         public void Mover(Localizacion nuevaUbicacion)
@@ -114,7 +125,11 @@ namespace SkyNet.Entidades.Operadores
 
             double tiempo = distancia / velocidad;
 
-            double gastoDeBateria = tiempo * 1000;
+            double gastoDeBateria;
+
+            if (!daños["BateriaPerforada"]) gastoDeBateria = tiempo * 1000;
+
+            else gastoDeBateria = tiempo * 5000;
 
             return gastoDeBateria;
         }
@@ -179,6 +194,43 @@ namespace SkyNet.Entidades.Operadores
             }
 
             return id;
+        }
+
+        public bool ExisteDaño()
+        {
+            int daño;
+
+            Random randy = new Random();
+
+            daño = randy.Next(1, 100);
+
+            if (daño >= 1 & daño <= 5) return true;
+
+            else return false;
+
+        }
+
+        public void ComprometerMotor()
+        {
+            if (daños["MotorComprometido"] != true)
+            {
+                velocidadOptima /= 2;
+                daños["MotorComprometido"] = true;
+            }
+        }
+        public void Dañar()
+        {
+            foreach (KeyValuePair<string, bool> elem in daños)
+            {
+                if (ExisteDaño())
+                {
+                    if (elem.Key == "MotorComprometido")
+                    {
+                        ComprometerMotor();
+                    }
+                    else daños[elem.Key] = true;
+                }
+            }
         }
     }
 }
