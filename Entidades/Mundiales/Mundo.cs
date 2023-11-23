@@ -97,7 +97,7 @@ namespace SkyNet.Entidades.Mundiales
                         verticeActual = colaZonal.Dequeue(); // la sacamos de la cola
                         if(verticeActual != null) // si no es un separador de nivel
                         {
-                            verticeActual.GetDato().SetTipoZona((EnumTiposDeZona)PrioridadZonal[i]); // establecemos el tipo de zona correspondiente
+                            verticeActual.GetDato().TipoZona = (EnumTiposDeZona)PrioridadZonal[i]; // establecemos el tipo de zona correspondiente
                             foreach (IArista<Localizacion> arista in mundo.ListaDeAdyacentes(verticeActual))
                             { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
                               // lo encola para luego procesarlo y lo visita para bloquearlo

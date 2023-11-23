@@ -45,7 +45,7 @@ namespace SkyNet.Entidades
                 { /// si es el final recuperamos el camino
                     caminoRet = CalcularCamino(nodoActual);
                 }
-                else if (zonasProhibidas.Contains(nodoActual.GetDato().GetTipoZona()))
+                else if (zonasProhibidas.Contains(nodoActual.GetDato().TipoZona))
                 { /// si es un nodo prohibido lo ignoramos
                     nodosCerrados.Add(nodoActual);
                 }
@@ -77,6 +77,8 @@ namespace SkyNet.Entidades
         }
         private List<Localizacion> CalcularCamino(VerticeListaAdy<Localizacion> final)
         {
+            /// va desde el nodo final hasta el primero siguiendo la cadena generada en el algortimo A*,
+            /// y luego invierte la lista para hacer el caminito bien
             List<Localizacion> listaRet = new List<Localizacion>();
             listaRet.Add(final.GetDato());
             VerticeListaAdy<Localizacion> verticeActual = final;
