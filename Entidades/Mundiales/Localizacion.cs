@@ -10,7 +10,8 @@ namespace SkyNet.Entidades.Mundiales
     public class Localizacion
     {
         public string Pos { get; private set; }
-        private int coordX, coordY;
+        public int coordX { get; private set; } 
+        public int coordY { get; private set; }
         private string cuartelId = null;
         private HashSet<string> operadores;
         private EnumTiposDeZona tipoZona;
