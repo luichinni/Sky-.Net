@@ -29,7 +29,7 @@ namespace SkyNet.Entidades.Mundiales
         {
             GenerarMundo();
         }
-        public void ReanudarSimulacion()
+        public void ReanudarSimulacion(string path)
         {
             /// a implementar
             /// ExtensionZonal = deserealizar
