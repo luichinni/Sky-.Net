@@ -21,7 +21,13 @@ namespace SkyNet.Entidades.Mundiales
         static Mundo instancia;
 
         private IGrafo<Localizacion> mundo;
+        public IGrafo<Localizacion> GetGrafo() { return mundo; }
         private Dictionary<string, IVertice<Localizacion>> mapamundi; // vertices del mundo
+        public IVertice<Localizacion> GetVertice(int x, int y)
+        {
+            mapamundi.TryGetValue($"x{x}y{y}", out IVertice<Localizacion> VRet);
+            return VRet;
+        }
         private Mundo()
         {
         }
