@@ -1,4 +1,5 @@
-﻿using SkyNet.Entidades.Mundiales;
+﻿using SkyNet.CommandPattern.Comandos;
+using SkyNet.Entidades.Mundiales;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,18 @@ namespace SkyNet.Entidades.Operadores
 
         protected Dictionary<string, bool> daños;
 
+        protected GPS gps;
+
+        protected List<EnumTiposDeZona> zonasPeligrosas = new List<EnumTiposDeZona>();
+
         public Operador(string id, Bateria bateria, Cuartel cuartel)
         {
             this.id = id;
             this.bateria = bateria;
             this.cuartel = cuartel;
             ubicacion = cuartel.GetUbicacion();
+            gps = new GPS();
+            zonasPeligrosas = new List<EnumTiposDeZona>() { EnumTiposDeZona.VertederoElectronico, EnumTiposDeZona.Vertedero };
             daños = new Dictionary<string, bool>
             {
                 { "MotorComprometido",false },
@@ -34,36 +41,37 @@ namespace SkyNet.Entidades.Operadores
                 { "BateriaPerforada",false },
                 { "PuertoBateriaDesconectado",false },
                 { "PinturaRayada",false }
-
-            };
+            };     
         }
 
-        public void Mover(Localizacion nuevaUbicacion)
+        public void Mover (Localizacion nuevaUbicacion, bool rutaOptima)
         {
-            int distancia = ubicacion.CalcularDistancia(nuevaUbicacion);
+            List<EnumTiposDeZona> zonasPeligrosasAux = new List<EnumTiposDeZona>(zonasPeligrosas); //Copia para no modificar la original
 
-            if (CalcularGastoDeBateria(distancia) <= bateria.ConsultarBateria())
+            EnumTiposDeZona[] arrayZonasPeligrosas; 
+
+            if (rutaOptima)
             {
-                ubicacion = nuevaUbicacion;
+                zonasPeligrosasAux.Remove(EnumTiposDeZona.VertederoElectronico);
 
-                bateria.ConsumirBateria(CalcularGastoDeBateria(distancia));
+                zonasPeligrosasAux.Remove(EnumTiposDeZona.Vertedero);
             }
+          
 
-            else
-            {
-                Console.WriteLine("No alcanza la bateria para llegar a esa ubicación");
+            arrayZonasPeligrosas = zonasPeligrosasAux.ToArray();
 
-                //Qué hacer en caso de no alcanzar la bateria (quedarse? ir hasta donde llegue?)
-            }
+            List<Localizacion> camino = gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
+
         }
 
-        public void VolverAlCuartel()  // Método Prescindible, se puede usar directamente Mover(ubicacionCuartel)
+
+        /*public void VolverAlCuartel()  // Método Prescindible, se puede usar directamente Mover(ubicacionCuartel)
         {
             Localizacion nuevaUbicacion = cuartel.GetUbicacion();
 
             Mover(nuevaUbicacion);
 
-        }
+        }*/
 
         public void TransferirBateria(Operador robot, double cantBateria)
         {
