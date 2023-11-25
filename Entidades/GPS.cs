@@ -112,5 +112,10 @@ namespace SkyNet.Entidades
 
             return distancia;
         }
+
+        public Localizacion BuscarCercano(EnumTiposDeZona zona, Localizacion origen)
+        {
+            return null;
+        }
     }
 }

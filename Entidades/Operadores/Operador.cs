@@ -75,6 +75,21 @@ namespace SkyNet.Entidades.Operadores
 
         }
 
+        public void Reciclar()
+        {
+            Localizacion destino = gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
+
+            Mover(destino, true);
+
+            Cargar();
+
+            destino = gps.BuscarCercano(EnumTiposDeZona.SitioReciclaje, ubicacion);
+
+            Mover(destino, true);
+
+            Descargar();
+        }
+
 
         /*public void VolverAlCuartel()  // Método Prescindible, se puede usar directamente Mover(ubicacionCuartel)
         {
@@ -174,6 +189,11 @@ namespace SkyNet.Entidades.Operadores
         public void ConsumirEnergia(double cantBateria)
         {
             bateria.ConsumirBateria(cantBateria);
+        }
+
+        public void Cargar()
+        {
+            cargaActual = cargaMax;
         }
 
         public void Descargar()
