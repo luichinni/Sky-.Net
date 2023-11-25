@@ -44,23 +44,34 @@ namespace SkyNet.Entidades.Operadores
             };     
         }
 
-        public void Mover (Localizacion nuevaUbicacion, bool rutaOptima)
+        public void Mover (Localizacion nuevaUbicacion, bool rutaDirecta)
         {
             List<EnumTiposDeZona> zonasPeligrosasAux = new List<EnumTiposDeZona>(zonasPeligrosas); //Copia para no modificar la original
 
             EnumTiposDeZona[] arrayZonasPeligrosas; 
 
-            if (rutaOptima)
+            if (rutaDirecta)
             {
                 zonasPeligrosasAux.Remove(EnumTiposDeZona.VertederoElectronico);
 
                 zonasPeligrosasAux.Remove(EnumTiposDeZona.Vertedero);
             }
-          
-
+            
             arrayZonasPeligrosas = zonasPeligrosasAux.ToArray();
 
             List<Localizacion> camino = gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
+
+            for (int i = 1; i < camino.Count; i++)
+            {
+                int distancia = ubicacion.CalcularDistancia(camino[i]);
+
+                if (CalcularGastoDeBateria(distancia) <= bateria.ConsultarBateria())
+                {
+                    ubicacion = camino[i];
+
+                    bateria.ConsumirBateria(CalcularGastoDeBateria(distancia));
+                }
+            }
 
         }
 
