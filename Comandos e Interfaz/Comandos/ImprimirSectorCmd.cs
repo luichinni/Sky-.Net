@@ -25,7 +25,7 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 for (int j = coord[1]; j <= coord[3]; j++)
                 {
-                    color = ConsoleHelper.GetConsoleColor(m.GetLocalizacion(i, j).GetTipoZona().ToString());
+                    color = ConsoleHelper.GetConsoleColor(m.GetLocalizacion(i, j).TipoZona.ToString());
                     Console.BackgroundColor = color;
                     Console.ForegroundColor = color;
                     ConsoleHelper.WriteAt("@", (i - coord[0]) * 2 + 2, j - coord[1] + 2);

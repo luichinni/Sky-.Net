@@ -10,10 +10,11 @@ namespace SkyNet.Entidades.Mundiales
     public class Localizacion
     {
         public string Pos { get; private set; }
-        private int coordX, coordY;
+        public int coordX { get; private set; } 
+        public int coordY { get; private set; }
+        public EnumTiposDeZona TipoZona { get; set; }
         private string cuartelId = null;
         private HashSet<string> operadores;
-        private EnumTiposDeZona tipoZona;
 
         public Localizacion(int coordX, int coordY, EnumTiposDeZona tipoZona)
         {
@@ -21,15 +22,7 @@ namespace SkyNet.Entidades.Mundiales
             this.coordY = coordY;
             Pos = $"x{coordX}y{coordY}";
             operadores = new HashSet<string>();
-            this.tipoZona = tipoZona;
-        }
-        public EnumTiposDeZona GetTipoZona()
-        {
-            return tipoZona;
-        }
-        public void SetTipoZona(EnumTiposDeZona tipoZona)
-        {
-            this.tipoZona = tipoZona;
+            this.TipoZona = tipoZona;
         }
         public void Salir(string id)
         {
@@ -52,7 +45,7 @@ namespace SkyNet.Entidades.Mundiales
             if (!TieneCuartel())
             {
                 this.cuartelId = cuartel.Identificacion();
-                this.tipoZona = EnumTiposDeZona.Cuartel;
+                this.TipoZona = EnumTiposDeZona.Cuartel;
                 pudo = true;
             }
             return pudo;

@@ -15,6 +15,7 @@ namespace SkyNet.Entidades.Operadores
             velocidadOptima = 200;
             bateria.BateriaMax = 12250;
             bateria.BateriaActual = 12250;
+            zonasPeligrosas.Add(EnumTiposDeZona.Lago);
         }
     }
 }

@@ -11,6 +11,12 @@ namespace SkyNet.Entidades.Grafo
         private T dato;
         private int posicion;
         private List<IArista<T>> adyacentes;
+        public int gCost, hCost, fCost;
+        public VerticeListaAdy<T> anterior;
+        public void CalcularFCost()
+        {
+            fCost = gCost + hCost;
+        }
         public VerticeListaAdy(T dato)
         {
             this.adyacentes = new List<IArista<T>>();
