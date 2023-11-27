@@ -45,7 +45,6 @@ namespace SkyNet.CommandPattern
 
             while (!fin)
             {
-                Console.ResetColor();
                 _menu.Mostrar();
                 seleccion = _menu.GetSeleccion();
                 if (seleccion != _salida && seleccion != "Ayuda Comandos")

@@ -14,7 +14,8 @@ namespace SkyNet.CommandPattern
             string seleccion = (Opciones.Length + 1).ToString();
             while (!EsNumerico(seleccion) || int.Parse(seleccion) < 0 || int.Parse(seleccion) > Opciones.Length - 1)
             {
-                Console.WriteLine("Seleccione una opcion: ");
+                ConsoleHelper.EscribirCentrado("Seleccione una opcion: ");
+                Console.CursorLeft = Console.WindowWidth / 2 - 3;
                 seleccion = Console.ReadLine();
             }
             return Opciones[int.Parse(seleccion)];
@@ -22,10 +23,14 @@ namespace SkyNet.CommandPattern
 
         public override void Mostrar()
         {
-            Console.WriteLine(Titulo.PadLeft(Titulo.Length+6,Decorador).PadRight(Titulo.Length+12,Decorador));
+            //ConsoleHelper.EscribirCentrado("".PadLeft((Console.WindowWidth/2)-Titulo.Length,Decorador)+ Titulo + "".PadRight((Console.WindowWidth / 2) - Titulo.Length, Decorador));
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.Clear();
+            ConsoleHelper.WriteTitulo(Titulo, ConsoleColor.DarkGreen);
+            
             for(int i = 0; i < Opciones.Length; i++)
             {
-                Console.WriteLine(i+". "+Opciones[i]);
+                ConsoleHelper.EscribirCentrado(i+". "+Opciones[i]);
             }
         }
         private bool EsNumerico(string str)

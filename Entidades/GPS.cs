@@ -115,6 +115,7 @@ namespace SkyNet.Entidades
 
         public Localizacion BuscarCercano(EnumTiposDeZona zona, Localizacion origen)
         {
+
             return null;
         }
     }

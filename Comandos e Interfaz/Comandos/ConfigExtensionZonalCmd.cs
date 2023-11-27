@@ -26,7 +26,7 @@ namespace SkyNet.CommandPattern.Comandos
                 else
                 {
                     int valorViejo = m.ExtensionZonal[(int)Enum.Parse(typeof(EnumTiposDeZona), seleccion)];
-                    Console.WriteLine($"Valor actual: {valorViejo}, ingrese el nuevo valor deseado para {seleccion}");
+                    ConsoleHelper.EscribirCentrado($"Valor actual: {valorViejo}, ingrese el nuevo valor deseado para {seleccion}");
                     string valorNuevo = Console.ReadLine();
                     while (!EsNumerico(valorNuevo)) valorNuevo = Console.ReadLine();
                     m.ExtensionZonal[(int)Enum.Parse(typeof(EnumTiposDeZona), seleccion)] = int.Parse(valorNuevo);

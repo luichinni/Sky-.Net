@@ -1,4 +1,5 @@
-﻿using SkyNet.CommandPattern;
+﻿using SkyNet;
+using SkyNet.CommandPattern;
 using SkyNet.CommandPattern.Comandos;
 using SkyNet.Entidades.Mundiales;
 using SkyNet.Entidades.Operadores;
@@ -130,5 +131,7 @@ Menu menu = new MenuConcreto(null,null,'-');
 
 Aplicacion app = new Aplicacion(menu,invocador,titulos,opciones,"Cerrar Programa");
 /// Fin inicializacion
+
+ConsoleHelper.AdvertenciaTamaño();
 
 app.MainLoop();
