@@ -13,8 +13,7 @@ namespace SkyNet.Entidades.Mundiales
         private string id;
         private Localizacion ubicacion;
         private Dictionary<string, Operador> operadores = new Dictionary<string, Operador>();
-
-
+        private Dictionary<string, (Operador, EnumEstadoOperador)> operadores = new Dictionary<string, (Operador, EnumEstadoOperador)>();
         public string Identificacion()
         {
             return id;
@@ -50,6 +49,35 @@ namespace SkyNet.Entidades.Mundiales
             }
         }
 
+        // Enviar Operador a ubicación en especial
+
+        public void EnviarOperadorALocalizacion(Operador operador, Localizacion ubicacion)
+        {
+            operador.SetUbicacion(ubicacion);
+        }
+
+        // Volver al cuartel
+
+        public void IndicarRetornoOperador(Operador operador)
+        {
+            operador.VolverAlCuartel();
+        }
+
+        /*Cambiar estado del operador a StandBy 
+        Se debe agregar el estado en la creación del operador y en el constructor
+
+        public void CambiarEstadoOperadorStandby(Operador operador)
+        {
+           operadores[] = EnumEstadoOperador.StandBy;
+        }
+
+        Agregar o remover operadores de la reserva, se puede hacer con el estado
+         
+
+        public void AgregarOperadorReserva(Operador EstadoOperador nuevoEstado)
+        {
+            EstadoOperador = nuevoEstado;
+        }*/
 
     }
 }

@@ -6,6 +6,7 @@ namespace SkyNet.Entidades.Mundiales
     {
         Active,
         Inactive,
-        StandBy
+        StandBy,
+        Reserva
     }
 }
