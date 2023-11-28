@@ -1,5 +1,6 @@
 ﻿using SkyNet.Entidades.Fabricas;
 using SkyNet.Entidades.Grafo;
+using SkyNet.Entidades.Operadores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace SkyNet.Entidades.Mundiales
         {
             GenerarMundo();
         }
-        public void ReanudarSimulacion(Dictionary<string,Localizacion> mundoReanudado)
+        public void ReanudarSimulacion(Dictionary<string, Localizacion> mundoReanudado)
         {
             InicializarGrafo();
             ConectarUbicacionesEnElGrafo();
@@ -44,7 +45,7 @@ namespace SkyNet.Entidades.Mundiales
                 for (int j = 0; j < MaxCoordY; j++)
                 {
                     Localizacion loc;
-                    mundoReanudado.TryGetValue($"x{i}y{j}",out loc);
+                    mundoReanudado.TryGetValue($"x{i}y{j}", out loc);
                     Mapamundi.TryGetValue($"x{i}y{j}", out IVertice<Localizacion> ver);
                     ver.SetDato(loc);
                 }
@@ -92,7 +93,7 @@ namespace SkyNet.Entidades.Mundiales
                     while (colaZonal.Count > 0 && expansion > 0) // mientras haya localizaciones por iniciar
                     {
                         verticeActual = colaZonal.Dequeue(); // la sacamos de la cola
-                        if(verticeActual != null) // si no es un separador de nivel
+                        if (verticeActual != null) // si no es un separador de nivel
                         {
                             verticeActual.GetDato().TipoZona = (EnumTiposDeZona)PrioridadZonal[i]; // establecemos el tipo de zona correspondiente
                             foreach (IArista<Localizacion> arista in GrafoMundo.ListaDeAdyacentes(verticeActual))
@@ -103,7 +104,7 @@ namespace SkyNet.Entidades.Mundiales
                                     colaZonal.Enqueue(arista.GetVerticeDestino());
                                     visitados.Add(arista.GetVerticeDestino());
                                 }
-                                    
+
                             }
                         }
                         else
@@ -112,13 +113,13 @@ namespace SkyNet.Entidades.Mundiales
                             colaZonal.Enqueue(null);
                         }
                     }
-                    
+
                 }
-                
+
 
             }
         }
-        private Queue<IVertice<Localizacion>> GetExtensionNucleoZona(int extension,IVertice<Localizacion> vertice, HashSet<IVertice<Localizacion>> visitados)
+        private Queue<IVertice<Localizacion>> GetExtensionNucleoZona(int extension, IVertice<Localizacion> vertice, HashSet<IVertice<Localizacion>> visitados)
         {
             Queue<IVertice<Localizacion>> cola;
             /// Se genera el nucleo lineal del tipo de zona a partir de un algoritmo DFS
@@ -132,12 +133,12 @@ namespace SkyNet.Entidades.Mundiales
                 /// que todos los adyacentes hayan sido visitados, se deja de buscar y se retorna
                 /// directamente lo que se tiene hasta el momento
                 List<IArista<Localizacion>> adyacentes = GrafoMundo.ListaDeAdyacentes(vertice);
-                int indice = rnd.Next(adyacentes.Count-1);// le restrinjo un lado para evitar cuadrados?
+                int indice = rnd.Next(adyacentes.Count - 1);// le restrinjo un lado para evitar cuadrados?
                 IVertice<Localizacion> siguiente = adyacentes[indice].GetVerticeDestino();
                 int intentos = 1;
-                while (visitados.Contains(siguiente) && intentos < adyacentes.Count) 
+                while (visitados.Contains(siguiente) && intentos < adyacentes.Count)
                 {
-                    if (indice < adyacentes.Count-1) indice++;
+                    if (indice < adyacentes.Count - 1) indice++;
                     else indice = 0;
                     adyacentes[indice].GetVerticeDestino();
                     intentos++;
@@ -208,19 +209,23 @@ namespace SkyNet.Entidades.Mundiales
                 }
             }
         }
-        
-        private Fabrica fabrica;
-        public static Mundo GetInstance() 
+
+        private GestionadorDeFabrica fabrica;
+        public static Mundo GetInstance()
         {
-            if(instancia == null)
+            if (instancia == null)
             {
                 instancia = new Mundo();
             }
             return instancia;
         }
-        public Fabrica ContactarFabrica()
+        public Fabrica ContactarFabrica(EnumOperadores tipo)
         {
-            return fabrica;
+            return fabrica.GetFabrica(tipo);
+        }
+        public void SetGestionFabrica(GestionadorDeFabrica gf)
+        {
+            fabrica = gf;
         }
         public Cuartel GetCuartel(int x, int y) 
         {
