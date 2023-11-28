@@ -13,30 +13,30 @@ namespace SkyNet.Entidades.Mundiales
         public int coordX { get; private set; } 
         public int coordY { get; private set; }
         public EnumTiposDeZona TipoZona { get; set; }
-        private string cuartelId = null;
-        private HashSet<string> operadores;
+        public Cuartel Cuartel { get; set; }
+        public HashSet<string> OperadoresId { get; set; }
 
         public Localizacion(int coordX, int coordY, EnumTiposDeZona tipoZona)
         {
             this.coordX = coordX;
             this.coordY = coordY;
             Pos = $"x{coordX}y{coordY}";
-            operadores = new HashSet<string>();
+            OperadoresId = new HashSet<string>();
             this.TipoZona = tipoZona;
         }
         public void Salir(string id)
         {
-            if (operadores.Contains(id)) // si existe el operador
+            if (OperadoresId.Contains(id)) // si existe el operador
             {
-                operadores.Remove(id); // lo saca de la ubicacion
+                OperadoresId.Remove(id); // lo saca de la ubicacion
             }
         }
         public void Entrar(Operador o)
         {
             // si no es nulo y no está en la ubicacion
-            if (o != null && !operadores.Contains(o.Identificacion()))
+            if (o != null && !OperadoresId.Contains(o.Identificacion()))
             {
-                operadores.Add(o.Identificacion()); // lo agrega a la ubicacion
+                OperadoresId.Add(o.Identificacion()); // lo agrega a la ubicacion
             }
         }
         public bool IntentarEstablecerCuartel(Cuartel cuartel)
@@ -44,7 +44,7 @@ namespace SkyNet.Entidades.Mundiales
             bool pudo = false;
             if (!TieneCuartel())
             {
-                this.cuartelId = cuartel.Identificacion();
+                this.Cuartel = cuartel;
                 this.TipoZona = EnumTiposDeZona.Cuartel;
                 pudo = true;
             }
@@ -52,30 +52,19 @@ namespace SkyNet.Entidades.Mundiales
         }
         public Cuartel GetCuartel()
         {
-            return (TieneCuartel()) ? Mundo.GetInstance().GetCuartel(coordX,coordY) : null;
+            return Cuartel;
         }
         public bool TieneCuartel()
         {
-            return cuartelId != null;
+            return Cuartel != null;
         }
         public HashSet<string> GetOperadores()
         {
-            return operadores;
+            return OperadoresId;
         }
         public bool HayOperadores()
         {
-            return operadores.Count > 0;
-        }
-
-        public int CalcularDistancia(Localizacion otraLocalizacion)
-        { // esta quizas va a una clase gps
-            int distancia = 0;
-
-            distancia += Math.Abs((coordX - otraLocalizacion.coordX));
-
-            distancia += Math.Abs(coordY - otraLocalizacion.coordY);
-
-            return distancia;
+            return OperadoresId.Count > 0;
         }
     }
 }

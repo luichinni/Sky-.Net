@@ -21,13 +21,11 @@ namespace SkyNet.Entidades.Mundiales
         public int CantCuarteles { get; set; } = 0;
         static Mundo instancia;
 
-        private IGrafo<Localizacion> mundo;
-        public IGrafo<Localizacion> GetGrafo() { return mundo; }
-        private Dictionary<string, IVertice<Localizacion>> mapamundi; // vertices del mundo
-        public Dictionary<string,IVertice<Localizacion>> GetDiccionario() { return mapamundi; }
+        public IGrafo<Localizacion> GrafoMundo { get; set; }
+        public Dictionary<string, IVertice<Localizacion>> Mapamundi { get; set; } // vertices del mundo
         public IVertice<Localizacion> GetVertice(int x, int y)
         {
-            mapamundi.TryGetValue($"x{x}y{y}", out IVertice<Localizacion> VRet);
+            Mapamundi.TryGetValue($"x{x}y{y}", out IVertice<Localizacion> VRet);
             return VRet;
         }
         private Mundo()
@@ -37,23 +35,20 @@ namespace SkyNet.Entidades.Mundiales
         {
             GenerarMundo();
         }
-        public void ReanudarSimulacion(string path)
+        public void ReanudarSimulacion(Dictionary<string,Localizacion> mundoReanudado)
         {
-            /// a implementar
-            /// ExtensionZonal = deserealizar
-            /// ExpansionZonal = deserealizar
-            /// MaximaAparicion = deserealizar
-            /// PrioridadZonal = deserealizar
-            /// MaxCoordX = deserealizar
-            /// MaxCoordY = deserealizar
-            /// InicializarGrafo
-            /// ConectarUbicaciones
-            /// diccionarioAux = deserealizar
-            /// for 0 .. MaxX
-            ///     for 0 .. MaxY
-            ///         mapamundi.TryGetValue($"x{MaxX}y{MaxY}",out vertice)
-            ///         diccionarioAux.TryGetValue($"x{MaxX}y{MaxY}",out verticeAux)
-            ///         vertice.SetDato(verticeAux.GetDato())
+            InicializarGrafo();
+            ConectarUbicacionesEnElGrafo();
+            for (int i = 0; i < MaxCoordX; i++)
+            {
+                for (int j = 0; j < MaxCoordY; j++)
+                {
+                    Localizacion loc;
+                    mundoReanudado.TryGetValue($"x{i}y{j}",out loc);
+                    Mapamundi.TryGetValue($"x{i}y{j}", out IVertice<Localizacion> ver);
+                    ver.SetDato(loc);
+                }
+            }
         }
         private void GenerarMundo()
         {
@@ -63,16 +58,16 @@ namespace SkyNet.Entidades.Mundiales
         }
         private void InicializarGrafo()
         {
-            mapamundi = new Dictionary<string, IVertice<Localizacion>>();
-            mundo = new GrafoImplListAdy<Localizacion>();
+            Mapamundi = new Dictionary<string, IVertice<Localizacion>>();
+            GrafoMundo = new GrafoImplListAdy<Localizacion>();
             for (int i = 0; i < MaxCoordX; i++)
             {
                 for (int j = 0; j < MaxCoordY; j++)
                 {
                     // la zona con prioridad 0 es la base del mundo
                     IVertice<Localizacion> v = new VerticeListaAdy<Localizacion>(new Localizacion(i, j, (EnumTiposDeZona)PrioridadZonal[0]));
-                    mundo.AgregarVertice(v);
-                    mapamundi.Add($"x{i}y{j}", v);
+                    GrafoMundo.AgregarVertice(v);
+                    Mapamundi.Add($"x{i}y{j}", v);
                 }
             }
         }
@@ -80,7 +75,7 @@ namespace SkyNet.Entidades.Mundiales
         {
             Queue<IVertice<Localizacion>> colaZonal;
             Random rnd = new Random();
-            List<IVertice<Localizacion>> disponibles = mapamundi.Values.ToList();
+            List<IVertice<Localizacion>> disponibles = Mapamundi.Values.ToList();
             HashSet<IVertice<Localizacion>> visitados = new HashSet<IVertice<Localizacion>>();
             for (int i = 0; i < ExpansionZonal.Length; i++) // Para cada zona
             {
@@ -100,7 +95,7 @@ namespace SkyNet.Entidades.Mundiales
                         if(verticeActual != null) // si no es un separador de nivel
                         {
                             verticeActual.GetDato().TipoZona = (EnumTiposDeZona)PrioridadZonal[i]; // establecemos el tipo de zona correspondiente
-                            foreach (IArista<Localizacion> arista in mundo.ListaDeAdyacentes(verticeActual))
+                            foreach (IArista<Localizacion> arista in GrafoMundo.ListaDeAdyacentes(verticeActual))
                             { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
                               // lo encola para luego procesarlo y lo visita para bloquearlo
                                 if (!visitados.Contains(arista.GetVerticeDestino()) && expansion > 1)
@@ -136,7 +131,7 @@ namespace SkyNet.Entidades.Mundiales
                 /// Buscamos siguiente vertice, si ya fue visitado se busca otro, en caso de 
                 /// que todos los adyacentes hayan sido visitados, se deja de buscar y se retorna
                 /// directamente lo que se tiene hasta el momento
-                List<IArista<Localizacion>> adyacentes = mundo.ListaDeAdyacentes(vertice);
+                List<IArista<Localizacion>> adyacentes = GrafoMundo.ListaDeAdyacentes(vertice);
                 int indice = rnd.Next(adyacentes.Count-1);// le restrinjo un lado para evitar cuadrados?
                 IVertice<Localizacion> siguiente = adyacentes[indice].GetVerticeDestino();
                 int intentos = 1;
@@ -196,8 +191,8 @@ namespace SkyNet.Entidades.Mundiales
             {
                 for (int i = 0; i < MaxCoordX; i++)
                 {
-                    mapamundi.TryGetValue($"x{i}y{j}", out origen);
-                    mapamundi.TryGetValue($"x{i}y{j + 1}", out destino);
+                    Mapamundi.TryGetValue($"x{i}y{j}", out origen);
+                    Mapamundi.TryGetValue($"x{i}y{j + 1}", out destino);
                     origen.Conectar(destino);
                     destino.Conectar(origen);
                 }
@@ -206,8 +201,8 @@ namespace SkyNet.Entidades.Mundiales
             {
                 for (int j = 0; j < MaxCoordY; j++)
                 {
-                    mapamundi.TryGetValue($"x{i}y{j}", out origen);
-                    mapamundi.TryGetValue($"x{i + 1}y{j}", out destino);
+                    Mapamundi.TryGetValue($"x{i}y{j}", out origen);
+                    Mapamundi.TryGetValue($"x{i + 1}y{j}", out destino);
                     origen.Conectar(destino);
                     destino.Conectar(origen);
                 }
@@ -230,13 +225,13 @@ namespace SkyNet.Entidades.Mundiales
         public Cuartel GetCuartel(int x, int y) 
         {
             IVertice<Localizacion> i; 
-            mapamundi.TryGetValue($"x{x}y{y}", out i);
+            Mapamundi.TryGetValue($"x{x}y{y}", out i);
             return i.GetDato().GetCuartel();
         }
         public Localizacion GetLocalizacion(int x,int y)
         {
             IVertice<Localizacion> localizacionRet;
-            mapamundi.TryGetValue($"x{x}y{y}", out localizacionRet);
+            Mapamundi.TryGetValue($"x{x}y{y}", out localizacionRet);
             return localizacionRet.GetDato();
         }
     }
