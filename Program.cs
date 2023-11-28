@@ -112,7 +112,6 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Quitar Operador de Reserva",
         "Descargar Operador en Cuartel",
         "Recargar Bateria de Operador",
-        "Cargar Mapa de Sector",
         "Listar Estado de Operadores",
         "Listar Estado de Operadores En Ubicacion",
         "Mover Operador a Nueva Ubicacion",
