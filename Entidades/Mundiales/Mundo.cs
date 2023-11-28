@@ -21,7 +21,7 @@ namespace SkyNet.Entidades.Mundiales
         public int MaxCoordY { get; set; } = 100; // maximo tamaño en y
         public int MaxCuartels { get; set; } = 3;
         public int CantCuarteles { get; set; } = 0;
-        private HashSet<Cuartel> _cuarteles = new HashSet<Cuartel>();
+        private Dictionary<string,Cuartel> _cuarteles = new Dictionary<string, Cuartel>();
         /// Fin configuraciones
 
         /// Mundo
@@ -32,9 +32,9 @@ namespace SkyNet.Entidades.Mundiales
         private GestionadorDeFabrica fabrica;
         public void RegistrarCuartel(Cuartel c)
         {
-            _cuarteles.Add(c);
+            _cuarteles.Add(c.Identificacion(),c);
         }
-        public HashSet<Cuartel> GetCuarteles()
+        public Dictionary<string, Cuartel> GetCuarteles()
         {
             return _cuarteles;
         }
