@@ -1,6 +1,7 @@
 ﻿using SkyNet;
 using SkyNet.CommandPattern;
 using SkyNet.CommandPattern.Comandos;
+using SkyNet.Entidades.Fabricas;
 using SkyNet.Entidades.Mundiales;
 using SkyNet.Entidades.Operadores;
 using System.Reflection.Emit;
@@ -12,6 +13,13 @@ string seleccion;
 Mundo mundito = Mundo.GetInstance();
 Cuartel cuartelito = null;
 
+GestionadorDeFabrica gf = new GestionadorDeFabrica();
+gf.AgregarFabrica(new FabricaK9());
+gf.AgregarFabrica(new FabricaM8());
+gf.AgregarFabrica(new FabricaUAV());
+mundito.SetGestionFabrica(gf);
+
+/// Inicializacion de los parametros POR DEFECTO del mundo, más adelante pueden ser configurados o incluso recargados
 mundito.ExpansionZonal[(int)EnumTiposDeZona.Lago] = 10;
 mundito.ExpansionZonal[(int)EnumTiposDeZona.Planicie] = 0; // no hace falta porq el mundo inicia todo planicie
 mundito.ExpansionZonal[(int)EnumTiposDeZona.Bosque] = 12;
@@ -76,6 +84,7 @@ invocador.AgregarComando(new RemoverReservaCmd("Quitar Operador de Reserva", "Sa
 invocador.AgregarComando(new TotalRecallCmd("Total Recall","Se notifica a todos los operadores del cuartel que regresen"));
 invocador.AgregarComando(new TransferirBateriaCmd("Transferir Bateria entre Operadores","Se transfiere bateria del operador A al B si se encuentran en la misma ubicacion"));
 invocador.AgregarComando(new TransferirCargaFisicaCmd("Transferir Carga entre Operadores","Se transfiere carga fisica del operador A al B si se encuentran en la misma ubicacion"));
+invocador.AgregarComando(new FabricarOperadorCmd("Fabricar Operador", "Aca se fabrican operadores jijijija"));
 
 /// Menu
 Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
@@ -108,6 +117,7 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
     }},
     { "Cuartel" , new string[] {
         "Cargar Mapa de Sector",
+        "Fabricar Operador",
         "Agregar Operador a Reserva",
         "Quitar Operador de Reserva",
         "Descargar Operador en Cuartel",
