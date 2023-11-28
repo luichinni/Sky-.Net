@@ -17,10 +17,15 @@ namespace SkyNet.CommandPattern.Comandos
         {
             if (m.CantCuarteles < 3)
             {
-                ConsoleHelper.EscribirCentrado("Escriba la coordenada X,Y donde quiere establecer un cuartel");
                 int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
                 Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
-                if(l.IntentarEstablecerCuartel(new Cuartel())) m.CantCuarteles++;
+                Cuartel nuevoCuartel = new Cuartel();
+                l.Cuartel = nuevoCuartel;
+                if (l.Cuartel == nuevoCuartel)
+                {
+                    m.CantCuarteles++;
+                    m.RegistrarCuartel(nuevoCuartel);
+                }
             }
             else
             {
