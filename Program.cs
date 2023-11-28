@@ -56,10 +56,10 @@ mundito.PrioridadZonal[8] = (int)EnumTiposDeZona.Lago;
 Invocador invocador = new Invocador();
 invocador.AgregarComando(new AgregarReservaCmd("Agregar Operador a Reserva", "Se lleva un operador a cuartel y se pone en reserva"));
 invocador.AgregarComando(new CargarSimulacionCmd("Cargar Simulacion", "Carga una simuacion antigua desde memoria"));
-invocador.AgregarComando(new ConfigExtensionZonalCmd("Configurar Extensiones Zonales", "Apartado para configurar las extensiones de cada zona"));
-invocador.AgregarComando(new ConfigExpansionZonalCmd("Configurar Expansiones Zonales", "Apartado para configurar las extensiones de cada zona"));
-invocador.AgregarComando(new ConfigPrioridadZonalCmd("Configurar Prioridades Zonales", "Apartado para configurar las prioridades de cada zona, es decir, en que orden se generan"));
-invocador.AgregarComando(new ConfigMaxAparicionZonalCmd("Configurar Cantidad Maxima de Aparcion Zonal", "Apartado para configurar la cantidad de iteraciones de cada zona"));
+invocador.AgregarComando(new ConfigExtensionZonalCmd("Configurar Extension Zonal", "Apartado para configurar las extensiones de cada zona"));
+invocador.AgregarComando(new ConfigExpansionZonalCmd("Configurar Expansion Zonal", "Apartado para configurar las extensiones de cada zona"));
+invocador.AgregarComando(new ConfigPrioridadZonalCmd("Configurar Prioridad Zonal", "Apartado para configurar las prioridades de cada zona, es decir, en que orden se generan"));
+invocador.AgregarComando(new ConfigMaxAparicionZonalCmd("Configurar Aparcion Zonal", "Apartado para configurar la cantidad de iteraciones de cada zona"));
 invocador.AgregarComando(new CrearCuartelCmd("Crear Cuartel", "Se crea un nuevo cuartel en el mundo sin superar el maximo configurado"));
 invocador.AgregarComando(new CrearSimulacionCmd("Crear Simulacion", "Crea una nueva simulacion a partir de los parametros configurados"));
 invocador.AgregarComando(new DescargarEnCuartelCmd("Descargar Operador en Cuartel", "Se descarga la carga fisica del operador en su cuartel"));
@@ -85,10 +85,10 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Configurar Nueva Simulacion"
     }},
     { "Configurar Nueva Simulacion", new string[] {
-        "Configurar Extensiones Zonales",
-        "Configurar Expansiones Zonales",
-        "Configurar Cantidad Maxima de Aparcion Zonal",
-        "Configurar Prioridades Zonales",
+        "Configurar Extension Zonal",
+        "Configurar Expansion Zonal",
+        "Configurar Aparcion Zonal",
+        "Configurar Prioridad Zonal",
         "Sky .Net Menu Simulaciones"
     }},
     { "Crear Simulacion", new string[] {
