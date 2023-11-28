@@ -13,13 +13,17 @@ namespace SkyNet.CommandPattern.Comandos
         private string cancelar = "Cancelar";
         public SeleccionCuartelCmd(string nombre, string descripcion) : base(nombre, descripcion)
         {
+            _menu = new MenuConcreto(ActualizarCuarteles(),nombre);
+        }
+        private string[] ActualizarCuarteles()
+        {
             List<string> opciones = Mundo.GetInstance().GetCuarteles().Keys.ToList();
             opciones.Add(cancelar);
-            _menu = new MenuConcreto(opciones.ToArray(),nombre);
+            return opciones.ToArray();
         }
-
         public override void Ejecutar(Mundo m, ref Cuartel c)
         {
+            _menu.Opciones = ActualizarCuarteles();
             _menu.Mostrar();
             string op = _menu.GetSeleccion();
             if (op != cancelar)
