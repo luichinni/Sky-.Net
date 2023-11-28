@@ -85,7 +85,7 @@ invocador.AgregarComando(new TotalRecallCmd("Total Recall","Se notifica a todos 
 invocador.AgregarComando(new TransferirBateriaCmd("Transferir Bateria entre Operadores","Se transfiere bateria del operador A al B si se encuentran en la misma ubicacion"));
 invocador.AgregarComando(new TransferirCargaFisicaCmd("Transferir Carga entre Operadores","Se transfiere carga fisica del operador A al B si se encuentran en la misma ubicacion"));
 invocador.AgregarComando(new FabricarOperadorCmd("Fabricar Operador", "Aca se fabrican operadores jijijija"));
-
+invocador.AgregarComando(new SeleccionCuartelCmd("Cuartel", "Permite cambiar el cuartel que se está manipulando"));
 /// Menu
 Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
     { "Sky .Net Menu Simulaciones", new string[] {
