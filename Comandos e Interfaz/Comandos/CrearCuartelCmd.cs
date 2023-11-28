@@ -19,13 +19,12 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
                 Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
-                Cuartel nuevoCuartel = new Cuartel();
+                Cuartel nuevoCuartel = new Cuartel(l);
                 l.Cuartel = nuevoCuartel;
                 if (l.Cuartel == nuevoCuartel)
                 {
                     m.CantCuarteles++;
                     m.RegistrarCuartel(nuevoCuartel);
-                    c = nuevoCuartel;
                 }
             }
             else
@@ -41,6 +40,7 @@ namespace SkyNet.CommandPattern.Comandos
             Console.Clear();
             ConsoleHelper.EscribirCentrado("Escriba la coordenada X,Y donde quiere establecer un cuartel");
             ConsoleHelper.EscribirCentrado($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX - 1},{Mundo.GetInstance().MaxCoordY - 1}");
+            Console.CursorLeft = Console.WindowWidth / 2 - 4;
             string coords = Console.ReadLine();
             string[] coordsSplit = coords.Replace(" ", "").Split(','); // quita blancos innecesarios y separa por comas
             // hay que ingresar 2 coordenadas
