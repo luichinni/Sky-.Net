@@ -22,7 +22,7 @@ namespace SkyNet.Entidades
             List<IVertice<Localizacion>> nodosAbiertos = new List<IVertice<Localizacion>>() { nodoInicial };
             List<IVertice<Localizacion>> nodosCerrados = new List<IVertice<Localizacion>>();
             Dictionary<int, VerticeListaAdy<Localizacion>> nodos = new Dictionary<int, VerticeListaAdy<Localizacion>>();
-            InicializarVisitados(mundo.GetDiccionario().Values.ToList());
+            InicializarVisitados(mundo.Mapamundi.Values.ToList());
             for (int x=0; x<mundo.MaxCoordX; x++)
             {
                 for (int y=0; y<mundo.MaxCoordY; y++)
@@ -54,7 +54,7 @@ namespace SkyNet.Entidades
                     nodosAbiertos.Remove(nodoActual);
                     nodosCerrados.Add(nodoActual);
 
-                    foreach (VerticeListaAdy<Localizacion> v in mundo.GetGrafo().ListaDeAdyacentes(nodoActual))
+                    foreach (VerticeListaAdy<Localizacion> v in mundo.GrafoMundo.ListaDeAdyacentes(nodoActual))
                     {
                         if (!nodosCerrados.Contains(v))
                         {
@@ -127,7 +127,7 @@ namespace SkyNet.Entidades
         {
             Localizacion zonaRet = null;
             Queue<IVertice<Localizacion>> cola = new Queue<IVertice<Localizacion>>();
-            List<IVertice<Localizacion>> disponibles = mundo.GetDiccionario().Values.ToList();
+            List<IVertice<Localizacion>> disponibles = mundo.Mapamundi.Values.ToList();
             HashSet<IVertice<Localizacion>> visitados = new HashSet<IVertice<Localizacion>>();
             IVertice<Localizacion> verticeActual = disponibles.Find(vert => vert.GetDato() == origen);
             disponibles.Remove(verticeActual);
@@ -138,7 +138,7 @@ namespace SkyNet.Entidades
                 if (verticeActual.GetDato().TipoZona == zona) zonaRet = verticeActual.GetDato();
                 else
                 {
-                    foreach (IArista<Localizacion> arista in mundo.GetGrafo().ListaDeAdyacentes(verticeActual))
+                    foreach (IArista<Localizacion> arista in mundo.GrafoMundo.ListaDeAdyacentes(verticeActual))
                     { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
                       // lo encola para luego procesarlo y lo visita para bloquearlo
                         if (!visitados.Contains(arista.GetVerticeDestino()))
