@@ -15,6 +15,7 @@ namespace SkyNet.Entidades.Fabricas
         public abstract Operador FabricarOperador(Cuartel c);
         public string GenerarId(EnumOperadores tipo,Cuartel c)
         {
+            Id++;
             return tipo.ToString()+"-"+Id+"-"+c.Identificacion(); // ej: K9-17-SDHA; M8-5-DFRT; UAV-69-UWGP
         }
     }
