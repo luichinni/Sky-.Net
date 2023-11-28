@@ -13,7 +13,16 @@ namespace SkyNet.Entidades.Mundiales
         public int coordX { get; private set; } 
         public int coordY { get; private set; }
         public EnumTiposDeZona TipoZona { get; set; }
-        public Cuartel Cuartel { get; set; }
+        private Cuartel cuartel = null;
+        public Cuartel Cuartel { 
+            get { return cuartel; } 
+            set {   if (cuartel == null)
+                    {
+                        cuartel = value;
+                        TipoZona = EnumTiposDeZona.Cuartel;
+                    }
+            } 
+        }
         public HashSet<string> OperadoresId { get; set; }
 
         public Localizacion(int coordX, int coordY, EnumTiposDeZona tipoZona)
@@ -48,18 +57,6 @@ namespace SkyNet.Entidades.Mundiales
             {
                 OperadoresId.Add(id); // lo agrega a la ubicacion
             }
-        }
-
-        public bool IntentarEstablecerCuartel(Cuartel cuartel)
-        {
-            bool pudo = false;
-            if (!TieneCuartel())
-            {
-                this.Cuartel = cuartel;
-                this.TipoZona = EnumTiposDeZona.Cuartel;
-                pudo = true;
-            }
-            return pudo;
         }
         public Cuartel GetCuartel()
         {
