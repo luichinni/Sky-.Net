@@ -9,13 +9,11 @@ namespace SkyNet.Entidades.Operadores
 {
     public class M8 : Operador
     {
-        public M8(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
+        public M8(string Id, Bateria Bateria, int CuartelCoordX, int CuartelCoordY ) : base(Id,Bateria,CuartelCoordX,CuartelCoordY)
         {
-            cargaMax = 250;
-            velocidadOptima = 200;
-            bateria.BateriaMax = 12250;
-            bateria.BateriaActual = 12250;
-            zonasPeligrosas.Add(EnumTiposDeZona.Lago);
+            CargaMax = 250;
+            VelocidadOptima = 200;
+            ZonasPeligrosas.Add(EnumTiposDeZona.Lago);
         }
     }
 }

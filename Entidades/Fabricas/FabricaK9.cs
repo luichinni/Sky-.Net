@@ -17,7 +17,7 @@ namespace SkyNet.Entidades.Fabricas
             bateria.BateriaMax = 6500;
             bateria.BateriaActual = 6500;
             string id = GenerarId(EnumOperadores.K9,c);
-            return new K9(id,bateria,c);
+            return new K9(id,bateria,c.GetUbicacion().coordX,c.GetUbicacion().coordY);
         }
     }
 }

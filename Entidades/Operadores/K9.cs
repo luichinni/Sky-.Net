@@ -9,13 +9,11 @@ namespace SkyNet.Entidades.Operadores
 {
     public class K9 : Operador
     {
-        public K9(string id, Bateria bateria, Cuartel cuartel) : base(id, bateria, cuartel)
+        public K9(string Id, Bateria Bateria, int CuartelCoordX, int CuartelCoordY) : base(Id, Bateria, CuartelCoordX, CuartelCoordY)
         {
-            cargaMax = 40;
-            velocidadOptima = 100;
-            bateria.BateriaMax = 6500;
-            bateria.BateriaActual = 6500;
-            zonasPeligrosas.Add(EnumTiposDeZona.Lago);
+            CargaMax = 40;
+            VelocidadOptima = 100;
+            ZonasPeligrosas.Add(EnumTiposDeZona.Lago);
         }
     }
 }

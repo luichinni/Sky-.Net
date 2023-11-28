@@ -13,7 +13,12 @@ namespace SkyNet.Entidades.Mundiales
         private string id;
         private Localizacion ubicacion;
         private Dictionary<string, Operador> operadores = new Dictionary<string, Operador>();
-        private Dictionary<string, (Operador, EnumEstadoOperador)> operadores = new Dictionary<string, (Operador, EnumEstadoOperador)>();
+        //private Dictionary<string, (Operador, EnumEstadoOperador)> operadores = new Dictionary<string, (Operador, EnumEstadoOperador)>();
+
+        public Cuartel(Localizacion ubicacionCuartel) 
+        {
+        
+        }
         public string Identificacion()
         {
             return id;
@@ -45,7 +50,7 @@ namespace SkyNet.Entidades.Mundiales
         {
             foreach (Operador operador in operadores.Values)
             {
-                operador.VolverAlCuartel();
+                //operador.VolverAlCuartel();
             }
         }
 
@@ -53,14 +58,14 @@ namespace SkyNet.Entidades.Mundiales
 
         public void EnviarOperadorALocalizacion(Operador operador, Localizacion ubicacion)
         {
-            operador.SetUbicacion(ubicacion);
+           // operador.SetUbicacion(ubicacion);
         }
 
         // Volver al cuartel
 
         public void IndicarRetornoOperador(Operador operador)
         {
-            operador.VolverAlCuartel();
+            //operador.VolverAlCuartel();
         }
 
         /*Cambiar estado del operador a StandBy 

@@ -53,7 +53,7 @@ namespace SkyNet.Entidades.Mundiales
         public void Entrar(string id)
         {
             // si no es nulo y no está en la ubicacion
-            if (id != null && !OperadoresId.Contains(id))
+            if (!OperadoresId.Contains(id))
             {
                 OperadoresId.Add(id); // lo agrega a la ubicacion
             }

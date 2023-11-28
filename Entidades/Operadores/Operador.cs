@@ -10,59 +10,45 @@ namespace SkyNet.Entidades.Operadores
 {
     public abstract class Operador
     {
-        protected string id;
-
-        protected Bateria bateria;
-
-        protected double cargaMax, cargaActual, velocidadOptima;
-
-        protected Cuartel cuartel;
-
-        protected Localizacion ubicacion;
-
-        protected Dictionary<string, bool> daños;
-
-        protected GPS gps;
-
-        protected List<EnumTiposDeZona> zonasPeligrosas = new List<EnumTiposDeZona>();
-
-        public string Id { get; set; }
-        public Bateria Bateria { get; set; }
+        public string Id { get; private set; }
+        public Bateria Bateria { get; private set; }
         public double CargaMax { get; set; }
         public double CargaActual { get; set; }
         public double VelocidadOptima { get; set; }
-        public Cuartel Cuartel { get; set; }
-        public Localizacion Ubicacion { get; set; }
+        public int CoordX { get; private set; }
+        public int CoordY { get; private set; }
+        public int CuartelCoordX { get; set; }
+        public int CuartelCoordY { get; set; }
         public Dictionary<string, bool> Daños { get; set; }
-        public GPS GPS { get; set; }
+        public GPS Gps { get; set; }
         public List<EnumTiposDeZona> ZonasPeligrosas { get; set; }
 
-        public int PosX { get { return ubicacion.coordX; } set { ubicacion.Salir(id); ubicacion = Mundo.GetInstance().GetLocalizacion(value, PosY); ubicacion.Entrar(id); } }
+        private Localizacion ubicacion;
+        private Localizacion ubicacionCuartel;
 
-        public int PosY { get { return ubicacion.coordY; } set { ubicacion.Salir(id); ubicacion = Mundo.GetInstance().GetLocalizacion(PosX, value); ubicacion.Entrar(id); } }
-
-        public Operador(string id, Bateria bateria, Cuartel cuartel)
+        public Operador(string Id, Bateria Bateria, int CuartelCoordX, int CuartelCoordY)
         {
-            this.id = id;
-            this.bateria = bateria;
-            this.cuartel = cuartel;
-            ubicacion = cuartel.GetUbicacion();
-            gps = new GPS();
-            zonasPeligrosas = new List<EnumTiposDeZona>() { EnumTiposDeZona.VertederoElectronico, EnumTiposDeZona.Vertedero };
-            daños = new Dictionary<string, bool>
+            this.Id = Id;
+            this.Bateria = Bateria;
+            Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX,CoordY);
+            ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
+            ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CuartelCoordX, CuartelCoordY);
+            Gps = new GPS();
+            ZonasPeligrosas = new List<EnumTiposDeZona>() { EnumTiposDeZona.VertederoElectronico, EnumTiposDeZona.Vertedero };
+            Daños = new Dictionary<string, bool>
             {
                 { "MotorComprometido",false },
                 { "ServoAtascado",false },
                 { "BateriaPerforada",false },
                 { "PuertoBateriaDesconectado",false },
                 { "PinturaRayada",false }
-            };     
-            
+            };
+
         }
 
         public void Mover (Localizacion nuevaUbicacion, bool rutaDirecta)
         {
-            List<EnumTiposDeZona> zonasPeligrosasAux = new List<EnumTiposDeZona>(zonasPeligrosas); //Copia para no modificar la original
+            List<EnumTiposDeZona> zonasPeligrosasAux = new List<EnumTiposDeZona>(ZonasPeligrosas); //Copia para no modificar la original
 
             EnumTiposDeZona[] arrayZonasPeligrosas; 
 
@@ -75,17 +61,17 @@ namespace SkyNet.Entidades.Operadores
             
             arrayZonasPeligrosas = zonasPeligrosasAux.ToArray();
 
-            List<Localizacion> camino = gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
+            List<Localizacion> camino = Gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
 
             for (int i = 1; i < camino.Count; i++)
             {
-                int distancia = gps.CalcularDistancia(ubicacion,camino[i]);
+                int distancia = Gps.CalcularDistancia(ubicacion,camino[i]);
 
-                if (CalcularGastoDeBateria(distancia) <= bateria.ConsultarBateria())
+                if (CalcularGastoDeBateria(distancia) <= Bateria.ConsultarBateria())
                 {
                     ubicacion = camino[i];
 
-                    bateria.ConsumirBateria(CalcularGastoDeBateria(distancia));
+                    Bateria.ConsumirBateria(CalcularGastoDeBateria(distancia));
                 }
             }
 
@@ -93,13 +79,15 @@ namespace SkyNet.Entidades.Operadores
 
         public void Reciclar()
         {
-            Localizacion destino = gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
+            Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
+
+            Localizacion destino = Gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
 
             Mover(destino, true);
 
             Cargar();
 
-            destino = gps.BuscarCercano(EnumTiposDeZona.SitioReciclaje, ubicacion);
+            destino = Gps.BuscarCercano(EnumTiposDeZona.SitioReciclaje, ubicacion);
 
             Mover(destino, true);
 
@@ -117,12 +105,14 @@ namespace SkyNet.Entidades.Operadores
 
         public void TransferirBateria(Operador robot, double cantBateria)
         {
+            Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
+
             if (ubicacion == robot.ubicacion)
             {
                 if (esPosibleTransferirBateria(robot, cantBateria))
                 {
-                    robot.bateria.CargarBateria(cantBateria);
-                    bateria.ConsumirBateria(cantBateria);
+                    robot.Bateria.CargarBateria(cantBateria);
+                    Bateria.ConsumirBateria(cantBateria);
                 }
 
                 else Console.WriteLine("No se puede realizar la transferencia, revisar límites de batería");
@@ -139,11 +129,11 @@ namespace SkyNet.Entidades.Operadores
         {
             if (ubicacion == robot.ubicacion)
             {
-                if (robot.cargaActual + cantidad <= robot.cargaMax && cargaActual - cantidad <= 0)
+                if (robot.CargaActual + cantidad <= robot.CargaMax && CargaActual - cantidad <= 0)
                 {
-                    robot.cargaActual += cantidad;
+                    robot.CargaActual += cantidad;
 
-                    cargaActual -= cantidad;
+                    CargaActual -= cantidad;
                 }
 
                 else Console.WriteLine("No se puede realizar la transferencia, revisar límites de carga");
@@ -158,16 +148,15 @@ namespace SkyNet.Entidades.Operadores
 
         public double ActualizarVelocidad()
         {
-            double porcentajeCarga = cargaActual / cargaMax;
+            double porcentajeCarga = CargaActual / CargaMax;
 
             double porcentajeAReducir = porcentajeCarga * 0.05 / 0.1;
 
-            double nuevaVelocidad = velocidadOptima - velocidadOptima * porcentajeAReducir;
+            double nuevaVelocidad = VelocidadOptima - VelocidadOptima * porcentajeAReducir;
 
             return nuevaVelocidad;
 
         }
-
 
         public double CalcularGastoDeBateria(int distancia)
         {
@@ -177,7 +166,7 @@ namespace SkyNet.Entidades.Operadores
 
             double gastoDeBateria;
 
-            if (!daños["BateriaPerforada"]) gastoDeBateria = tiempo * 1000;
+            if (!Daños["BateriaPerforada"]) gastoDeBateria = tiempo * 1000;
 
             else gastoDeBateria = tiempo * 5000;
 
@@ -190,7 +179,7 @@ namespace SkyNet.Entidades.Operadores
 
             double bateriaRecibe = robot.GetBateria();
 
-            double bateriaMaxRecibe = robot.bateria.GetBateriaMax();
+            double bateriaMaxRecibe = robot.Bateria.GetBateriaMax();
 
             if (bateriaEntrega - cantBateria >= 0 && bateriaRecibe + cantBateria <= bateriaMaxRecibe) return true;
 
@@ -199,22 +188,22 @@ namespace SkyNet.Entidades.Operadores
 
         public void RecargarBateria()
         {
-            bateria.LlenarBateria();
+            Bateria.LlenarBateria();
         }
 
         public void ConsumirEnergia(double cantBateria)
         {
-            bateria.ConsumirBateria(cantBateria);
+            Bateria.ConsumirBateria(cantBateria);
         }
 
         public void Cargar()
         {
-            cargaActual = cargaMax;
+            CargaActual = CargaMax;
         }
 
         public void Descargar()
         {
-            cargaActual = 0;
+            CargaActual = 0;
 
             // Donde se almacena lo que se descarga?
 
@@ -226,11 +215,11 @@ namespace SkyNet.Entidades.Operadores
 
         }
 
-        public string GetId() { return id; }
+        public string GetId() { return Id; }
 
         public double GetBateria()
         {
-            return bateria.ConsultarBateria();
+            return Bateria.ConsultarBateria();
         }
 
         public string Identificacion()
@@ -267,15 +256,15 @@ namespace SkyNet.Entidades.Operadores
 
         public void ComprometerMotor()
         {
-            if (daños["MotorComprometido"] != true)
+            if (Daños["MotorComprometido"] != true)
             {
-                velocidadOptima /= 2;
-                daños["MotorComprometido"] = true;
+                VelocidadOptima /= 2;
+                Daños["MotorComprometido"] = true;
             }
         }
         public void Dañar()
         {
-            foreach (KeyValuePair<string, bool> elem in daños)
+            foreach (KeyValuePair<string, bool> elem in Daños)
             {
                 if (ExisteDaño())
                 {
@@ -283,7 +272,7 @@ namespace SkyNet.Entidades.Operadores
                     {
                         ComprometerMotor();
                     }
-                    else daños[elem.Key] = true;
+                    else Daños[elem.Key] = true;
                 }
             }
         }
