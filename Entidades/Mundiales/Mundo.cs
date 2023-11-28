@@ -12,6 +12,7 @@ namespace SkyNet.Entidades.Mundiales
 {
     public class Mundo
     {
+        /// Configuraciones zonales y de tamaño para la generacion del mundo
         public int[] PrioridadZonal { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
         public int[] ExtensionZonal { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
         public int[] ExpansionZonal { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
@@ -20,10 +21,26 @@ namespace SkyNet.Entidades.Mundiales
         public int MaxCoordY { get; set; } = 100; // maximo tamaño en y
         public int MaxCuartels { get; set; } = 3;
         public int CantCuarteles { get; set; } = 0;
-        static Mundo instancia;
+        private HashSet<Cuartel> _cuarteles = new HashSet<Cuartel>();
+        /// Fin configuraciones
 
+        /// Mundo
         public IGrafo<Localizacion> GrafoMundo { get; set; }
         public Dictionary<string, IVertice<Localizacion>> Mapamundi { get; set; } // vertices del mundo
+        /// Fin cosas del mundo
+
+        private GestionadorDeFabrica fabrica;
+        public void RegistrarCuartel(Cuartel c)
+        {
+            _cuarteles.Add(c);
+        }
+        public HashSet<Cuartel> GetCuarteles()
+        {
+            return _cuarteles;
+        }
+        static Mundo instancia;
+
+        
         public IVertice<Localizacion> GetVertice(int x, int y)
         {
             Mapamundi.TryGetValue($"x{x}y{y}", out IVertice<Localizacion> VRet);
@@ -57,6 +74,39 @@ namespace SkyNet.Entidades.Mundiales
             ConectarUbicacionesEnElGrafo();
             InicializarMundoMundial();
         }
+        public static Mundo GetInstance()
+        {
+            if (instancia == null)
+            {
+                instancia = new Mundo();
+            }
+            return instancia;
+        }
+        public Fabrica ContactarFabrica(EnumOperadores tipo)
+        {
+            return fabrica.GetFabrica(tipo);
+        }
+        public void SetGestionFabrica(GestionadorDeFabrica gf)
+        {
+            fabrica = gf;
+        }
+        public Cuartel GetCuartel(int x, int y) 
+        {
+            IVertice<Localizacion> i; 
+            Mapamundi.TryGetValue($"x{x}y{y}", out i);
+            return i.GetDato().GetCuartel();
+        }
+        public Localizacion GetLocalizacion(int x,int y)
+        {
+            IVertice<Localizacion> localizacionRet;
+            Mapamundi.TryGetValue($"x{x}y{y}", out localizacionRet);
+            return localizacionRet.GetDato();
+        }
+
+        /// -----------------------------------------------------------------------------------------
+        /// METODOS DE GENERACION DE MUNDO Y UNION DEL GRAFO
+        /// A partir de este punto se encuentra toda la logica de creacion de una simulacion
+        /// -----------------------------------------------------------------------------------------
         private void InicializarGrafo()
         {
             Mapamundi = new Dictionary<string, IVertice<Localizacion>>();
@@ -74,6 +124,36 @@ namespace SkyNet.Entidades.Mundiales
         }
         private void InicializarMundoMundial()
         {
+            /// Este algoritmo hace uso de dos algorimos clasicos BFS (amplitud) y DFS (profundidad) de los grafos
+            /// lo primero que se hace es generar con DFS una extension a la que llamamos nucleo de la zona
+            /// dicha extension servirá luego para que BFS expanda equitativamente hacia todos los lados,
+            /// segun como se haya generado la extension, nuestra expansion de terreno se vera mejor o peor
+            ///  
+            /// Se hace uso de una cola en la cual se van encolando las localizaciones NO visitadas/procesadas por
+            /// el algoritmo, la cola como ya se dijo se genera a partir de un DFS; cada vez que se termina de procesar
+            /// un nivel, se encola null que nos sirve de marca, cada zona se expande tantos niveles como se indica en
+            /// ExpansionZonal.
+            /// 
+            /// ¿Que son los niveles?
+            /// Imaginemos una cuadricula
+            /// |----|----|----|
+            /// | 1  | 2  | 3  |
+            /// |----|----|----|
+            /// | 4  | 5  | 6  |
+            /// |----|----|----|
+            /// | 7  | 8  | 9  |
+            /// |----|----|----|
+            /// si nuestro nucleo es la extension 4->5 y tuvieramos una expansion de 1 solo nivel,
+            /// nuestro nivel 0 es 4,5 y nivel 1 sus adyacentes 1,2,6,7,8; al ser un nivel notamos
+            /// que 3 y 9 quedan fuera ya que conformarian el 2do nivel (el cual no necesitamos)
+            /// |----|----|----|
+            /// | n1 | n1 | 3  |
+            /// |----|----|----|
+            /// | n0 | n0 | n1 |
+            /// |----|----|----|
+            /// | n1 | n1 | 9  |
+            /// |----|----|----|
+
             Queue<IVertice<Localizacion>> colaZonal;
             Random rnd = new Random();
             List<IVertice<Localizacion>> disponibles = Mapamundi.Values.ToList();
@@ -208,36 +288,6 @@ namespace SkyNet.Entidades.Mundiales
                     destino.Conectar(origen);
                 }
             }
-        }
-
-        private GestionadorDeFabrica fabrica;
-        public static Mundo GetInstance()
-        {
-            if (instancia == null)
-            {
-                instancia = new Mundo();
-            }
-            return instancia;
-        }
-        public Fabrica ContactarFabrica(EnumOperadores tipo)
-        {
-            return fabrica.GetFabrica(tipo);
-        }
-        public void SetGestionFabrica(GestionadorDeFabrica gf)
-        {
-            fabrica = gf;
-        }
-        public Cuartel GetCuartel(int x, int y) 
-        {
-            IVertice<Localizacion> i; 
-            Mapamundi.TryGetValue($"x{x}y{y}", out i);
-            return i.GetDato().GetCuartel();
-        }
-        public Localizacion GetLocalizacion(int x,int y)
-        {
-            IVertice<Localizacion> localizacionRet;
-            Mapamundi.TryGetValue($"x{x}y{y}", out localizacionRet);
-            return localizacionRet.GetDato();
         }
     }
 }
