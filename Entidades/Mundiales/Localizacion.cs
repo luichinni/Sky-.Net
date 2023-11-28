@@ -31,7 +31,7 @@ namespace SkyNet.Entidades.Mundiales
                 OperadoresId.Remove(id); // lo saca de la ubicacion
             }
         }
-        public void Entrar(Operador o)
+        /*public void Entrar(Operador o)
         {
             // si no es nulo y no está en la ubicacion
             if (o != null && !OperadoresId.Contains(o.Identificacion()))
@@ -39,6 +39,17 @@ namespace SkyNet.Entidades.Mundiales
                 OperadoresId.Add(o.Identificacion()); // lo agrega a la ubicacion
             }
         }
+        */
+
+        public void Entrar(string id)
+        {
+            // si no es nulo y no está en la ubicacion
+            if (id != null && !OperadoresId.Contains(id))
+            {
+                OperadoresId.Add(id); // lo agrega a la ubicacion
+            }
+        }
+
         public bool IntentarEstablecerCuartel(Cuartel cuartel)
         {
             bool pudo = false;

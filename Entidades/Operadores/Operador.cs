@@ -26,6 +26,21 @@ namespace SkyNet.Entidades.Operadores
 
         protected List<EnumTiposDeZona> zonasPeligrosas = new List<EnumTiposDeZona>();
 
+        public string Id { get; set; }
+        public Bateria Bateria { get; set; }
+        public double CargaMax { get; set; }
+        public double CargaActual { get; set; }
+        public double VelocidadOptima { get; set; }
+        public Cuartel Cuartel { get; set; }
+        public Localizacion Ubicacion { get; set; }
+        public Dictionary<string, bool> Daños { get; set; }
+        public GPS GPS { get; set; }
+        public List<EnumTiposDeZona> ZonasPeligrosas { get; set; }
+
+        public int PosX { get { return ubicacion.coordX; } set { ubicacion.Salir(id); ubicacion = Mundo.GetInstance().GetLocalizacion(value, PosY); ubicacion.Entrar(id); } }
+
+        public int PosY { get { return ubicacion.coordY; } set { ubicacion.Salir(id); ubicacion = Mundo.GetInstance().GetLocalizacion(PosX, value); ubicacion.Entrar(id); } }
+
         public Operador(string id, Bateria bateria, Cuartel cuartel)
         {
             this.id = id;
@@ -42,6 +57,7 @@ namespace SkyNet.Entidades.Operadores
                 { "PuertoBateriaDesconectado",false },
                 { "PinturaRayada",false }
             };     
+            
         }
 
         public void Mover (Localizacion nuevaUbicacion, bool rutaDirecta)
@@ -63,7 +79,7 @@ namespace SkyNet.Entidades.Operadores
 
             for (int i = 1; i < camino.Count; i++)
             {
-                int distancia = ubicacion.CalcularDistancia(camino[i]);
+                int distancia = gps.CalcularDistancia(ubicacion,camino[i]);
 
                 if (CalcularGastoDeBateria(distancia) <= bateria.ConsultarBateria())
                 {
