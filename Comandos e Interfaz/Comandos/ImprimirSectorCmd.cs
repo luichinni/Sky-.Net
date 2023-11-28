@@ -100,11 +100,13 @@ namespace SkyNet.CommandPattern.Comandos
             ConsoleHelper.EscribirCentrado("Ingrese separado por comas y en orden x1,y1,x2,y2 el rango de mapa que quiere ver");
             ConsoleHelper.EscribirCentrado($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX-1},{Mundo.GetInstance().MaxCoordY-1}");
             ConsoleHelper.EscribirCentrado($"Nota: Maximo de diferencia x2-x1 <= {maxDifX} y y2-y1 <= {maxDifY}");
+            Console.CursorLeft = Console.WindowWidth / 2 - 5;
             string coords = Console.ReadLine();
             string[] coordsSplit = coords.Replace(" ","").Split(','); // quita blancos innecesarios y separa por comas
             // hay que ingresar 4 coordenadas y respetar las diferencias
             while (coordsSplit.Length < 4 || !SonNumeros(coordsSplit) || !ComprobarRango(coordsSplit) || !ComprobarMaximos(coordsSplit))
             {
+                Console.CursorLeft = Console.WindowWidth / 2 - 5;
                 coords = Console.ReadLine();
                 coordsSplit = coords.Replace(" ", "").Split(',');
             }
