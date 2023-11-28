@@ -22,11 +22,11 @@ namespace SkyNet.Entidades.Fabricas
             if (!fabricas.TryGetValue(tipo, out fabricaRet)) fabricaRet = null;
             return fabricaRet;
         }
-        public void AgregarComando(Fabrica f) // agregar uno
+        public void AgregarFabrica(Fabrica f) // agregar uno
         {
             fabricas.Add(f.Tipo, f);
         }
-        public void AgregarComandos(Fabrica[] fs) // agregar muchos
+        public void AgregarFabricas(Fabrica[] fs) // agregar muchos
         {
             foreach (Fabrica fabrica in fs)
             {
