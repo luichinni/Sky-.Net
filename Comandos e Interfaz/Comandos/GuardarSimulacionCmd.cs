@@ -21,8 +21,8 @@ namespace SkyNet.CommandPattern.Comandos
         {
             ConsoleHelper.WriteTitulo("Guardar Simulacion", ConsoleColor.Green);
             string archivo = GetNombreArchivo();
-            string camino = path + "\\" + carpeta + "\\" + archivo;
-            GuardarMapa(camino);
+            string camino = path + "\\" + carpeta;
+            GuardarMapa(camino+"\\"+archivo);
         }
         private void GuardarMapa(string camino)
         {
@@ -32,9 +32,7 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 dicGuardar.Add(vertice.Key, vertice.Value.GetDato());
             }
-
-            Directory.CreateDirectory(camino);
-            File.WriteAllText(camino + "\\mundo.json", JsonSerializer.Serialize(dicGuardar));
+            File.WriteAllText(camino + ".json", JsonSerializer.Serialize(dicGuardar));
         }
         private string GetNombreArchivo()
         {
@@ -42,7 +40,7 @@ namespace SkyNet.CommandPattern.Comandos
             Console.CursorLeft = Console.WindowWidth / 2 - 10;
             string nombre = Console.ReadLine().ToUpper();
             string aux = (nombre == "OVERRIDE") ? "SimulacionSinNombre" + new Random().Next(1000) : nombre;
-            while (Directory.Exists(path + "\\"+carpeta+"\\" + nombre) && nombre != "OVERRIDE")
+            while (File.Exists(path + "\\"+carpeta+"\\" + nombre) && nombre != "OVERRIDE")
             {
                 ConsoleHelper.EscribirCentrado("Ya existe esa simulacion, ingrese otro nombre o la palabra 'OVERRIDE' para sobreescribirla");
                 Console.CursorLeft = Console.WindowWidth / 2 - 10;
