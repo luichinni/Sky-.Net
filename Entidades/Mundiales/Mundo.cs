@@ -17,7 +17,8 @@ namespace SkyNet.Entidades.Mundiales
         public int[] MaximaAparicion { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
         public int MaxCoordX { get; set; } = 100; // maximo tamaño en x
         public int MaxCoordY { get; set; } = 100; // maximo tamaño en y
-
+        public int MaxCuartels { get; set; } = 3;
+        public int CantCuarteles { get; set; } = 0;
         static Mundo instancia;
 
         private IGrafo<Localizacion> mundo;
