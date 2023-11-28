@@ -27,7 +27,7 @@ namespace SkyNet.CommandPattern.Comandos
                     int valorViejo = m.MaximaAparicion[(int)Enum.Parse(typeof(EnumTiposDeZona), seleccion)];
                     ConsoleHelper.EscribirCentrado($"Valor actual: {valorViejo}, ingrese el nuevo valor deseado para {seleccion}");
                     string valorNuevo = Console.ReadLine();
-                    while (!EsNumerico(valorNuevo)) valorNuevo = Console.ReadLine();
+                    while (!EsNumerico(valorNuevo)) { valorNuevo = Console.ReadLine(); Console.CursorLeft = Console.WindowWidth / 2 - 3; }
                     m.MaximaAparicion[(int)Enum.Parse(typeof(EnumTiposDeZona), seleccion)] = int.Parse(valorNuevo);
                 }
             }

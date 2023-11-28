@@ -90,7 +90,7 @@ namespace SkyNet.CommandPattern.Comandos
                     Console.BackgroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Black;
                 }
-                ConsoleHelper.WriteAt(i.ToString().PadLeft(2), centro-1, (i - inicio)+2);
+                ConsoleHelper.WriteAt(i.ToString().PadLeft(2), centro, (i - inicio)+2);
             }
         }
         private int[] GetCoordenadas(int maxX, int maxY)

@@ -369,14 +369,13 @@ namespace SkyNet
         {
             int caracteresGrandes = Console.WindowWidth / 7;
             int espaciosBlancos = (caracteresGrandes - caracteres) / 2;
-            EscribirCentrado(caracteresGrandes.ToString());
-            EscribirCentrado(espaciosBlancos.ToString());
             return espaciosBlancos*2;
         }
         public static void WriteTitulo(string titulo, ConsoleColor color)
         {
+            ConsoleColor[] coloresAnteriores = new ConsoleColor[] { Console.BackgroundColor,Console.ForegroundColor };
             string tituloModificado = new string(' ', GetEspaciosBlancosParaCentrarTexto(titulo.Length)) + titulo;
-            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.SetCursorPosition(0, Console.CursorTop+1);
             Dictionary<char, ConsoleColor> coloresTitulo = new Dictionary<char, ConsoleColor>() { { '@', color }, { ' ', Console.BackgroundColor } };
             foreach (char letra in tituloModificado.ToUpper())
             {
@@ -391,8 +390,9 @@ namespace SkyNet
                     Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - (dibujoLetra.Length -1));
                 }
             }
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop+10);
-            Console.ResetColor();
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop+9);
+            Console.BackgroundColor = coloresAnteriores[0];
+            Console.ForegroundColor = coloresAnteriores[1];
         }
         public static void WriteAt(int x, int y, string s, Dictionary<char,ConsoleColor> colores, Dictionary<char,ConsoleColor> texto = null)
         {
