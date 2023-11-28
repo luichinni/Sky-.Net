@@ -22,6 +22,7 @@ namespace SkyNet.Entidades
             List<IVertice<Localizacion>> nodosAbiertos = new List<IVertice<Localizacion>>() { nodoInicial };
             List<IVertice<Localizacion>> nodosCerrados = new List<IVertice<Localizacion>>();
             Dictionary<int, VerticeListaAdy<Localizacion>> nodos = new Dictionary<int, VerticeListaAdy<Localizacion>>();
+            InicializarVisitados(mundo.GetDiccionario().Values.ToList());
             for (int x=0; x<mundo.MaxCoordX; x++)
             {
                 for (int y=0; y<mundo.MaxCoordY; y++)
@@ -29,7 +30,6 @@ namespace SkyNet.Entidades
                     VerticeListaAdy<Localizacion> nodo = (VerticeListaAdy<Localizacion>) mundo.GetVertice(x, y);
                     nodo.gCost = int.MaxValue;
                     nodo.CalcularFCost();
-                    nodo.anterior = null;
                     nodos.Add(nodo.fCost,nodo);
                 }
             }
@@ -112,11 +112,45 @@ namespace SkyNet.Entidades
 
             return distancia;
         }
-
+        private void InicializarVisitados(List<IVertice<Localizacion>> nodos)
+        {
+            for (int x = 0; x < mundo.MaxCoordX; x++)
+            {
+                for (int y = 0; y < mundo.MaxCoordY; y++)
+                { /// Inicializacion de todos los nodos con costo alto para permitir mejora
+                    VerticeListaAdy<Localizacion> nodo = (VerticeListaAdy<Localizacion>)mundo.GetVertice(x, y);
+                    nodo.anterior = null;
+                }
+            }
+        }
         public Localizacion BuscarCercano(EnumTiposDeZona zona, Localizacion origen)
         {
+            Localizacion zonaRet = null;
+            Queue<IVertice<Localizacion>> cola = new Queue<IVertice<Localizacion>>();
+            List<IVertice<Localizacion>> disponibles = mundo.GetDiccionario().Values.ToList();
+            HashSet<IVertice<Localizacion>> visitados = new HashSet<IVertice<Localizacion>>();
+            IVertice<Localizacion> verticeActual = disponibles.Find(vert => vert.GetDato() == origen);
+            disponibles.Remove(verticeActual);
+            cola.Enqueue(verticeActual);
+            while (cola.Count > 0 && zonaRet == null) // mientras haya localizaciones por iniciar
+            {
+                verticeActual = cola.Dequeue(); // la sacamos de la cola
+                if (verticeActual.GetDato().TipoZona == zona) zonaRet = verticeActual.GetDato();
+                else
+                {
+                    foreach (IArista<Localizacion> arista in mundo.GetGrafo().ListaDeAdyacentes(verticeActual))
+                    { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
+                      // lo encola para luego procesarlo y lo visita para bloquearlo
+                        if (!visitados.Contains(arista.GetVerticeDestino()))
+                        {
+                            cola.Enqueue(arista.GetVerticeDestino());
+                            visitados.Add(arista.GetVerticeDestino());
+                        }
 
-            return null;
+                    }
+                }
+            }
+            return zonaRet;
         }
     }
 }
