@@ -11,13 +11,25 @@ namespace SkyNet.Entidades.Mundiales
     public class Cuartel
     {
         private string id;
-        private Localizacion ubicacion;
-        private Dictionary<string, Operador> operadores = new Dictionary<string, Operador>();
-        //private Dictionary<string, (Operador, EnumEstadoOperador)> operadores = new Dictionary<string, (Operador, EnumEstadoOperador)>();
+        private int coordX;
+        private int coordY;
+        private List<Operador> operadores;
+        private Localizacion ubicacionCuartel;
 
-        public Cuartel(Localizacion ubicacionCuartel) 
-        {
-        
+
+        public string Id { get; set; }
+        public int CoordX { get; set; }
+        public int CoordY { get; set; }
+        public List<Operador> Operadores { get; set; }
+        public Localizacion UbicacionCuartel { get; set; }
+
+
+        public Cuartel(Localizacion ubicacionCuartel)
+        { 
+            coordX = ubicacionCuartel.coordX;
+            coordY = ubicacionCuartel.coordY;
+            operadores = new List<Operador>();
+            ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(coordX, coordY);
         }
         public string Identificacion()
         {
@@ -26,12 +38,12 @@ namespace SkyNet.Entidades.Mundiales
 
         public Localizacion GetUbicacion()
         {
-            return ubicacion;
+            return ubicacionCuartel;
         }
 
         // Listado de Operadores por localización 
 
-        public List<Operador> ListarOperadoresPorUbicacion(Localizacion ubicacion)
+        /*public List<Operador> ListarOperadoresPorUbicacion(Localizacion ubicacion)
         {
             List<Operador> operadoresEnUbicacion = new List<Operador>();
 
@@ -43,46 +55,95 @@ namespace SkyNet.Entidades.Mundiales
                 }
             }
             return operadoresEnUbicacion;
+        }*/
+
+        public Dictionary<string, EnumEstadoOperador> ListarEstadoOperadores()
+        {
+            Dictionary<string, EnumEstadoOperador> estadoOperadores = new Dictionary<string,EnumEstadoOperador>();
+
+            foreach(Operador robot in operadores)
+            {
+                estadoOperadores.Add(robot.Id, robot.Estado);
+            }
+
+            return estadoOperadores;
         }
 
-        // Hacer un Total Recall (llamado y retorno)
+        public Dictionary<string, EnumEstadoOperador> ListarEstadoOperadoresUbicacion(Localizacion ubicacionAInspeccionar)
+        {
+            Dictionary<string, EnumEstadoOperador> estadoOperadores = new Dictionary<string, EnumEstadoOperador>();
+
+            foreach (Operador robot in operadores)
+            {
+                if(robot.getUbicacion()==ubicacionAInspeccionar)
+                {
+                    estadoOperadores.Add(robot.Id, robot.Estado);
+                }
+            }
+
+            return estadoOperadores;
+        }
+
         public void TotalRecall()
         {
-            foreach (Operador operador in operadores.Values)
+            foreach (Operador operador in operadores)
             {
-                //operador.VolverAlCuartel();
+                RecallOperadorUnico(operador);
             }
         }
 
-        // Enviar Operador a ubicación en especial
 
-        public void EnviarOperadorALocalizacion(Operador operador, Localizacion ubicacion)
+        public void MoverOperador(Operador operador, Localizacion nuevaUbicacion)
         {
-           // operador.SetUbicacion(ubicacion);
+            operador.Mover(nuevaUbicacion, false);
         }
 
-        // Volver al cuartel
-
-        public void IndicarRetornoOperador(Operador operador)
+        public void RecallOperadorUnico(Operador operador)
         {
-            //operador.VolverAlCuartel();
+            operador.Mover(ubicacionCuartel, false);
         }
 
-        /*Cambiar estado del operador a StandBy 
-        Se debe agregar el estado en la creación del operador y en el constructor
-
-        public void CambiarEstadoOperadorStandby(Operador operador)
-        {
-           operadores[] = EnumEstadoOperador.StandBy;
+        public void PonerStandby(Operador operador)
+        { 
+            operador.cambiarEstado(EnumEstadoOperador.StandBy);
         }
 
-        Agregar o remover operadores de la reserva, se puede hacer con el estado
-         
-
-        public void AgregarOperadorReserva(Operador EstadoOperador nuevoEstado)
+        public void AgregarOperador(Operador robot)
         {
-            EstadoOperador = nuevoEstado;
-        }*/
+            operadores.Add(robot);
+        }
 
+        public void RemoverOperador(Operador robot)
+        {
+            operadores.Remove(robot);
+        }
+
+        public void RemoverReserva ()
+        {
+            operadores.Clear();
+        }
+
+        public void EnviarInactivosAReciclar()
+        {
+            foreach (Operador robot in operadores)
+            {
+                if (robot.Estado == EnumEstadoOperador.Inactive)
+                {
+                    robot.Reciclar();
+                }
+            }
+        }
+
+        public void RealizarMantenimiento()
+        {
+            foreach (Operador robot in operadores)
+            {
+                if(robot.ExisteDaño())
+                {
+                    robot.Gps.BuscarCercano(EnumTiposDeZona.Cuartel, robot.getUbicacion());
+                    robot.Reparar();
+                }
+            }
+        }
     }
 }

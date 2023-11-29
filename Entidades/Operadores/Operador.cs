@@ -12,6 +12,7 @@ namespace SkyNet.Entidades.Operadores
     {
         public string Id { get; private set; }
         public Bateria Bateria { get; private set; }
+        public EnumEstadoOperador Estado { get; private set; }
         public double CargaMax { get; set; }
         public double CargaActual { get; set; }
         public double VelocidadOptima { get; set; }
@@ -24,15 +25,15 @@ namespace SkyNet.Entidades.Operadores
         public List<EnumTiposDeZona> ZonasPeligrosas { get; set; }
 
         private Localizacion ubicacion;
-        private Localizacion ubicacionCuartel;
-
+        //private Localizacion ubicacionCuartel;
         public Operador(string Id, Bateria Bateria, int CuartelCoordX, int CuartelCoordY)
         {
             this.Id = Id;
             this.Bateria = Bateria;
+            Estado = EnumEstadoOperador.Inactive;
             Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX,CoordY);
             ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
-            ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CuartelCoordX, CuartelCoordY);
+            //ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CuartelCoordX, CuartelCoordY);
             Gps = new GPS();
             ZonasPeligrosas = new List<EnumTiposDeZona>() { EnumTiposDeZona.VertederoElectronico, EnumTiposDeZona.Vertedero };
             Daños = new Dictionary<string, bool>
@@ -93,15 +94,6 @@ namespace SkyNet.Entidades.Operadores
 
             Descargar();
         }
-
-
-        /*public void VolverAlCuartel()  // Método Prescindible, se puede usar directamente Mover(ubicacionCuartel)
-        {
-            Localizacion nuevaUbicacion = cuartel.GetUbicacion();
-
-            Mover(nuevaUbicacion);
-
-        }*/
 
         public void TransferirBateria(Operador robot, double cantBateria)
         {
@@ -240,7 +232,7 @@ namespace SkyNet.Entidades.Operadores
             return id;
         }
 
-        public bool ExisteDaño()
+        public bool SimularDaño()
         {
             int daño;
 
@@ -266,7 +258,7 @@ namespace SkyNet.Entidades.Operadores
         {
             foreach (KeyValuePair<string, bool> elem in Daños)
             {
-                if (ExisteDaño())
+                if (SimularDaño())
                 {
                     if (elem.Key == "MotorComprometido")
                     {
@@ -275,6 +267,28 @@ namespace SkyNet.Entidades.Operadores
                     else Daños[elem.Key] = true;
                 }
             }
+        }
+
+        public bool ExisteDaño()
+        {
+            //Código
+
+            return true;
+        }
+
+        public void Reparar()
+        {
+            foreach (KeyValuePair<string, bool> elem in Daños)
+            {
+                Daños[elem.Key] = false;
+            }
+        }
+
+
+
+        public void cambiarEstado(EnumEstadoOperador nuevoEstado)
+        {
+            Estado = nuevoEstado;
         }
     }
 }
