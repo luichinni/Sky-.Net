@@ -68,11 +68,13 @@ namespace SkyNet.Entidades.Operadores
             {
                 int distancia = Gps.CalcularDistancia(ubicacion,camino[i]);
 
-                if (CalcularGastoDeBateria(distancia) <= Bateria.ConsultarBateria())
+                double tiempo = CalcularTiempoDeViaje(distancia);
+
+                if (CalcularGastoDeBateria(tiempo) <= Bateria.ConsultarBateria())
                 {
                     ubicacion = camino[i];
 
-                    Bateria.ConsumirBateria(CalcularGastoDeBateria(distancia));
+                    Bateria.ConsumirBateria(CalcularGastoDeBateria(tiempo));
                 }
             }
 
@@ -80,8 +82,6 @@ namespace SkyNet.Entidades.Operadores
 
         public void Reciclar()
         {
-            Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
-
             Localizacion destino = Gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
 
             Mover(destino, true);
@@ -95,50 +95,52 @@ namespace SkyNet.Entidades.Operadores
             Descargar();
         }
 
-        public void TransferirBateria(Operador robot, double cantBateria)
+        public void TransferirBateria(Operador robot, double cantidad)
         {
-            Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
 
-            if (ubicacion == robot.ubicacion)
+            if (!Daños["BateriaPerforada"])
             {
-                if (esPosibleTransferirBateria(robot, cantBateria))
+                if (ubicacion != robot.ubicacion) Mover(robot.ubicacion, false);
+
+                if (Bateria.BateriaActual - cantidad >= 0 && robot.Bateria.BateriaActual + cantidad <= robot.Bateria.BateriaMax)
                 {
-                    robot.Bateria.CargarBateria(cantBateria);
-                    Bateria.ConsumirBateria(cantBateria);
+                    ConsumirEnergia(cantidad);
+                    robot.RecargarBateria(cantidad);
                 }
-
-                else Console.WriteLine("No se puede realizar la transferencia, revisar límites de batería");
-
-                // Se envía la batería que es posible pasar? No se envía nada?
+                else
+                {
+                    double cantidadPosible = Math.Min(Bateria.BateriaActual, robot.Bateria.BateriaMax - robot.Bateria.BateriaActual);
+                    ConsumirEnergia(cantidadPosible);
+                    robot.RecargarBateria(cantidadPosible);
+                }
             }
-
-            else Console.WriteLine("No se puede realizar la transferencia por que no están en la misma ubicación");
-
-
         }
 
-        public void transferirCargaA(Operador robot, double cantidad)
+        public void TransferirCargaFisica(Operador robot, double cantidad)
         {
-            if (ubicacion == robot.ubicacion)
+            if (!Daños["ServoAtascado"])
             {
-                if (robot.CargaActual + cantidad <= robot.CargaMax && CargaActual - cantidad <= 0)
-                {
-                    robot.CargaActual += cantidad;
+                if (ubicacion != robot.ubicacion) Mover(robot.ubicacion, false);
 
+                if (CargaActual - cantidad >= 0 && robot.CargaActual + cantidad <= robot.CargaMax)
+                {
                     CargaActual -= cantidad;
+                    robot.CargaActual += cantidad;
                 }
 
-                else Console.WriteLine("No se puede realizar la transferencia, revisar límites de carga");
-
-                // Se envía la carga que es posible pasar? no se envía nada?
+                else
+                {
+                    double cantidadPosible = Math.Min(CargaActual, robot.CargaMax - robot.CargaActual);
+                    CargaActual -= cantidadPosible;
+                    robot.CargaActual += cantidadPosible;
+                }
 
             }
-
-            else Console.WriteLine("No se encuentran en la misma ubicación");
+           
         }
 
 
-        public double ActualizarVelocidad()
+        public double ObtenerVelocidad()
         {
             double porcentajeCarga = CargaActual / CargaMax;
 
@@ -150,12 +152,17 @@ namespace SkyNet.Entidades.Operadores
 
         }
 
-        public double CalcularGastoDeBateria(int distancia)
+        public double CalcularTiempoDeViaje(int distancia)
         {
-            double velocidad = ActualizarVelocidad();
+            double velocidad = ObtenerVelocidad();
 
             double tiempo = distancia / velocidad;
 
+            return tiempo;
+        }
+
+        public double CalcularGastoDeBateria(double tiempo)
+        {
             double gastoDeBateria;
 
             if (!Daños["BateriaPerforada"]) gastoDeBateria = tiempo * 1000;
@@ -165,22 +172,12 @@ namespace SkyNet.Entidades.Operadores
             return gastoDeBateria;
         }
 
-        public bool esPosibleTransferirBateria(Operador robot, double cantBateria)
+        public void RecargarBateria(double cantBateria)
         {
-            double bateriaEntrega = GetBateria();
-
-            double bateriaRecibe = robot.GetBateria();
-
-            double bateriaMaxRecibe = robot.Bateria.GetBateriaMax();
-
-            if (bateriaEntrega - cantBateria >= 0 && bateriaRecibe + cantBateria <= bateriaMaxRecibe) return true;
-
-            else return false;
-        }
-
-        public void RecargarBateria()
-        {
-            Bateria.LlenarBateria();
+            if (!Daños["BateriaPerforada"])
+            {
+                Bateria.CargarBateria(cantBateria);
+            }
         }
 
         public void ConsumirEnergia(double cantBateria)
@@ -190,14 +187,19 @@ namespace SkyNet.Entidades.Operadores
 
         public void Cargar()
         {
-            CargaActual = CargaMax;
+            if (!Daños["ServoAtascado"])
+            {
+                CargaActual = CargaMax;
+            }
+                
         }
 
         public void Descargar()
         {
-            CargaActual = 0;
-
-            // Donde se almacena lo que se descarga?
+            if (!Daños["ServoAtascado"])
+            {
+                CargaActual = 0;
+            }
 
         }
 
