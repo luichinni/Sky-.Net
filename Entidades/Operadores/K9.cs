@@ -9,7 +9,7 @@ namespace SkyNet.Entidades.Operadores
 {
     public class K9 : Operador
     {
-        public K9(string Id, Bateria Bateria, int CuartelCoordX, int CuartelCoordY) : base(Id, Bateria, CuartelCoordX, CuartelCoordY)
+        public K9(string Id, Bateria Bateria, int CoordX, int CoordY, int CuartelCoordX, int CuartelCoordY) : base(Id, Bateria, CoordX, CoordY, CuartelCoordX, CuartelCoordY)
         {
             CargaMax = 40;
             VelocidadOptima = 100;

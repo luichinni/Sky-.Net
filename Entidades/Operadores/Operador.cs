@@ -26,10 +26,14 @@ namespace SkyNet.Entidades.Operadores
 
         private Localizacion ubicacion;
         //private Localizacion ubicacionCuartel;
-        public Operador(string Id, Bateria Bateria, int CuartelCoordX, int CuartelCoordY)
+        public Operador(string Id, Bateria Bateria, int CoordX, int CoordY, int CuartelCoordX, int CuartelCoordY)
         {
             this.Id = Id;
             this.Bateria = Bateria;
+            this.CoordX = CoordX;
+            this.CoordY = CoordY;
+            this.CuartelCoordX = CuartelCoordX;
+            this.CuartelCoordY = CuartelCoordY;
             Estado = EnumEstadoOperador.Inactive;
             Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX,CoordY);
             ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
@@ -44,6 +48,7 @@ namespace SkyNet.Entidades.Operadores
                 { "PuertoBateriaDesconectado",false },
                 { "PinturaRayada",false }
             };
+            ubicacion.Entrar(Id);
 
         }
 
