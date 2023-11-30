@@ -9,7 +9,6 @@ namespace SkyNet.Entidades.Mundiales
 {
     public class Localizacion
     {
-        public string Pos { get; private set; }
         public int coordX { get; private set; } 
         public int coordY { get; private set; }
         public EnumTiposDeZona TipoZona { get; set; }
@@ -29,7 +28,6 @@ namespace SkyNet.Entidades.Mundiales
         {
             this.coordX = coordX;
             this.coordY = coordY;
-            Pos = $"x{coordX}y{coordY}";
             OperadoresId = new HashSet<string>();
             this.TipoZona = tipoZona;
         }
