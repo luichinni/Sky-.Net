@@ -21,16 +21,22 @@ namespace SkyNet.CommandPattern.Comandos
             opciones.Add(cancelar);
             return opciones.ToArray();
         }
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
+            bool seleccionado = false;
             _menu.Opciones = ActualizarCuarteles();
             _menu.Mostrar();
             string op = _menu.GetSeleccion();
             if (op != cancelar)
             {
                 m.GetCuarteles().TryGetValue(op, out Cuartel cu);
-                if (cu != null) c = cu;
+                if (cu != null) 
+                { 
+                    c = cu;
+                    seleccionado = true;
+                }
             }
+            return seleccionado;
         }
     }
 }

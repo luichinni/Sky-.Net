@@ -22,7 +22,7 @@ namespace SkyNet.CommandPattern
         /// </summary>
         /// <param name="m">Mundo como parametro (por si deja de ser singleton)</param>
         /// <param name="c">Cuartel como parametro permite trabajar con cuarteles especificos</param>
-        public abstract void Ejecutar(Mundo m, ref Cuartel c);
+        public abstract bool Ejecutar(Mundo m, ref Cuartel c);
 
     }
 }

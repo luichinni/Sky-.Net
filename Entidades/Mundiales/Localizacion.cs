@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Mundiales
@@ -15,7 +16,7 @@ namespace SkyNet.Entidades.Mundiales
         private Cuartel cuartel = null;
         public Cuartel Cuartel { 
             get { return cuartel; } 
-            set {   if (cuartel == null)
+            set {   if (cuartel == null && value != null)
                     {
                         cuartel = value;
                         TipoZona = EnumTiposDeZona.Cuartel;
@@ -24,12 +25,13 @@ namespace SkyNet.Entidades.Mundiales
         }
         public HashSet<string> OperadoresId { get; set; }
 
-        public Localizacion(int coordX, int coordY, EnumTiposDeZona tipoZona)
+        [JsonConstructor]
+        public Localizacion(int coordX, int coordY, EnumTiposDeZona TipoZona)
         {
             this.coordX = coordX;
             this.coordY = coordY;
             OperadoresId = new HashSet<string>();
-            this.TipoZona = tipoZona;
+            this.TipoZona = TipoZona;
         }
         public void Salir(string id)
         {

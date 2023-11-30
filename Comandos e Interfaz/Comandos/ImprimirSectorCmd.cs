@@ -16,7 +16,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             ConsoleColor color;
             int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX,Mundo.GetInstance().MaxCoordY);
@@ -49,6 +49,8 @@ namespace SkyNet.CommandPattern.Comandos
             if (coord[3] - coord[1] > Enum.GetValues(typeof(EnumTiposDeZona)).Length)  
                 ConsoleHelper.WriteAt("", centro, (coord[3] - coord[1]) + 4);
             else ConsoleHelper.WriteAt("", centro, Enum.GetValues(typeof(EnumTiposDeZona)).Length + 4);
+            
+            return true;
         }
         private void ImprimirCoordX(int inicio, int final)
         {

@@ -13,9 +13,10 @@ namespace SkyNet.CommandPattern.Comandos
         {
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             c.RealizarMantenimiento();
+            return true;
         }
     }
 }

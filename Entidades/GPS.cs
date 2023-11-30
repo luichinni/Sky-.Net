@@ -21,7 +21,7 @@ namespace SkyNet.Entidades
             VerticeListaAdy<Localizacion> nodoInicial = (VerticeListaAdy<Localizacion>)mundo.GetVertice(origen.coordX, origen.coordY);
             List<IVertice<Localizacion>> nodosAbiertos = new List<IVertice<Localizacion>>() { nodoInicial };
             List<IVertice<Localizacion>> nodosCerrados = new List<IVertice<Localizacion>>();
-            Dictionary<int, VerticeListaAdy<Localizacion>> nodos = new Dictionary<int, VerticeListaAdy<Localizacion>>();
+            List<VerticeListaAdy<Localizacion>> nodos = new List<VerticeListaAdy<Localizacion>>();
             InicializarVisitados(mundo.Mapamundi.Values.ToList());
             for (int x=0; x<mundo.MaxCoordX; x++)
             {
@@ -30,7 +30,7 @@ namespace SkyNet.Entidades
                     VerticeListaAdy<Localizacion> nodo = (VerticeListaAdy<Localizacion>) mundo.GetVertice(x, y);
                     nodo.gCost = int.MaxValue;
                     nodo.CalcularFCost();
-                    nodos.Add(nodo.fCost,nodo);
+                    nodos.Add(nodo);
                 }
             }
 
@@ -54,19 +54,20 @@ namespace SkyNet.Entidades
                     nodosAbiertos.Remove(nodoActual);
                     nodosCerrados.Add(nodoActual);
 
-                    foreach (VerticeListaAdy<Localizacion> v in mundo.GrafoMundo.ListaDeAdyacentes(nodoActual))
+                    foreach (IArista<Localizacion> v in mundo.GrafoMundo.ListaDeAdyacentes(nodoActual))
                     {
-                        if (!nodosCerrados.Contains(v))
+                        VerticeListaAdy<Localizacion> vAux = (VerticeListaAdy<Localizacion>)v.GetVerticeDestino();
+                        if (!nodosCerrados.Contains(vAux))
                         {
-                            int GCostTentativo = nodoActual.gCost + CalcularDistancia(nodoActual.GetDato(), v.GetDato());
-                            if (GCostTentativo < v.gCost) /// se intenta mejorar el costo de camino del nodo
+                            int GCostTentativo = nodoActual.gCost + CalcularDistancia(nodoActual.GetDato(), vAux.GetDato());
+                            if (GCostTentativo < vAux.gCost) /// se intenta mejorar el costo de camino del nodo
                             {
-                                v.anterior = nodoActual;
-                                v.gCost = GCostTentativo;
-                                v.hCost = CalcularDistancia(v.GetDato(), destino);
-                                v.CalcularFCost();
+                                vAux.anterior = nodoActual;
+                                vAux.gCost = GCostTentativo;
+                                vAux.hCost = CalcularDistancia(vAux.GetDato(), destino);
+                                vAux.CalcularFCost();
 
-                                if (!nodosAbiertos.Contains(v)) nodosAbiertos.Add(v);
+                                if (!nodosAbiertos.Contains(vAux)) nodosAbiertos.Add(vAux);
                             }
                         }
                     }
@@ -90,17 +91,9 @@ namespace SkyNet.Entidades
             listaRet.Reverse();
             return listaRet;
         }
-        private VerticeListaAdy<Localizacion> GetNodoMenorFCost(Dictionary<int, VerticeListaAdy<Localizacion>> nodos)
+        private VerticeListaAdy<Localizacion> GetNodoMenorFCost(List<VerticeListaAdy<Localizacion>> nodos)
         {
-            VerticeListaAdy<Localizacion> menorFCostNodo = nodos[0];
-            for (int i=0; i<nodos.Count; i++)
-            {
-                if (nodos[i].fCost < menorFCostNodo.fCost)
-                {
-                    menorFCostNodo = nodos[i];
-                }
-            }
-            return menorFCostNodo;
+            return nodos.OrderBy(nodito => nodito.fCost).FirstOrDefault();
         }
         public int CalcularDistancia(Localizacion origen,Localizacion destino)
         { // este metodo lo hizo christian, yo solo lo movi de clase

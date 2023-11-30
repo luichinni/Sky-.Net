@@ -61,10 +61,14 @@ namespace SkyNet.Entidades.Mundiales
             {
                 for (int j = 0; j < MaxCoordY; j++)
                 {
-                    Localizacion loc;
-                    mundoReanudado.TryGetValue($"x{i}y{j}", out loc);
-                    Mapamundi.TryGetValue($"x{i}y{j}", out IVertice<Localizacion> ver);
+                    Localizacion loc = mundoReanudado[$"x{i}y{j}"];
+                    IVertice<Localizacion> ver = Mapamundi[$"x{i}y{j}"];
                     ver.SetDato(loc);
+                    if (loc.TipoZona == EnumTiposDeZona.Cuartel)
+                    {
+                        CantCuarteles++;
+                        _cuarteles.Add(loc.Cuartel.Id, loc.Cuartel);
+                    }
                 }
             }
         }

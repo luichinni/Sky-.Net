@@ -13,7 +13,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             bool fin = false;
             string seleccion;
@@ -32,6 +32,7 @@ namespace SkyNet.CommandPattern.Comandos
                     m.ExpansionZonal[(int)Enum.Parse(typeof(EnumTiposDeZona), seleccion)] = int.Parse(valorNuevo);
                 }
             }
+            return true;
         }
     }
 }

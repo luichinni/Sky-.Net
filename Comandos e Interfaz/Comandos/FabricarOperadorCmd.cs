@@ -20,7 +20,7 @@ namespace SkyNet.CommandPattern.Comandos
             _menu = new MenuConcreto(opciones.ToArray(),nombre);
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             bool fin = false;
             string opcion;
@@ -36,7 +36,8 @@ namespace SkyNet.CommandPattern.Comandos
                     ConsoleHelper.EscribirCentrado($"Operador {nuevoOperador.Id} asignado a cuartel {c.Id}");
                 }
                 else fin = true;
-            }            
+            }
+            return true;
         }
     }
 }

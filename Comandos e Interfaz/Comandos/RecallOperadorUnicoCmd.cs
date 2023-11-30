@@ -24,7 +24,7 @@ namespace SkyNet.CommandPattern.Comandos
                                                           .Select(op => op.Id.ToString())
                                                           .Append(_cancelar).ToArray() : _menu.Opciones;
         }
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
@@ -34,6 +34,7 @@ namespace SkyNet.CommandPattern.Comandos
                 Operador o = c.Operadores.Find(op => op.Id == idSelect);
                 c.RecallOperadorUnico(o);
             }
+            return true;
         }
     }
 }

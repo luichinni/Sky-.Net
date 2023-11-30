@@ -17,7 +17,7 @@ namespace SkyNet.CommandPattern.Comandos
             _menu = new MenuConcreto(opciones,nombre);
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             List<string> estados = new List<string>();
             foreach(KeyValuePair<string,EnumEstadoOperador> estado in c.ListarEstadoOperadores())
@@ -26,6 +26,7 @@ namespace SkyNet.CommandPattern.Comandos
             }
             _menu.Opciones = estados.ToArray();
             _menu.Mostrar();
+            return true;
         }
     }
 }

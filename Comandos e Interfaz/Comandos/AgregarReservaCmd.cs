@@ -22,7 +22,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
             return (c.Operadores.Count > 0) ? c.Operadores.Select(op => op.Id.ToString()).Append(_cancelar).ToArray() : _menu.Opciones;
         }
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
@@ -42,6 +42,7 @@ namespace SkyNet.CommandPattern.Comandos
                 }
                 
             }
+            return true;
         }
     }
 }

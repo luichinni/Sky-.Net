@@ -13,7 +13,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             if (m.CantCuarteles < 3)
             {
@@ -39,6 +39,7 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 ConsoleHelper.EscribirCentrado("No es posible crear más cuarteles");
             }
+            return true;
         }
         private string GenerarId(int cantidad)
         {

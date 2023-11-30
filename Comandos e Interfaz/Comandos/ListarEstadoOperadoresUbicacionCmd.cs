@@ -17,7 +17,7 @@ namespace SkyNet.CommandPattern.Comandos
             string[] opciones = new string[] { _cancelar };
             _menu = new MenuConcreto(opciones,nombre);
         }
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
             Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
@@ -29,6 +29,7 @@ namespace SkyNet.CommandPattern.Comandos
             }
             _menu.Opciones = idsOp.ToArray();
             _menu.Mostrar();
+            return true;
         }
         private int[] GetCoordenadas(int maxX, int maxY)
         {

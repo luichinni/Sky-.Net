@@ -24,7 +24,7 @@ namespace SkyNet.Entidades.Mundiales
             this.CoordX = CoordX;
             this.CoordY = CoordY;
             this.Operadores = (Operadores!=null) ? Operadores : new List<Operador>();
-            ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
+            //ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
         }
         /* no necesario, tenemos la propiedad
         public string Identificacion()
