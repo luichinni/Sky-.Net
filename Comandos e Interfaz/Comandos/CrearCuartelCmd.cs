@@ -27,6 +27,7 @@ namespace SkyNet.CommandPattern.Comandos
                 {
                     m.CantCuarteles++;
                     m.RegistrarCuartel(nuevoCuartel);
+                    c = nuevoCuartel;
                 }
             }
             else
