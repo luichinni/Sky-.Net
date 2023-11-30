@@ -80,8 +80,8 @@ namespace SkyNet.CommandPattern
                     "@    @@",
                     "@  @@@ ",
                     "@  @@@ ",
-                    "@@@@@@  ",
-                    "@@@@@@  "
+                    "@@@@@@ ",
+                    "@@@@@@ "
                 }
             },
             { 'G', new string[]

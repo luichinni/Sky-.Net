@@ -32,7 +32,7 @@ namespace SkyNet.CommandPattern.Comandos
             if (idSelect != _cancelar)
             {
                 Operador o = c.Operadores.Find(op => op.Id == idSelect);
-                o.cambiarEstado(EnumEstadoOperador.Active);
+                o.cambiarEstado(EnumEstadoOperador.Inactive);
                 ConsoleHelper.EscribirCentrado($"{o.Id} fue quitado de la reserva, estado:{o.Estado}");
             }
             return true;

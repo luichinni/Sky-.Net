@@ -104,6 +104,7 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Sky .Net Menu Simulaciones"
     }},
     { "Crear Simulacion", new string[] {
+        "Cargar Mapa de Sector",
         "Crear Cuartel",
         "Cuartel"
     }},
@@ -111,10 +112,12 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Iniciar Simulacion"
     }},
     { "Iniciar Simulacion" , new string[] {
+        "Cargar Mapa de Sector",
         "Crear Cuartel",
         "Cuartel"
     }},
     { "Cambiar Cuartel" , new string[] {
+        "Cargar Mapa de Sector",
         "Crear Cuartel",
         "Cuartel"
     }},

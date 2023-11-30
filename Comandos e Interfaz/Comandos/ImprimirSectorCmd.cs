@@ -11,7 +11,7 @@ namespace SkyNet.CommandPattern.Comandos
     {
         int centro;
         int maxDifX = Console.WindowWidth - 40;
-        int maxDifY = 40;
+        int maxDifY = Console.WindowWidth - 40;
         public ImprimirSectorCmd(string nombre, string descripcion) : base(nombre, descripcion)
         {
         }

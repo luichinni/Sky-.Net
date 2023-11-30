@@ -21,13 +21,9 @@ namespace SkyNet.CommandPattern.Comandos
         {
             int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
             Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
-            
-            List<string> idsOp = new List<string>();
-            foreach (string idOp in l.GetOperadores())
-            {
-                idsOp.Add(idOp);
-            }
-            _menu.Opciones = idsOp.ToArray();
+
+            string[] idsOps = l.GetOperadores().ToArray();
+            _menu.Opciones = idsOps;
             _menu.Mostrar();
             return true;
         }
