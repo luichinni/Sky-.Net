@@ -28,6 +28,11 @@ namespace SkyNet.CommandPattern.Comandos
                     m.CantCuarteles++;
                     m.RegistrarCuartel(nuevoCuartel);
                     c = nuevoCuartel;
+                    ConsoleHelper.EscribirCentrado($"Cuartel {c.Id} creado con exito");
+                }
+                else
+                {
+                    ConsoleHelper.EscribirCentrado($"No es posible crear un cuartel en x{l.coordX} y{l.coordY}");
                 }
             }
             else

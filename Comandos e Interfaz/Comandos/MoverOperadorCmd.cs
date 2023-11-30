@@ -38,6 +38,7 @@ namespace SkyNet.CommandPattern.Comandos
 
                     o.Mover(l, true);
                     if (o.Estado == EnumEstadoOperador.Reserva) o.cambiarEstado(EnumEstadoOperador.Active);
+                    ConsoleHelper.EscribirCentrado($"Operador {o.Id} movido hasta x{o.CoordX} y{o.CoordY}");
                 }
             }
         }

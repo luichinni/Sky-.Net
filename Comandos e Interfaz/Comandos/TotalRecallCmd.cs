@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SkyNet.CommandPattern;
 using SkyNet.Entidades.Mundiales;
+using SkyNet.Entidades.Operadores;
 
 namespace SkyNet.CommandPattern.Comandos
 {
@@ -16,7 +17,12 @@ namespace SkyNet.CommandPattern.Comandos
 
         public override void Ejecutar(Mundo m,ref Cuartel c)
         {
-            throw new NotImplementedException();
+            c.Operadores.Where(op => op.Estado == EnumEstadoOperador.Active).ToArray();
+            foreach (Operador op in c.Operadores)
+            {
+                op.Mover(c.GetUbicacion(), true);
+            }
+            ConsoleHelper.EscribirCentrado("Total Recall realizado con exito");
         }
     }
 }

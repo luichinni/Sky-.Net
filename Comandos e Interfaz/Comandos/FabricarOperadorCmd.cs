@@ -32,7 +32,8 @@ namespace SkyNet.CommandPattern.Comandos
                 {
                     Enum.TryParse(opcion, out EnumOperadores tipo);
                     Operador nuevoOperador = m.ContactarFabrica(tipo).FabricarOperador(c);
-                    //c.IngresarOperador(nuevoOperador); //aun no existe
+                    c.IngresarOperador(nuevoOperador);
+                    ConsoleHelper.EscribirCentrado($"Operador {nuevoOperador.Id} asignado a cuartel {c.Id}");
                 }
                 else fin = true;
             }            

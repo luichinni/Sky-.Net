@@ -31,6 +31,10 @@ namespace SkyNet.Entidades.Mundiales
         {
             return Id;
         }*/
+        public void IngresarOperador(Operador op)
+        {
+            Operadores.Add(op);
+        }
 
         public Localizacion GetUbicacion()
         {

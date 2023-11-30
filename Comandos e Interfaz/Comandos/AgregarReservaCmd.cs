@@ -31,7 +31,16 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 Operador o = c.Operadores.Find(op => op.Id == idSelect);
                 c.RecallOperadorUnico(o);
-                o.cambiarEstado(EnumEstadoOperador.Reserva);
+                if (o.getUbicacion() == c.GetUbicacion())
+                {
+                    o.cambiarEstado(EnumEstadoOperador.Reserva);
+                    ConsoleHelper.EscribirCentrado($"{o.Id} fue agregado a la reserva, estado:{o.Estado}");
+                }
+                else
+                {
+                    ConsoleHelper.EscribirCentrado($"{o.Id} no pudo llegar a cuartel, posicion actual: x{o.CoordX} y{o.CoordY}");
+                }
+                
             }
         }
     }

@@ -20,7 +20,9 @@ namespace SkyNet.CommandPattern.Comandos
         }
         string[] ActualizarOperadores(Cuartel c)
         {
-            return (c.Operadores.Count > 0) ? c.Operadores.Select(op => op.Id.ToString()).Append(_cancelar).ToArray() : _menu.Opciones;
+            return (c.Operadores.Count > 0) ? c.Operadores.Where(op => op.Estado == EnumEstadoOperador.Active)
+                                                          .Select(op => op.Id.ToString())
+                                                          .Append(_cancelar).ToArray() : _menu.Opciones;
         }
         public override void Ejecutar(Mundo m, ref Cuartel c)
         {

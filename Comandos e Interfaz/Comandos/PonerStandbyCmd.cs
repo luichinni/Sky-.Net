@@ -31,6 +31,7 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 Operador o = c.Operadores.Find(op => op.Id == idSelect);
                 o.cambiarEstado(EnumEstadoOperador.StandBy);
+                ConsoleHelper.EscribirCentrado($"{o.Id} puesto en {o.Estado}");
             }
         }
     }
