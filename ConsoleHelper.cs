@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -368,29 +369,55 @@ namespace SkyNet
         private static int GetEspaciosBlancosParaCentrarTexto(int caracteres)
         {
             int caracteresGrandes = Console.WindowWidth / 7;
-            int espaciosBlancos = (caracteresGrandes - caracteres) / 2;
-            return espaciosBlancos*2;
+            int espaciosBlancos = ((caracteresGrandes - caracteres) / 2)>0 ? ((caracteresGrandes - caracteres) / 2) : 0;
+            return (espaciosBlancos*2);
+        }
+        private static string[] SepararPorLongitud(string titulo, int longitudMax)
+        {
+            string[] palabras = titulo.Split(' ');
+            List<string> renglones = new List<string>();
+            string renglonActual = palabras[0];
+
+            for (int i = 1; i < palabras.Length; i++)
+            {
+                if (renglonActual.Length + palabras[i].Length + 1 <= longitudMax)
+                {
+                    renglonActual += " " + palabras[i];
+                }
+                else
+                {
+                    renglones.Add(new string(' ', GetEspaciosBlancosParaCentrarTexto(renglonActual.Length)) + renglonActual);
+                    renglonActual = palabras[i];
+                }
+            }
+            renglones.Add(new string(' ', GetEspaciosBlancosParaCentrarTexto(renglonActual.Length)) +renglonActual);
+            return renglones.ToArray();
         }
         public static void WriteTitulo(string titulo, ConsoleColor color)
         {
             ConsoleColor[] coloresAnteriores = new ConsoleColor[] { Console.BackgroundColor,Console.ForegroundColor };
-            string tituloModificado = new string(' ', GetEspaciosBlancosParaCentrarTexto(titulo.Length)) + titulo;
+            int letrasMaximas = Console.WindowWidth / 7;
+            string[] renglones = SepararPorLongitud(titulo,letrasMaximas);
             Console.SetCursorPosition(0, Console.CursorTop+1);
             Dictionary<char, ConsoleColor> coloresTitulo = new Dictionary<char, ConsoleColor>() { { '@', color }, { ' ', Console.BackgroundColor } };
-            foreach (char letra in tituloModificado.ToUpper())
+            foreach (string renglon in renglones)
             {
-                if (Letras.ContainsKey(letra))
+                foreach (char letra in renglon.ToUpper())
                 {
-                    string[] dibujoLetra = Letras[letra];
-                    WriteAt(Console.CursorLeft,Console.CursorTop, dibujoLetra[0], coloresTitulo);
-                    for (int i = 1; i < dibujoLetra.Length; i++)
+                    if (Letras.ContainsKey(letra))
                     {
-                        WriteAt(Console.CursorLeft - dibujoLetra[i].Length, Console.CursorTop + 1, dibujoLetra[i],coloresTitulo);
+                        string[] dibujoLetra = Letras[letra];
+                        WriteAt(Console.CursorLeft, Console.CursorTop, dibujoLetra[0], coloresTitulo);
+                        for (int i = 1; i < dibujoLetra.Length; i++)
+                        {
+                            WriteAt(Console.CursorLeft - dibujoLetra[i].Length, Console.CursorTop + 1, dibujoLetra[i], coloresTitulo);
+                        }
+                        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - (dibujoLetra.Length - 1));
                     }
-                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - (dibujoLetra.Length -1));
                 }
-            }
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop+9);
+                Console.SetCursorPosition(0, Console.CursorTop + 7);
+            }   
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop+1);
             Console.BackgroundColor = coloresAnteriores[0];
             Console.ForegroundColor = coloresAnteriores[1];
         }
