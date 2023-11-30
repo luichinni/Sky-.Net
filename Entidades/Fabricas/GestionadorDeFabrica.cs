@@ -16,7 +16,7 @@ namespace SkyNet.Entidades.Fabricas
             if (fabricas != null) this.fabricas = new Dictionary<EnumOperadores, Fabrica>(fabricas);
             else this.fabricas = new Dictionary<EnumOperadores, Fabrica>();
         }
-        public Fabrica GetFabrica(EnumOperadores tipo) // obtener comando
+        public Fabrica GetFabrica(EnumOperadores tipo) // obtener fabrica por tipo de operador
         {
             Fabrica fabricaRet;
             if (!fabricas.TryGetValue(tipo, out fabricaRet)) fabricaRet = null;
