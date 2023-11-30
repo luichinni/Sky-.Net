@@ -29,21 +29,8 @@ namespace SkyNet.Entidades.Mundiales
             return Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
         }
 
-        // Listado de Operadores por localización 
 
-        /*public List<Operador> ListarOperadoresPorUbicacion(Localizacion ubicacion)
-        {
-            List<Operador> operadoresEnUbicacion = new List<Operador>();
-
-            foreach (Operador operador in operadores.Values)
-            {
-                if (operador.getUbicacion().Equals(ubicacion))
-                {
-                    operadoresEnUbicacion.Add(operador);
-                }
-            }
-            return operadoresEnUbicacion;
-        }*/
+        //Métodos que retornan listas
 
         public Dictionary<string, EnumEstadoOperador> ListarEstadoOperadores()
         {
@@ -72,14 +59,24 @@ namespace SkyNet.Entidades.Mundiales
             return estadoOperadores;
         }
 
-        public void TotalRecall()
+        /*
+        public List<Operador> ListarOperadoresPorUbicacion(Localizacion ubicacion)
         {
-            foreach (Operador operador in Operadores)
-            {
-                RecallOperadorUnico(operador);
-            }
-        }
+            List<Operador> operadoresEnUbicacion = new List<Operador>();
 
+            foreach (Operador operador in operadores.Values)
+            {
+                if (operador.getUbicacion().Equals(ubicacion))
+                {
+                    operadoresEnUbicacion.Add(operador);
+                }
+            }
+            return operadoresEnUbicacion;
+        }
+        */
+
+
+        // Métodos de Orden Individual
 
         public void MoverOperador(Operador operador, Localizacion nuevaUbicacion)
         {
@@ -117,6 +114,19 @@ namespace SkyNet.Entidades.Mundiales
             robot.cambiarEstado(EnumEstadoOperador.Inactive);
         }
 
+
+
+        //Métodos de Orden General
+
+        public void TotalRecall()
+        {
+            foreach (Operador operador in Operadores)
+            {
+                RecallOperadorUnico(operador);
+            }
+        }
+
+
         public void EnviarInactivosAReciclar()
         {
             foreach (Operador robot in Operadores)
@@ -127,6 +137,7 @@ namespace SkyNet.Entidades.Mundiales
                 }
             }
         }
+
 
         public void RealizarMantenimiento()
         {
@@ -139,5 +150,7 @@ namespace SkyNet.Entidades.Mundiales
                 }
             }
         }
+
+
     }
 }
