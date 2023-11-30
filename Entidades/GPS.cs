@@ -1,4 +1,5 @@
-﻿using SkyNet.Entidades.Grafo;
+﻿using SkyNet.CommandPattern;
+using SkyNet.Entidades.Grafo;
 using SkyNet.Entidades.Mundiales;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,10 @@ namespace SkyNet.Entidades
         {
             /// Inicializando las listas de nodos a buscar y nodos cerrados a la busqueda
             VerticeListaAdy<Localizacion> nodoInicial = (VerticeListaAdy<Localizacion>)mundo.GetVertice(origen.coordX, origen.coordY);
-            List<IVertice<Localizacion>> nodosAbiertos = new List<IVertice<Localizacion>>() { nodoInicial };
-            List<IVertice<Localizacion>> nodosCerrados = new List<IVertice<Localizacion>>();
-            List<VerticeListaAdy<Localizacion>> nodos = new List<VerticeListaAdy<Localizacion>>();
+            
+            HashSet<VerticeListaAdy<Localizacion>> nodosAbiertos = new HashSet<VerticeListaAdy<Localizacion>>() { nodoInicial };
+            HashSet<VerticeListaAdy<Localizacion>> nodosCerrados = new HashSet<VerticeListaAdy<Localizacion>>();
+            
             InicializarVisitados(mundo.Mapamundi.Values.ToList());
             for (int x=0; x<mundo.MaxCoordX; x++)
             {
@@ -30,7 +32,6 @@ namespace SkyNet.Entidades
                     VerticeListaAdy<Localizacion> nodo = (VerticeListaAdy<Localizacion>) mundo.GetVertice(x, y);
                     nodo.gCost = int.MaxValue;
                     nodo.CalcularFCost();
-                    nodos.Add(nodo);
                 }
             }
 
@@ -40,7 +41,7 @@ namespace SkyNet.Entidades
             List<Localizacion> caminoRet = null;
             while (nodosAbiertos.Count > 0 && caminoRet == null)
             {
-                VerticeListaAdy<Localizacion> nodoActual = GetNodoMenorFCost(nodos);
+                VerticeListaAdy<Localizacion> nodoActual = GetNodoMenorFCost(nodosAbiertos);
                 if (nodoActual == mundo.GetVertice(destino.coordX, destino.coordY))
                 { /// si es el final recuperamos el camino
                     caminoRet = CalcularCamino(nodoActual);
@@ -57,19 +58,17 @@ namespace SkyNet.Entidades
                     foreach (IArista<Localizacion> v in mundo.GrafoMundo.ListaDeAdyacentes(nodoActual))
                     {
                         VerticeListaAdy<Localizacion> vAux = (VerticeListaAdy<Localizacion>)v.GetVerticeDestino();
-                        if (!nodosCerrados.Contains(vAux))
-                        {
-                            int GCostTentativo = nodoActual.gCost + CalcularDistancia(nodoActual.GetDato(), vAux.GetDato());
-                            if (GCostTentativo < vAux.gCost) /// se intenta mejorar el costo de camino del nodo
-                            {
-                                vAux.anterior = nodoActual;
-                                vAux.gCost = GCostTentativo;
-                                vAux.hCost = CalcularDistancia(vAux.GetDato(), destino);
-                                vAux.CalcularFCost();
+                        if (nodosCerrados.Contains(vAux)) continue; // si está en la lista pasa al siguiente
+                        
+                        int GCostTentativo = nodoActual.gCost + CalcularDistancia(nodoActual.GetDato(), vAux.GetDato());
+                        
+                        if (!nodosAbiertos.Contains(vAux)) nodosAbiertos.Add(vAux);
+                        else if (GCostTentativo >= vAux.gCost) continue;
 
-                                if (!nodosAbiertos.Contains(vAux)) nodosAbiertos.Add(vAux);
-                            }
-                        }
+                        vAux.anterior = nodoActual;
+                        vAux.gCost = GCostTentativo;
+                        vAux.hCost = CalcularDistancia(vAux.GetDato(), destino);
+                        vAux.CalcularFCost();
                     }
                 }
             }
@@ -83,15 +82,15 @@ namespace SkyNet.Entidades
             List<Localizacion> listaRet = new List<Localizacion>();
             listaRet.Add(final.GetDato());
             VerticeListaAdy<Localizacion> verticeActual = final;
-            while (verticeActual.anterior != null) 
+            while (verticeActual != null) 
             {
-                listaRet.Add(verticeActual.anterior.GetDato());
+                listaRet.Add(verticeActual.GetDato());
                 verticeActual = verticeActual.anterior;
             }
             listaRet.Reverse();
             return listaRet;
         }
-        private VerticeListaAdy<Localizacion> GetNodoMenorFCost(List<VerticeListaAdy<Localizacion>> nodos)
+        private VerticeListaAdy<Localizacion> GetNodoMenorFCost(HashSet<VerticeListaAdy<Localizacion>> nodos)
         {
             return nodos.OrderBy(nodito => nodito.fCost).FirstOrDefault();
         }
