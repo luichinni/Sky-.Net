@@ -26,15 +26,10 @@ namespace SkyNet.Entidades.Mundiales
             this.Operadores = (Operadores!=null) ? Operadores : new List<Operador>();
             //ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
         }
-        /* no necesario, tenemos la propiedad
-        public string Identificacion()
-        {
-            return Id;
-        }*/
 
         public Localizacion GetUbicacion()
         {
-            return ubicacionCuartel;
+            return Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
         }
 
         // Listado de Operadores por localización 
@@ -96,7 +91,7 @@ namespace SkyNet.Entidades.Mundiales
 
         public void RecallOperadorUnico(Operador operador)
         {
-            operador.Mover(ubicacionCuartel, false);
+            operador.Mover(GetUbicacion(), false);
         }
 
         public void PonerStandby(Operador operador)
@@ -112,11 +107,6 @@ namespace SkyNet.Entidades.Mundiales
         public void RemoverOperador(Operador robot)
         {
             Operadores.Remove(robot);
-        }
-
-        public void RemoverReserva ()
-        {
-            Operadores.Clear();
         }
 
         public void EnviarInactivosAReciclar()
