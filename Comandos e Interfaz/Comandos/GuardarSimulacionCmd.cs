@@ -21,8 +21,20 @@ namespace SkyNet.CommandPattern.Comandos
         {
             ConsoleHelper.WriteTitulo("Guardar Simulacion", ConsoleColor.Green);
             string archivo = GetNombreArchivo();
-            string camino = path + "\\" + carpeta;
-            GuardarMapa(camino+"\\"+archivo);
+            string camino = path + "\\" + carpeta + "\\" + archivo;
+            GuardarMapa(camino);
+            GuardarConfiguracionMundial(m,camino);
+        }
+        private void GuardarConfiguracionMundial(Mundo m, string camino)
+        {
+            int cantCuarteles = m.CantCuarteles;
+            int[][] configuraciones = { 
+                m.ExpansionZonal,
+                m.ExtensionZonal,
+                m.PrioridadZonal,
+                m.MaximaAparicion
+            };
+            File.WriteAllText(camino + "\\WorldConfig.json", JsonSerializer.Serialize(configuraciones));
         }
         private void GuardarMapa(string camino)
         {
@@ -32,7 +44,7 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 dicGuardar.Add(vertice.Key, vertice.Value.GetDato());
             }
-            File.WriteAllText(camino + ".json", JsonSerializer.Serialize(dicGuardar));
+            File.WriteAllText(camino + "\\WorldData.json", JsonSerializer.Serialize(dicGuardar));
         }
         private string GetNombreArchivo()
         {
