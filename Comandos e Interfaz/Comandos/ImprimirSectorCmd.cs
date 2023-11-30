@@ -20,7 +20,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
             ConsoleColor color;
             int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX,Mundo.GetInstance().MaxCoordY);
-            ConsoleHelper.EscribirCentrado($"\t\tSeccion x1={coord[0]},y1={coord[1]} hasta x2={coord[2]},y={coord[3]}");
+            ConsoleHelper.EscribirCentrado($"Seccion x1={coord[0]},y1={coord[1]} hasta x2={coord[2]},y={coord[3]}");
             int cursor = Console.CursorTop;
             ImprimirCoordX(coord[0], coord[2], cursor);
             ImprimirCoordY(coord[1], coord[3], cursor);
