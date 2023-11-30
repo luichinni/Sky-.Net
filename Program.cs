@@ -151,4 +151,19 @@ Aplicacion app = new Aplicacion(menu,invocador,titulos,opciones,"Cerrar Programa
 
 ConsoleHelper.AdvertenciaTamaño();
 
+PantallaDeCreditos();
+
 app.MainLoop();
+
+void PantallaDeCreditos()
+{
+    ConsoleHelper.WriteTitulo("Proyecto realizado por:", ConsoleColor.DarkGray);
+    ConsoleHelper.WriteTitulo("Christian Cabrera", ConsoleColor.Black);
+    ConsoleHelper.WriteTitulo("Y", ConsoleColor.DarkGray);
+    ConsoleHelper.WriteTitulo("Luciano Macias", ConsoleColor.Blue);
+    ConsoleHelper.WriteTitulo("Con participacion temporal :( de", ConsoleColor.DarkGray);
+    ConsoleHelper.WriteTitulo("Mayerling Sojo", ConsoleColor.Magenta);
+    ConsoleHelper.EscribirCentrado("<Presione cualquier tecla para continuar>");
+    Console.ReadKey();
+    Console.Clear();
+}
