@@ -17,7 +17,7 @@ namespace SkyNet.Entidades.Fabricas
             bateria.BateriaMax = 12250;
             bateria.BateriaActual = 12250;
             string id = GenerarId(EnumOperadores.UAV, c);
-            return new UAV(id, bateria, c.GetUbicacion().coordX,c.GetUbicacion().coordY);
+            return new UAV(id, bateria, c.CoordX, c.CoordY, c.CoordX, c.CoordY);
         }
     }
 }
