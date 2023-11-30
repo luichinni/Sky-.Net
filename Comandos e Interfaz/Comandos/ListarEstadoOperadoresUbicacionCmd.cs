@@ -21,8 +21,9 @@ namespace SkyNet.CommandPattern.Comandos
         {
             int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
             Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
-
+            Cuartel cuartelAux = c;
             string[] idsOps = l.GetOperadores().ToArray();
+            idsOps = idsOps.Select(id => id + ":" + cuartelAux.Operadores.Find(op => op.Id == id).Estado).ToArray();
             _menu.Opciones = idsOps;
             _menu.Mostrar();
             return true;
@@ -30,7 +31,6 @@ namespace SkyNet.CommandPattern.Comandos
         private int[] GetCoordenadas(int maxX, int maxY)
         {
             /// Conseguimos las coordenadas de la vista
-            Console.Clear();
             ConsoleHelper.EscribirCentrado("Escriba la coordenada X,Y de la ubicacion que quiera listar el estado de operadores");
             ConsoleHelper.EscribirCentrado($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX - 1},{Mundo.GetInstance().MaxCoordY - 1}");
             Console.CursorLeft = Console.WindowWidth / 2 - 4;

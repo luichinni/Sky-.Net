@@ -59,7 +59,6 @@ namespace SkyNet.CommandPattern.Comandos
         private int[] GetCoordenadas(int maxX, int maxY)
         {
             /// Conseguimos las coordenadas de la vista
-            Console.Clear();
             ConsoleHelper.EscribirCentrado("Escriba la coordenada X,Y donde quiere establecer un cuartel");
             ConsoleHelper.EscribirCentrado($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX - 1},{Mundo.GetInstance().MaxCoordY - 1}");
             Console.CursorLeft = Console.WindowWidth / 2 - 4;
