@@ -350,6 +350,36 @@ namespace SkyNet.CommandPattern
                         " @@@ ",
                         " @ @ ",
                         " @@@ "
+                    }},
+                { ':', new string[] {
+                        "     ",
+                        " @@@ ",
+                        " @ @ ",
+                        " @@@ ",
+                        "     ",
+                        " @@@ ",
+                        " @ @ ",
+                        " @@@ "
+                    }},
+                { '(', new string[] {
+                        "   @@@@",
+                        "  @@ @@",
+                        " @@ @@ ",
+                        " @@ @  ",
+                        " @@ @  ",
+                        " @@ @@ ",
+                        "  @@ @@",
+                        "   @@@@"
+                    }},
+                { ')', new string[] {
+                        "@@@@   ",
+                        "@@ @@  ",
+                        " @@ @@ ",
+                        "  @@ @ ",
+                        "  @@ @ ",
+                        " @@ @@ ",
+                        "@@ @@  ",
+                        "@@@@   "
                     }}
             };
         public static void WriteAt(string s, int x, int y, int origCol=0, int origRow=0)
@@ -479,10 +509,10 @@ namespace SkyNet.CommandPattern
             Console.CursorVisible = false;
             EscribirCentrado("La interfaz está pensada para ventana grande, agrande la ventana");
             EscribirCentrado("Seleccione la 2 opcion en la barra superior de la ventana");
-            EscribirCentrado("".PadRight(18, '-'));
+            EscribirCentrado("".PadRight(20, '-'));
             EscribirCentrado("| - | [esta] | x |");
-            EscribirCentrado("".PadRight(18,'-'));
-            EscribirCentrado("<Presione enter al terminar>");
+            EscribirCentrado("".PadRight(20,'-'));
+            EscribirCentrado("<Presione cualquier tecla para continuar>");
             EscribirCentrado("".PadRight(Console.WindowWidth / 2, '_'));
             while(Console.WindowWidth < Console.LargestWindowWidth - 5)
             {
