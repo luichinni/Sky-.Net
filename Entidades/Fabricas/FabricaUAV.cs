@@ -14,8 +14,8 @@ namespace SkyNet.Entidades.Fabricas
         public override Operador FabricarOperador(Cuartel c)
         {
             Bateria bateria = new Bateria();
-            bateria.BateriaMax = 12250;
-            bateria.BateriaActual = 12250;
+            bateria.BateriaMax = 4000;
+            bateria.BateriaActual = 4000;
             string id = GenerarId(EnumOperadores.UAV, c);
             return new UAV(id, bateria, c.CoordX, c.CoordY, c.CoordX, c.CoordY);
         }
