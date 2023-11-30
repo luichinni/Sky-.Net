@@ -19,7 +19,7 @@ namespace SkyNet.Entidades.Mundiales
         public int[] MaximaAparicion { get; set; } = new int[Enum.GetNames(typeof(EnumTiposDeZona)).Length];
         public int MaxCoordX { get; set; } = 100; // maximo tamaño en x
         public int MaxCoordY { get; set; } = 100; // maximo tamaño en y
-        public int MaxCuartels { get; set; } = 3;
+        public int MaxCuarteles { get; set; } = 3;
         public int CantCuarteles { get; set; } = 0;
         private Dictionary<string,Cuartel> _cuarteles = new Dictionary<string, Cuartel>();
         /// Fin configuraciones
@@ -32,7 +32,7 @@ namespace SkyNet.Entidades.Mundiales
         private GestionadorDeFabrica fabrica;
         public void RegistrarCuartel(Cuartel c)
         {
-            _cuarteles.Add(c.Identificacion(),c);
+            _cuarteles.Add(c.Id,c);
         }
         public Dictionary<string, Cuartel> GetCuarteles()
         {
@@ -155,21 +155,28 @@ namespace SkyNet.Entidades.Mundiales
             /// |----|----|----|
 
             Queue<IVertice<Localizacion>> colaZonal;
+
             Random rnd = new Random();
+
             List<IVertice<Localizacion>> disponibles = Mapamundi.Values.ToList();
+
             HashSet<IVertice<Localizacion>> visitados = new HashSet<IVertice<Localizacion>>();
             for (int i = 0; i < ExpansionZonal.Length; i++) // Para cada zona
             {
                 for (int j = 0; j < MaximaAparicion[PrioridadZonal[i]]; j++) // Mientras tenga aparicion
                 {
                     int expansion = ExpansionZonal[PrioridadZonal[i]]; // tomamos cuanto debe extenderse
+
                     IVertice<Localizacion> verticeActual;
                     int indiceSig = rnd.Next(disponibles.Count); // tomamos una localizacion inicial disponible al azar
                     verticeActual = disponibles[indiceSig];
+
                     disponibles.RemoveAt(indiceSig); // la quitamos de las disponibles
+
                     // obtenemos la extension inicial de la zona
                     colaZonal = GetExtensionNucleoZona(ExtensionZonal[PrioridadZonal[i]], verticeActual, visitados);
                     colaZonal.Enqueue(null); // separador de nivel
+
                     while (colaZonal.Count > 0 && expansion > 0) // mientras haya localizaciones por iniciar
                     {
                         verticeActual = colaZonal.Dequeue(); // la sacamos de la cola

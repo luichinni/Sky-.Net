@@ -10,31 +10,27 @@ namespace SkyNet.Entidades.Mundiales
 {
     public class Cuartel
     {
-        private string id;
-        private int coordX;
-        private int coordY;
-        private List<Operador> operadores;
         private Localizacion ubicacionCuartel;
 
-
-        public string Id { get; set; }
-        public int CoordX { get; set; }
-        public int CoordY { get; set; }
-        public List<Operador> Operadores { get; set; }
-        public Localizacion UbicacionCuartel { get; set; }
+        public string Id { get; private set; }
+        public int CoordX { get; private set; }
+        public int CoordY { get; private set; }
+        public List<Operador> Operadores { get; private set; }
 
 
-        public Cuartel(Localizacion ubicacionCuartel)
+        public Cuartel(string Id, int CoordX, int CoordY, List<Operador> Operadores = null)
         { 
-            coordX = ubicacionCuartel.coordX;
-            coordY = ubicacionCuartel.coordY;
-            operadores = new List<Operador>();
-            ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(coordX, coordY);
+            this.Id = Id;
+            this.CoordX = CoordX;
+            this.CoordY = CoordY;
+            this.Operadores = (Operadores!=null) ? Operadores : new List<Operador>();
+            ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
         }
+        /* no necesario, tenemos la propiedad
         public string Identificacion()
         {
-            return id;
-        }
+            return Id;
+        }*/
 
         public Localizacion GetUbicacion()
         {
@@ -61,7 +57,7 @@ namespace SkyNet.Entidades.Mundiales
         {
             Dictionary<string, EnumEstadoOperador> estadoOperadores = new Dictionary<string,EnumEstadoOperador>();
 
-            foreach(Operador robot in operadores)
+            foreach(Operador robot in Operadores)
             {
                 estadoOperadores.Add(robot.Id, robot.Estado);
             }
@@ -73,7 +69,7 @@ namespace SkyNet.Entidades.Mundiales
         {
             Dictionary<string, EnumEstadoOperador> estadoOperadores = new Dictionary<string, EnumEstadoOperador>();
 
-            foreach (Operador robot in operadores)
+            foreach (Operador robot in Operadores)
             {
                 if(robot.getUbicacion()==ubicacionAInspeccionar)
                 {
@@ -86,7 +82,7 @@ namespace SkyNet.Entidades.Mundiales
 
         public void TotalRecall()
         {
-            foreach (Operador operador in operadores)
+            foreach (Operador operador in Operadores)
             {
                 RecallOperadorUnico(operador);
             }
@@ -110,22 +106,22 @@ namespace SkyNet.Entidades.Mundiales
 
         public void AgregarOperador(Operador robot)
         {
-            operadores.Add(robot);
+            Operadores.Add(robot);
         }
 
         public void RemoverOperador(Operador robot)
         {
-            operadores.Remove(robot);
+            Operadores.Remove(robot);
         }
 
         public void RemoverReserva ()
         {
-            operadores.Clear();
+            Operadores.Clear();
         }
 
         public void EnviarInactivosAReciclar()
         {
-            foreach (Operador robot in operadores)
+            foreach (Operador robot in Operadores)
             {
                 if (robot.Estado == EnumEstadoOperador.Inactive)
                 {
@@ -136,7 +132,7 @@ namespace SkyNet.Entidades.Mundiales
 
         public void RealizarMantenimiento()
         {
-            foreach (Operador robot in operadores)
+            foreach (Operador robot in Operadores)
             {
                 if(robot.ExisteDaño())
                 {

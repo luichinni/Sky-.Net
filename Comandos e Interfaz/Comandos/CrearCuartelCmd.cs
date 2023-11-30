@@ -19,7 +19,9 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
                 Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
-                Cuartel nuevoCuartel = new Cuartel(l);
+                string nId = GenerarId(4);
+                while (m.GetCuarteles().Keys.Contains(nId)) nId = GenerarId(4);
+                Cuartel nuevoCuartel = new Cuartel(nId, coord[0], coord[1]);
                 l.Cuartel = nuevoCuartel;
                 if (l.Cuartel == nuevoCuartel)
                 {
@@ -31,8 +33,19 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 ConsoleHelper.EscribirCentrado("No es posible crear más cuarteles");
             }
-            
-
+        }
+        private string GenerarId(int cantidad)
+        {
+            Random rnd = new Random();
+            string str = "";
+            while (str.Length < cantidad)
+            {
+                if (rnd.NextDouble() > 0.5)
+                    str = str + (char)rnd.Next(65, 91); // letras mayus
+                else
+                    str = str + (char)rnd.Next(48, 58); // numeros
+            }
+            return str;
         }
         private int[] GetCoordenadas(int maxX, int maxY)
         {
@@ -41,14 +54,17 @@ namespace SkyNet.CommandPattern.Comandos
             ConsoleHelper.EscribirCentrado("Escriba la coordenada X,Y donde quiere establecer un cuartel");
             ConsoleHelper.EscribirCentrado($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX - 1},{Mundo.GetInstance().MaxCoordY - 1}");
             Console.CursorLeft = Console.WindowWidth / 2 - 4;
+            
             string coords = Console.ReadLine();
             string[] coordsSplit = coords.Replace(" ", "").Split(','); // quita blancos innecesarios y separa por comas
             // hay que ingresar 2 coordenadas
+            
             while (coordsSplit.Length < 2 || !SonNumeros(coordsSplit) || !ComprobarMaximos(coordsSplit))
             {
                 coords = Console.ReadLine();
                 coordsSplit = coords.Replace(" ", "").Split(',');
             }
+            
             int[] intCoords = new int[coordsSplit.Length];
             for (int i = 0; i < intCoords.Length; i++)
             {
