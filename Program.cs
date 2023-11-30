@@ -91,7 +91,7 @@ invocador.AgregarComando(new EnviarReciclarCmd("Enviar Operadores a Reciclar", "
 
 /// Menu
 Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
-    { "Sky .Net Menu Simulaciones", new string[] {
+    { "Sky .Net Menu Simulaciones■", new string[] {
         "Crear Simulacion",
         "Cargar Simulacion",
         "Configurar Nueva Simulacion"
@@ -101,7 +101,7 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Configurar Expansion Zonal",
         "Configurar Aparcion Zonal",
         "Configurar Prioridad Zonal",
-        "Sky .Net Menu Simulaciones"
+        "Sky .Net Menu Simulaciones■"
     }},
     { "Crear Simulacion", new string[] {
         "Cargar Mapa de Sector",
@@ -140,7 +140,7 @@ Dictionary<string, string[]> opciones = new Dictionary<string, string[]>() {
         "Transferir Carga entre Operadores",
         "Guardar Simulacion",
         "Cambiar Cuartel",
-        "Sky .Net Menu Simulaciones"
+        "Sky .Net Menu Simulaciones■"
     }},
 };
 List<string> titulos = opciones.Keys.ToList();
@@ -148,6 +148,28 @@ Menu menu = new MenuConcreto(null,null,'-');
 
 Aplicacion app = new Aplicacion(menu,invocador,titulos,opciones,"Cerrar Programa");
 /// Fin inicializacion
+
+/*
+ConsoleHelper.Letras.Add('■', new string[]{ 
+    "       __       ",
+    "      ____      ",
+    "     ______     ",
+    "      ____      ",
+    "   __  __  __   ",
+    "  ____    ____  ",
+    " ______  ______ ",
+    "_______  _______"
+    });
+
+       @
+      @@@
+     @@@@@
+      @@@
+   @@  @  @@
+  @@@@   @@@@
+ @@@@@@ @@@@@@
+@@@@@@@ @@@@@@@
+ */
 
 ConsoleHelper.AdvertenciaTamaño();
 
