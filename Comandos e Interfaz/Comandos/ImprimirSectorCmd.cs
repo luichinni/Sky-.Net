@@ -20,10 +20,10 @@ namespace SkyNet.CommandPattern.Comandos
         {
             ConsoleColor color;
             int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX,Mundo.GetInstance().MaxCoordY);
-            Console.Clear();
             ConsoleHelper.EscribirCentrado($"\t\tSeccion x1={coord[0]},y1={coord[1]} hasta x2={coord[2]},y={coord[3]}");
-            ImprimirCoordX(coord[0], coord[2]);
-            ImprimirCoordY(coord[1], coord[3]);
+            int cursor = Console.CursorTop;
+            ImprimirCoordX(coord[0], coord[2], cursor);
+            ImprimirCoordY(coord[1], coord[3], cursor);
             for (int i = coord[0]; i <= coord[2]; i ++)
             {
                 for (int j = coord[1]; j <= coord[3]; j++)
@@ -31,8 +31,8 @@ namespace SkyNet.CommandPattern.Comandos
                     color = ConsoleHelper.GetConsoleColor(m.GetLocalizacion(i, j).TipoZona.ToString());
                     Console.BackgroundColor = color;
                     Console.ForegroundColor = (m.GetLocalizacion(i,j).GetOperadores().Count > 0) ? ConsoleColor.White : color;
-                    ConsoleHelper.WriteAt("@", centro + (i - coord[0]) * 2 + 2, j - coord[1] + 2);
-                    ConsoleHelper.WriteAt("@", centro + (i - coord[0]) * 2 + 3, j - coord[1] + 2);
+                    ConsoleHelper.WriteAt("@", centro + (i - coord[0]) * 2 + 2, j - coord[1] + 2 + cursor);
+                    ConsoleHelper.WriteAt("@", centro + (i - coord[0]) * 2 + 3, j - coord[1] + 2 + cursor);
 
                     //Console.WriteLine($"POS ({i},{j}) => {mundito.GetLocalizacion(i, j).GetTipoZona()}");
                 }
@@ -42,17 +42,17 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 Console.ForegroundColor = ConsoleHelper.GetConsoleColor(zona.ToString());
                 Console.BackgroundColor = Console.ForegroundColor;
-                ConsoleHelper.WriteAt("@", centro + (coord[2] - coord[0])*2 + 5, ((int)zona) + 2);
+                ConsoleHelper.WriteAt("@", centro + (coord[2] - coord[0])*2 + 5, ((int)zona) + 2 + cursor);
                 Console.ResetColor();
-                ConsoleHelper.WriteAt(zona.ToString(), centro + (coord[2] - coord[0]) * 2 + 6, ((int)zona) + 2);
+                ConsoleHelper.WriteAt(zona.ToString(), centro + (coord[2] - coord[0]) * 2 + 6, ((int)zona) + 2 + cursor);
             }
             if (coord[3] - coord[1] > Enum.GetValues(typeof(EnumTiposDeZona)).Length)  
-                ConsoleHelper.WriteAt("", centro, (coord[3] - coord[1]) + 4);
-            else ConsoleHelper.WriteAt("", centro, Enum.GetValues(typeof(EnumTiposDeZona)).Length + 4);
+                ConsoleHelper.WriteAt("", centro, (coord[3] - coord[1]) + 4 + cursor);
+            else ConsoleHelper.WriteAt("", centro, Enum.GetValues(typeof(EnumTiposDeZona)).Length + 4 + cursor);
             
             return true;
         }
-        private void ImprimirCoordX(int inicio, int final)
+        private void ImprimirCoordX(int inicio, int final, int cursor)
         {
             centro = Console.WindowWidth / 2;
             string cadena = "";
@@ -74,10 +74,10 @@ namespace SkyNet.CommandPattern.Comandos
                     Console.BackgroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Black;
                 }
-                ConsoleHelper.WriteAt(i.ToString().PadLeft(2),centro+ (i - inicio) * 2 + 2, 1);
+                ConsoleHelper.WriteAt(i.ToString().PadLeft(2),centro+ (i - inicio) * 2 + 2, 1 + cursor);
             }
         }
-        private void ImprimirCoordY(int inicio, int final)
+        private void ImprimirCoordY(int inicio, int final, int cursor)
         {
             for (int i = inicio; i <= final; i++)
             { /// hacemos colores intercalados para las coordenadas, de más está decir que no está pensado para coordenadas
@@ -92,13 +92,12 @@ namespace SkyNet.CommandPattern.Comandos
                     Console.BackgroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Black;
                 }
-                ConsoleHelper.WriteAt(i.ToString().PadLeft(2), centro, (i - inicio)+2);
+                ConsoleHelper.WriteAt(i.ToString().PadLeft(2), centro,(i - inicio) + 2 + cursor);
             }
         }
         private int[] GetCoordenadas(int maxX, int maxY)
         {
             /// Conseguimos las coordenadas de la vista
-            Console.Clear();
             ConsoleHelper.EscribirCentrado("Ingrese separado por comas y en orden x1,y1,x2,y2 el rango de mapa que quiere ver");
             ConsoleHelper.EscribirCentrado($"Tamaño de la simulacion actual: 0,0 -> {Mundo.GetInstance().MaxCoordX-1},{Mundo.GetInstance().MaxCoordY-1}");
             ConsoleHelper.EscribirCentrado($"Nota: Maximo de diferencia x2-x1 <= {maxDifX} y y2-y1 <= {maxDifY}");
