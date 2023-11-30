@@ -36,8 +36,8 @@ namespace SkyNet.CommandPattern.Comandos
                     int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
                     Localizacion l = m.GetLocalizacion(coord[0], coord[1]);
 
-                    o.Mover(l, true);
-                    if (o.Estado == EnumEstadoOperador.Reserva) o.cambiarEstado(EnumEstadoOperador.Active);
+                    c.MoverOperador(o,l);
+                    
                     ConsoleHelper.EscribirCentrado($"Operador {o.Id} movido hasta x{o.CoordX} y{o.CoordY}");
                 }
             }

@@ -17,11 +17,7 @@ namespace SkyNet.CommandPattern.Comandos
 
         public override void Ejecutar(Mundo m,ref Cuartel c)
         {
-            c.Operadores.Where(op => op.Estado == EnumEstadoOperador.Active).ToArray();
-            foreach (Operador op in c.Operadores)
-            {
-                op.Mover(c.GetUbicacion(), true);
-            }
+            c.TotalRecall();
             ConsoleHelper.EscribirCentrado("Total Recall realizado con exito");
         }
     }

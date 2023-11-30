@@ -415,7 +415,7 @@ namespace SkyNet
                         Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - (dibujoLetra.Length - 1));
                     }
                 }
-                Console.SetCursorPosition(0, Console.CursorTop + 7);
+                Console.SetCursorPosition(0, Console.CursorTop + 8);
             }   
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop+1);
             Console.BackgroundColor = coloresAnteriores[0];
