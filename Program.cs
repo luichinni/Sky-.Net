@@ -8,7 +8,6 @@ using System.Reflection.Emit;
 
 /// Inicializacion de cosas
 Mundo mundito = Mundo.GetInstance();
-Cuartel cuartelito = null;
 
 GestionadorDeFabrica gf = new GestionadorDeFabrica();
 gf.AgregarFabrica(new FabricaK9());
