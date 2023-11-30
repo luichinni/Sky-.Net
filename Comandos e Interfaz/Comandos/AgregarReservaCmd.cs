@@ -26,6 +26,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
+            bool exitoso = false;
             string idSelect = _menu.GetSeleccion();
             if (idSelect != _cancelar)
             {
@@ -35,6 +36,7 @@ namespace SkyNet.CommandPattern.Comandos
                 {
                     o.cambiarEstado(EnumEstadoOperador.Reserva);
                     ConsoleHelper.EscribirCentrado($"{o.Id} fue agregado a la reserva, estado:{o.Estado}");
+                    exitoso = true;
                 }
                 else
                 {
@@ -42,7 +44,7 @@ namespace SkyNet.CommandPattern.Comandos
                 }
                 
             }
-            return true;
+            return exitoso;
         }
     }
 }

@@ -27,13 +27,15 @@ namespace SkyNet.CommandPattern.Comandos
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
             string idSelect = _menu.GetSeleccion();
+            bool exito = false;
             if (idSelect != _cancelar)
             {
                 Operador o = c.Operadores.Find(op => op.Id == idSelect);
                 c.PonerStandby(o);
                 ConsoleHelper.EscribirCentrado($"{o.Id} puesto en {o.Estado}");
+                exito = true;
             }
-            return true;
+            return exito;
         }
     }
 }

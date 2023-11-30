@@ -25,6 +25,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
+            bool exitoso = false;
             string idSelect = _menu.GetSeleccion();
             if (idSelect != _cancelar)
             {
@@ -39,9 +40,10 @@ namespace SkyNet.CommandPattern.Comandos
                     o.Descargar();
 
                     ConsoleHelper.EscribirCentrado($"Operador {o.Id} descargó todo en cuartel");
+                    exitoso = true;
                 }
             }
-            return true;
+            return exitoso;
         }
         private int[] GetCoordenadas(int maxX, int maxY)
         {

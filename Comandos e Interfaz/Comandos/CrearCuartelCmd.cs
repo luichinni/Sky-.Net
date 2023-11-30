@@ -15,6 +15,7 @@ namespace SkyNet.CommandPattern.Comandos
 
         public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
+            bool exitoso = false;
             if (m.CantCuarteles < 3)
             {
                 int[] coord = GetCoordenadas(Mundo.GetInstance().MaxCoordX, Mundo.GetInstance().MaxCoordY);
@@ -29,6 +30,7 @@ namespace SkyNet.CommandPattern.Comandos
                     m.RegistrarCuartel(nuevoCuartel);
                     c = nuevoCuartel;
                     ConsoleHelper.EscribirCentrado($"Cuartel {c.Id} creado con exito");
+                    exitoso = true;
                 }
                 else
                 {
@@ -39,7 +41,7 @@ namespace SkyNet.CommandPattern.Comandos
             {
                 ConsoleHelper.EscribirCentrado("No es posible crear más cuarteles");
             }
-            return true;
+            return exitoso;
         }
         private string GenerarId(int cantidad)
         {

@@ -39,6 +39,7 @@ namespace SkyNet.CommandPattern
             Cuartel cuartelActual = null;
             Comando cmd;
             string seleccion;
+            bool exito = false;
             bool fin = false;
             _menu.Titulo = _titulos[0];
             _menu.Opciones = GetOpciones(_titulos[0]);
@@ -51,10 +52,10 @@ namespace SkyNet.CommandPattern
                 { /// si no es salida intentamos ejecutar comando y ver si hay otro menu
                     cmd = _invocador.GetComando(seleccion);
                     if (cmd != null)
-                        cmd.Ejecutar(mundo, ref cuartelActual);
+                        exito = cmd.Ejecutar(mundo, ref cuartelActual);
 
-                    if (_titulos.Contains(seleccion))
-                    { /// si a su vez es otro menu, se cambia
+                    if (_titulos.Contains(seleccion) && exito)
+                    { /// si a su vez es otro menu y salió bien, se cambia
                         _menu.Titulo = seleccion;
                         _menu.Opciones = GetOpciones(seleccion);
                     }

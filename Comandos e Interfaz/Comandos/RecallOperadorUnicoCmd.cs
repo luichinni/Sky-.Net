@@ -28,13 +28,15 @@ namespace SkyNet.CommandPattern.Comandos
         {
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
+            bool exito = false;
             string idSelect = _menu.GetSeleccion();
             if (idSelect != _cancelar)
             {
                 Operador o = c.Operadores.Find(op => op.Id == idSelect);
                 c.RecallOperadorUnico(o);
+                exito = true;
             }
-            return true;
+            return exito;
         }
     }
 }

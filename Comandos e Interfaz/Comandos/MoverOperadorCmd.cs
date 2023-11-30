@@ -26,6 +26,7 @@ namespace SkyNet.CommandPattern.Comandos
         {
             _menu.Opciones = ActualizarOperadores(c);
             _menu.Mostrar();
+            bool exito = false;
             string idSelect = _menu.GetSeleccion();
             if (idSelect != _cancelar)
             {
@@ -39,9 +40,10 @@ namespace SkyNet.CommandPattern.Comandos
                     c.MoverOperador(o,l);
                     
                     ConsoleHelper.EscribirCentrado($"Operador {o.Id} movido hasta x{o.CoordX} y{o.CoordY}");
+                    exito = true;
                 }
             }
-            return true;
+            return exito;
         }
 
         private int[] GetCoordenadas(int maxX, int maxY)

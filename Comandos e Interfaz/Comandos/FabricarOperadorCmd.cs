@@ -37,7 +37,7 @@ namespace SkyNet.CommandPattern.Comandos
                 }
                 else fin = true;
             }
-            return true;
+            return fin;
         }
     }
 }
