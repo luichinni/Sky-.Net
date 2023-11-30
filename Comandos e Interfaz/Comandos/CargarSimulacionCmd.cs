@@ -25,18 +25,19 @@ namespace SkyNet.CommandPattern.Comandos
 
         public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
+            bool carga = false;
             _menu.Opciones = ActualizarSimulaciones();
             _menu.Mostrar();
             string nombre = _menu.GetSeleccion();
             if (nombre != _cancelar) 
             {
-                CargarDatosDeMundo(m, _ruta + "\\"+ nombre);
-                CargarConfiguracion(m, _ruta + "\\" + nombre);
+                carga = IntentarCargarDatosDeMundo(m, _ruta + "\\"+ nombre) && IntentarCargarConfiguracion(m, _ruta + "\\" + nombre);
             }
-            return true;
+            return carga;
         }
-        private void CargarConfiguracion(Mundo m, string nombre)
+        private bool IntentarCargarConfiguracion(Mundo m, string nombre)
         {
+            bool pudo = false;
             try
             {
                 string jsonConfig = File.ReadAllText(nombre + "\\WorldConfig.json");
@@ -57,6 +58,7 @@ namespace SkyNet.CommandPattern.Comandos
                 m.MaximaAparicion = config[3];
                 m.MaxCuarteles = config[4][0];
                 Fabrica.Id = config[4][1];
+                pudo = true;
             }catch (Exception ex)
             {
                 string logPath = _rutaLog + "\\" + "log.txt";
@@ -68,15 +70,17 @@ namespace SkyNet.CommandPattern.Comandos
                 contenido += "\n" +"["+ DateTime.Now + "] Cargar Config: " + ex.Message;
                 File.WriteAllText(logPath, contenido);
             }
-            
+            return pudo;
         }
-        private void CargarDatosDeMundo(Mundo m, string nombre)
+        private bool IntentarCargarDatosDeMundo(Mundo m, string nombre)
         {
+            bool pudo = false;
             try
             {
                 string jsonMundo = File.ReadAllText(nombre + "\\WorldData.json");
                 Dictionary<string, Localizacion> localizaciones = JsonSerializer.Deserialize<Dictionary<string, Localizacion>>(jsonMundo);
                 m.ReanudarSimulacion(localizaciones);
+                pudo = true;
             }
             catch (Exception ex)
             {
@@ -89,6 +93,7 @@ namespace SkyNet.CommandPattern.Comandos
                 contenido += "\n" + "[" + DateTime.Now + "] Cargar Datos: " + ex.Message;
                 File.WriteAllText(logPath, contenido);
             }
+            return pudo;
         }
         private string[] ActualizarSimulaciones()
         {
