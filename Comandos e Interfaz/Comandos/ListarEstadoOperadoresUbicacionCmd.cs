@@ -24,6 +24,20 @@ namespace SkyNet.CommandPattern.Comandos
             Cuartel cuartelAux = c;
             string[] idsOps = l.GetOperadores().ToArray();
             idsOps = idsOps.Select(id => id + ":" + cuartelAux.Operadores.Find(op => op.Id == id).Estado).ToArray();
+
+            for (int i = 0; i < idsOps.Length; i++)
+            {
+                Dictionary<string, bool> fallas = c.Operadores.Find(oper => oper.Id == idsOps[i].Split(':')[0]).Daños;
+                string strEstado = idsOps[i] + "; Daños[";
+                foreach (KeyValuePair<string, bool> falla in fallas)
+                {
+                    if (falla.Value) strEstado += falla.Key + ", ";
+                }
+                if (strEstado.Length > (idsOps[i] + "; Daños[").Length) strEstado.Remove(strEstado.Length - 1);
+                strEstado += "]";
+                idsOps[i] = strEstado;
+            }
+
             _menu.Opciones = idsOps;
             _menu.Mostrar();
             return true;

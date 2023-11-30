@@ -22,7 +22,19 @@ namespace SkyNet.CommandPattern.Comandos
             List<string> estados = new List<string>();
             foreach(KeyValuePair<string,EnumEstadoOperador> estado in c.ListarEstadoOperadores())
             {
-                estados.Add(estado.Key + ": " + estado.Value);
+                string strEstado = estado.Key + ": " + estado.Value;
+
+                Dictionary<string, bool> fallas = c.Operadores.Find(op => op.Id == estado.Key).Daños;
+                string strEstado2 = strEstado + "; Daños[";
+                foreach (KeyValuePair<string,bool> falla in fallas)
+                {
+                    if (falla.Value) strEstado2 += falla.Key+" ,";
+                }
+
+                if (strEstado2.Length > (strEstado+ "; Daños[").Length) strEstado2.Remove(strEstado2.Length - 1);
+                strEstado2 += "]";
+
+                estados.Add(strEstado2);
             }
             _menu.Opciones = estados.ToArray();
             _menu.Mostrar();
