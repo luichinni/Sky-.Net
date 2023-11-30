@@ -32,6 +32,14 @@ namespace SkyNet.CommandPattern.Comandos
             if (nombre != _cancelar) 
             {
                 carga = IntentarCargarDatosDeMundo(m, _ruta + "\\"+ nombre) && IntentarCargarConfiguracion(m, _ruta + "\\" + nombre);
+                if (carga)
+                {
+                    foreach (KeyValuePair<string,Cuartel> data in m.GetCuarteles())
+                    {
+                        Cuartel cAux = data.Value;
+                        cAux.Operadores.ForEach(o => o.Mover(m.GetLocalizacion(o.CoordX,o.CoordY),false)); // esto solo es para que se vean en el mapa
+                    }
+                }
             }
             return carga;
         }
