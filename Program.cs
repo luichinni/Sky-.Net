@@ -7,9 +7,6 @@ using SkyNet.Entidades.Operadores;
 using System.Reflection.Emit;
 
 /// Inicializacion de cosas
-Random rand = new Random();
-bool fin = false;
-string seleccion;
 Mundo mundito = Mundo.GetInstance();
 Cuartel cuartelito = null;
 
