@@ -10,8 +10,6 @@ namespace SkyNet.Entidades.Mundiales
 {
     public class Cuartel
     {
-        private Localizacion ubicacionCuartel;
-
         public string Id { get; private set; }
         public int CoordX { get; private set; }
         public int CoordY { get; private set; }
@@ -24,7 +22,6 @@ namespace SkyNet.Entidades.Mundiales
             this.CoordX = CoordX;
             this.CoordY = CoordY;
             this.Operadores = (Operadores!=null) ? Operadores : new List<Operador>();
-            //ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
         }
 
         public Localizacion GetUbicacion()
@@ -107,6 +104,17 @@ namespace SkyNet.Entidades.Mundiales
         public void RemoverOperador(Operador robot)
         {
             Operadores.Remove(robot);
+        }
+
+        public void AgregarReserva(Operador robot)
+        {
+            RecallOperadorUnico(robot);
+            robot.cambiarEstado(EnumEstadoOperador.Reserva);
+        }
+
+        public void RemoverReserva(Operador robot)
+        {
+            robot.cambiarEstado(EnumEstadoOperador.Inactive);
         }
 
         public void EnviarInactivosAReciclar()

@@ -87,13 +87,20 @@ namespace SkyNet.Entidades.Operadores
 
                 if (CalcularGastoDeBateria(tiempo) <= Bateria.ConsultarBateria())
                 {
+                    ubicacion.Salir(Id);
+
                     ubicacion = camino[i];
+
+                    ubicacion.Entrar(Id);
 
                     Bateria.ConsumirBateria(CalcularGastoDeBateria(tiempo));
 
                     if (ubicacion.TipoZona == EnumTiposDeZona.Vertedero) Dañar();
 
                     else if (ubicacion.TipoZona == EnumTiposDeZona.VertederoElectronico) DañarBateria();
+
+                    CoordX = ubicacion.coordX;
+                    CoordY = ubicacion.coordY;
                 }
             }
 
@@ -103,32 +110,38 @@ namespace SkyNet.Entidades.Operadores
 
         public void Reciclar()
         {
-            cambiarEstado(EnumEstadoOperador.Active);
+            if (!Daños["ServoAtascado"])
+            {
+                cambiarEstado(EnumEstadoOperador.Active);
 
-            Localizacion ubicacion = getUbicacion();
+                Localizacion ubicacion = getUbicacion();
 
-            Localizacion destino = Gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
+                Localizacion destino = Gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
 
-            Mover(destino, true);
+                Mover(destino, true);
 
-            Cargar();
+                Cargar();
 
-            destino = Gps.BuscarCercano(EnumTiposDeZona.SitioReciclaje, ubicacion);
+                destino = Gps.BuscarCercano(EnumTiposDeZona.SitioReciclaje, ubicacion);
 
-            Mover(destino, true);
+                Mover(destino, true);
 
-            Descargar();
+                Descargar();
 
-            cambiarEstado(EnumEstadoOperador.Inactive);
+                cambiarEstado(EnumEstadoOperador.Inactive);
+            }
+
+            
         }
 
         public void TransferirBateria(Operador robot, double cantidad)
         {
-            cambiarEstado(EnumEstadoOperador.Active);
-            robot.cambiarEstado(EnumEstadoOperador.Active);
 
-            if (!Daños["BateriaPerforada"])
+            if (!Daños["PuertoBateriaDesconectado"] && !robot.Daños["PuertoBateriaDesconectado"])
             {
+                cambiarEstado(EnumEstadoOperador.Active);
+                robot.cambiarEstado(EnumEstadoOperador.Active);
+
                 if (getUbicacion() != robot.getUbicacion()) Mover(robot.getUbicacion(), false);
 
                 if (Bateria.BateriaActual - cantidad >= 0 && robot.Bateria.BateriaActual + cantidad <= robot.Bateria.BateriaMax)
@@ -142,20 +155,22 @@ namespace SkyNet.Entidades.Operadores
                     ConsumirEnergia(cantidadPosible);
                     robot.RecargarBateria(cantidadPosible);
                 }
+
+                cambiarEstado(EnumEstadoOperador.Inactive);
+                robot.cambiarEstado(EnumEstadoOperador.Inactive);
             }
 
-            cambiarEstado(EnumEstadoOperador.Inactive);
-            robot.cambiarEstado(EnumEstadoOperador.Inactive);
 
         }
 
         public void TransferirCargaFisica(Operador robot, double cantidad)
         {
-            cambiarEstado(EnumEstadoOperador.Active);
-            robot.cambiarEstado(EnumEstadoOperador.Active);
 
-            if (!Daños["ServoAtascado"])
+            if (!Daños["ServoAtascado"] && !robot.Daños["ServoAtascado"])
             {
+                cambiarEstado(EnumEstadoOperador.Active);
+                robot.cambiarEstado(EnumEstadoOperador.Active);
+
                 if (getUbicacion() != robot.getUbicacion()) Mover(robot.getUbicacion(), false);
 
                 if (CargaActual - cantidad >= 0 && robot.CargaActual + cantidad <= robot.CargaMax)
@@ -171,10 +186,9 @@ namespace SkyNet.Entidades.Operadores
                     robot.CargaActual += cantidadPosible;
                 }
 
+                cambiarEstado(EnumEstadoOperador.Inactive);
+                robot.cambiarEstado(EnumEstadoOperador.Inactive);
             }
-
-            cambiarEstado(EnumEstadoOperador.Inactive);
-            robot.cambiarEstado(EnumEstadoOperador.Inactive);
 
         }
 
@@ -213,7 +227,7 @@ namespace SkyNet.Entidades.Operadores
 
         public void RecargarBateria(double cantBateria)
         {
-            if (!Daños["BateriaPerforada"])
+            if (!Daños["PuertoBateriaDesconectado"])
             {
                 Bateria.CargarBateria(cantBateria);
             }
@@ -322,6 +336,15 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
+        public void CambiarBateria()
+        {
+            double reestablecerBateriaMaxima = Bateria.BateriaMax;
+            reestablecerBateriaMaxima += (reestablecerBateriaMaxima * 20 / 80);
+            Bateria = new Bateria();
+            Bateria.BateriaMax = reestablecerBateriaMaxima;
+            Bateria.BateriaActual = reestablecerBateriaMaxima;
+        }
+
         public bool ExisteDaño()
         {
             bool existe = Daños.Values.Any(valor => valor);
@@ -341,11 +364,7 @@ namespace SkyNet.Entidades.Operadores
 
                 else if(elem.Key=="BateriaCargaDañada" && Daños[elem.Key]==true)
                 {
-                    double reestablecerBateriaMaxima = Bateria.BateriaMax;
-                    reestablecerBateriaMaxima += (reestablecerBateriaMaxima * 20 / 80);
-                    Bateria = new Bateria();
-                    Bateria.BateriaMax=reestablecerBateriaMaxima;
-                    Bateria.BateriaActual=reestablecerBateriaMaxima;
+                    CambiarBateria();
                     Daños[elem.Key ] = false;
                 }
             }
