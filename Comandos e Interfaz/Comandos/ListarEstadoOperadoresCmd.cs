@@ -10,13 +10,22 @@ namespace SkyNet.CommandPattern.Comandos
 {
     public class ListarEstadoOperadoresCmd : Comando
     {
+        Menu _menu;
         public ListarEstadoOperadoresCmd(string nombre, string descripcion) : base(nombre, descripcion)
         {
+            string[] opciones = new string[] { };
+            _menu = new MenuConcreto(opciones,nombre);
         }
 
         public override void Ejecutar(Mundo m, ref Cuartel c)
         {
-            throw new NotImplementedException();
+            List<string> estados = new List<string>();
+            foreach(KeyValuePair<string,EnumEstadoOperador> estado in c.ListarEstadoOperadores())
+            {
+                estados.Add(estado.Key + ": " + estado.Value);
+            }
+            _menu.Opciones = estados.ToArray();
+            _menu.Mostrar();
         }
     }
 }
