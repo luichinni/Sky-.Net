@@ -23,16 +23,17 @@ namespace SkyNet.CommandPattern.Comandos
             _menu = new MenuConcreto(ActualizarSimulaciones(),nombre);
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             _menu.Opciones = ActualizarSimulaciones();
             _menu.Mostrar();
             string nombre = _menu.GetSeleccion();
             if (nombre != _cancelar) 
             {
-                CargarDatosDeMundo(m, nombre);
-                CargarConfiguracion(m, nombre);
+                CargarDatosDeMundo(m, _ruta + "\\"+ nombre);
+                CargarConfiguracion(m, _ruta + "\\" + nombre);
             }
+            return true;
         }
         private void CargarConfiguracion(Mundo m, string nombre)
         {
@@ -95,7 +96,7 @@ namespace SkyNet.CommandPattern.Comandos
             try
             {
                 carpetas = Directory.GetDirectories(_ruta);
-                carpetas = carpetas.Select(c => Path.GetDirectoryName(c)).Append(_cancelar).ToArray();
+                carpetas = carpetas.Select(c => Path.GetFileName(c)).Append(_cancelar).ToArray();
             }
             catch (Exception ex)
             {

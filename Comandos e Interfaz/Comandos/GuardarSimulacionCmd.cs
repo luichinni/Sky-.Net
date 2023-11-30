@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SkyNet.CommandPattern.Comandos
@@ -18,13 +19,15 @@ namespace SkyNet.CommandPattern.Comandos
         {
         }
 
-        public override void Ejecutar(Mundo m, ref Cuartel c)
+        public override bool Ejecutar(Mundo m, ref Cuartel c)
         {
             ConsoleHelper.WriteTitulo("Guardar Simulacion", ConsoleColor.Green);
             string nombreSimulacion = GetNombreArchivo();
             string camino = _path + "\\" + _carpeta + "\\" + nombreSimulacion;
             GuardarMapa(camino);
             GuardarConfiguracionMundial(m,camino);
+
+            return true;
         }
         private void GuardarConfiguracionMundial(Mundo m, string camino)
         {
@@ -85,7 +88,7 @@ namespace SkyNet.CommandPattern.Comandos
             Console.CursorLeft = Console.WindowWidth / 2 - 10;
             string nombre = Console.ReadLine().ToUpper();
             string aux = (nombre == "OVERRIDE") ? "SimulacionSinNombre" + new Random().Next(1000) : nombre;
-            while (File.Exists(_path + "\\"+_carpeta+"\\" + nombre) && nombre != "OVERRIDE")
+            while (Directory.Exists(_path + "\\"+_carpeta+"\\" + nombre) && nombre != "OVERRIDE")
             {
                 ConsoleHelper.EscribirCentrado("Ya existe esa simulacion, ingrese otro nombre o la palabra 'OVERRIDE' para sobreescribirla");
                 Console.CursorLeft = Console.WindowWidth / 2 - 10;

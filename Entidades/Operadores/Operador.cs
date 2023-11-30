@@ -4,10 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SkyNet.Entidades.Operadores
 {
+    [JsonDerivedType(typeof(UAV), typeDiscriminator: "UAV")]
+    [JsonDerivedType(typeof(K9), typeDiscriminator: "K9")]
+    [JsonDerivedType(typeof(M8), typeDiscriminator: "M8")]
     public abstract class Operador
     {
         public string Id { get; private set; }
@@ -26,6 +31,7 @@ namespace SkyNet.Entidades.Operadores
 
         private Localizacion ubicacion;
         //private Localizacion ubicacionCuartel;
+        [JsonConstructor]
         public Operador(string Id, Bateria Bateria, int CoordX, int CoordY, int CuartelCoordX, int CuartelCoordY)
         {
             this.Id = Id;
@@ -35,8 +41,7 @@ namespace SkyNet.Entidades.Operadores
             this.CuartelCoordX = CuartelCoordX;
             this.CuartelCoordY = CuartelCoordY;
             Estado = EnumEstadoOperador.Inactive;
-            Localizacion ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX,CoordY);
-            ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
+            //ubicacion = Mundo.GetInstance().GetLocalizacion(CoordX, CoordY);
             //ubicacionCuartel = Mundo.GetInstance().GetLocalizacion(CuartelCoordX, CuartelCoordY);
             Gps = new GPS();
             ZonasPeligrosas = new List<EnumTiposDeZona>() { EnumTiposDeZona.VertederoElectronico, EnumTiposDeZona.Vertedero };
@@ -48,7 +53,7 @@ namespace SkyNet.Entidades.Operadores
                 { "PuertoBateriaDesconectado",false },
                 { "PinturaRayada",false }
             };
-            ubicacion.Entrar(Id);
+            //ubicacion.Entrar(Id);
 
         }
 
