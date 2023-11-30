@@ -27,12 +27,12 @@ namespace SkyNet.CommandPattern.Comandos
         }
         private void GuardarConfiguracionMundial(Mundo m, string camino)
         {
-            int cantCuarteles = m.CantCuarteles;
             int[][] configuraciones = { 
                 m.ExpansionZonal,
                 m.ExtensionZonal,
                 m.PrioridadZonal,
-                m.MaximaAparicion
+                m.MaximaAparicion,
+                new int[] {m.CantCuarteles}
             };
             File.WriteAllText(camino + "\\WorldConfig.json", JsonSerializer.Serialize(configuraciones));
         }
