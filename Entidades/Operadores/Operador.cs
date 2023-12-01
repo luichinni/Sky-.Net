@@ -72,38 +72,46 @@ namespace SkyNet.Entidades.Operadores
 
             EnumTiposDeZona[] arrayZonasPeligrosas = ZonasPeligrosas.ToArray(); //Se pasa a array para poder usarlo en GetCamino
 
-            List<Localizacion> camino = Gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
+            List<Localizacion> camino = null;
 
-            if (camino == null || rutaDirecta)  //Si camino es null no se pudo encontrar una ruta óptima, entonces toma la ruta directa
+            if (!rutaDirecta) // NOTA: todo esto lo hizo chris pero hoy 1/12, Luciano encontró un problema en gps asi que REACOMODO (sin cambiar codigo)
+            {
+                camino = Gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
+            }
+            if (rutaDirecta || camino == null)//Si camino es null no se pudo encontrar una ruta óptima, entonces toma la ruta directa
             {
                 arrayZonasPeligrosas = zonasPeligrosasDirecto.ToArray();
                 camino = Gps.GetCamino(ubicacion, nuevaUbicacion, arrayZonasPeligrosas);
             }
 
-            for (int i = 1; i < camino.Count; i++)
+            if (camino != null)
             {
-                int distancia = Gps.CalcularDistancia(ubicacion, camino[i]);
-
-                double tiempo = CalcularTiempoDeViaje(distancia);
-
-                if (CalcularGastoDeBateria(tiempo) <= Bateria.ConsultarBateria())
+                for (int i = 1; i < camino.Count; i++)
                 {
-                    ubicacion.Salir(Id);
+                    int distancia = Gps.CalcularDistancia(ubicacion, camino[i]);
 
-                    ubicacion = camino[i];
+                    double tiempo = CalcularTiempoDeViaje(distancia);
 
-                    ubicacion.Entrar(Id);
+                    if (CalcularGastoDeBateria(tiempo) <= Bateria.ConsultarBateria())
+                    {
+                        ubicacion.Salir(Id);
 
-                    Bateria.ConsumirBateria(CalcularGastoDeBateria(tiempo));
+                        ubicacion = camino[i];
 
-                    if (ubicacion.TipoZona == EnumTiposDeZona.Vertedero) Dañar();
+                        ubicacion.Entrar(Id);
 
-                    else if (ubicacion.TipoZona == EnumTiposDeZona.VertederoElectronico) DañarBateria();
+                        Bateria.ConsumirBateria(CalcularGastoDeBateria(tiempo));
 
-                    CoordX = ubicacion.coordX;
-                    CoordY = ubicacion.coordY;
+                        if (ubicacion.TipoZona == EnumTiposDeZona.Vertedero) Dañar();
+
+                        else if (ubicacion.TipoZona == EnumTiposDeZona.VertederoElectronico) DañarBateria();
+
+                        CoordX = ubicacion.coordX;
+                        CoordY = ubicacion.coordY;
+                    }
                 }
             }
+            
 
             cambiarEstado(EnumEstadoOperador.Inactive);
         }

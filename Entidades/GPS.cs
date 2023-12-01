@@ -18,6 +18,14 @@ namespace SkyNet.Entidades
         }
         public List<Localizacion> GetCamino(Localizacion origen, Localizacion destino, EnumTiposDeZona[] zonasProhibidas)
         {
+            EnumTiposDeZona[] zonasProhibidasCopy;
+            if (zonasProhibidas.Contains(origen.TipoZona))
+            {
+                List<EnumTiposDeZona> listAux = zonasProhibidas.ToList();
+                listAux.Remove(origen.TipoZona);
+                zonasProhibidasCopy = listAux.ToArray(); // esto es porq sino queda atrapado cuando está en el vertedero
+            }
+            else zonasProhibidasCopy = zonasProhibidas;
             /// Inicializando las listas de nodos a buscar y nodos cerrados a la busqueda
             VerticeListaAdy<Localizacion> nodoInicial = (VerticeListaAdy<Localizacion>)mundo.GetVertice(origen.coordX, origen.coordY);
             
@@ -46,22 +54,20 @@ namespace SkyNet.Entidades
                 { /// si es el final recuperamos el camino
                     caminoRet = CalcularCamino(nodoActual);
                 }
-                else if (zonasProhibidas.Contains(nodoActual.GetDato().TipoZona))
+                else if (zonasProhibidasCopy.Contains(nodoActual.GetDato().TipoZona))
                 { /// si es un nodo prohibido lo ignoramos
                     nodosCerrados.Add(nodoActual);
+                    nodosAbiertos.Remove(nodoActual);
                 }
                 else
                 {
                     nodosAbiertos.Remove(nodoActual);
                     nodosCerrados.Add(nodoActual);
-
                     foreach (IArista<Localizacion> v in mundo.GrafoMundo.ListaDeAdyacentes(nodoActual))
                     {
                         VerticeListaAdy<Localizacion> vAux = (VerticeListaAdy<Localizacion>)v.GetVerticeDestino();
                         if (nodosCerrados.Contains(vAux)) continue; // si está en la lista pasa al siguiente
-                        
                         int GCostTentativo = nodoActual.gCost + CalcularDistancia(nodoActual.GetDato(), vAux.GetDato());
-                        
                         if (!nodosAbiertos.Contains(vAux)) nodosAbiertos.Add(vAux);
                         else if (GCostTentativo >= vAux.gCost) continue;
 
@@ -72,7 +78,6 @@ namespace SkyNet.Entidades
                     }
                 }
             }
-
             return caminoRet;
         }
         private List<Localizacion> CalcularCamino(VerticeListaAdy<Localizacion> final)
