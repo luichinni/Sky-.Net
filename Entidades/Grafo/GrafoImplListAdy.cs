@@ -20,11 +20,6 @@ namespace SkyNet.Entidades.Grafo
             origen.Conectar(destino);
         }
 
-        public void Conectar(IVertice<T> origen, IVertice<T> destino, int peso)
-        {
-            origen.Conectar(destino,peso);
-        }
-
         public void Desconectar(IVertice<T> origen, IVertice<T> destino)
         {
             origen.Desconectar(destino);
@@ -35,10 +30,10 @@ namespace SkyNet.Entidades.Grafo
             int indice = ((VerticeListaAdy<T>)vertice).GetPosicion();
             if (indice >= 0)
             {
-                List<IArista<T>> aristasAdy = ListaDeAdyacentes(vertice);
-                foreach (IArista<T> arista in aristasAdy)
+                List<IVertice<T>> verticesAdy = ListaDeAdyacentes(vertice);
+                foreach (IVertice<T> adyacente in verticesAdy)
                 {
-                    arista.GetVerticeDestino().Desconectar(vertice);
+                    adyacente.Desconectar(vertice);
                 }
                 vertices.Remove(vertice);
             }
@@ -54,17 +49,12 @@ namespace SkyNet.Entidades.Grafo
             return vertices.Count == 0;
         }
 
-        public int GetPeso(IVertice<T> origen, IVertice<T> destino)
-        {
-            return origen.GetPeso(destino);
-        }
-
         public IVertice<T> GetVertice(int indiceVertice)
         {
             return vertices[indiceVertice];
         }
 
-        public List<IArista<T>> ListaDeAdyacentes(IVertice<T> vertice)
+        public List<IVertice<T>> ListaDeAdyacentes(IVertice<T> vertice)
         {
             return ((VerticeListaAdy<T>)vertice).GetAdyacentes();
         }

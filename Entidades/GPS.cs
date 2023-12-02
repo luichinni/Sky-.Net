@@ -16,7 +16,7 @@ namespace SkyNet.Entidades
         {
             mundo = Mundo.GetInstance();
         }
-        public List<Localizacion> GetCamino(Localizacion origen, Localizacion destino, EnumTiposDeZona[] zonasProhibidas)
+        private EnumTiposDeZona[] ComprobarOrigen(Localizacion origen, EnumTiposDeZona[] zonasProhibidas)
         {
             EnumTiposDeZona[] zonasProhibidasCopy;
             if (zonasProhibidas.Contains(origen.TipoZona))
@@ -26,21 +26,28 @@ namespace SkyNet.Entidades
                 zonasProhibidasCopy = listAux.ToArray(); // esto es porq sino queda atrapado cuando está en el vertedero
             }
             else zonasProhibidasCopy = zonasProhibidas;
+            return zonasProhibidasCopy;
+        }
+        
+        public List<Localizacion> GetCamino(Localizacion origen, Localizacion destino, EnumTiposDeZona[] zonasProhibidas)
+        {
+            EnumTiposDeZona[] zonasProhibidasCopy = ComprobarOrigen(origen,zonasProhibidas);
+            Dictionary<string, IVertice<Localizacion>> copyMundi = CopiarMapamundi(mundo.Mapamundi);
+
             /// Inicializando las listas de nodos a buscar y nodos cerrados a la busqueda
-            VerticeListaAdy<Localizacion> nodoInicial = (VerticeListaAdy<Localizacion>)mundo.GetVertice(origen.coordX, origen.coordY);
+            VerticeListaAdy<Localizacion> nodoInicial = (VerticeListaAdy<Localizacion>)copyMundi[$"x{origen.coordX}y{origen.coordY}"];
             
             HashSet<VerticeListaAdy<Localizacion>> nodosAbiertos = new HashSet<VerticeListaAdy<Localizacion>>() { nodoInicial };
             HashSet<VerticeListaAdy<Localizacion>> nodosCerrados = new HashSet<VerticeListaAdy<Localizacion>>();
+
             
-            InicializarVisitados(mundo.Mapamundi.Values.ToList());
-            for (int x=0; x<mundo.MaxCoordX; x++)
+
+            InicializarVisitados(copyMundi.Values.ToList());
+
+            foreach (VerticeListaAdy<Localizacion> v in copyMundi.Values)
             {
-                for (int y=0; y<mundo.MaxCoordY; y++)
-                { /// Inicializacion de todos los nodos con costo alto para permitir mejora
-                    VerticeListaAdy<Localizacion> nodo = (VerticeListaAdy<Localizacion>) mundo.GetVertice(x, y);
-                    nodo.gCost = int.MaxValue;
-                    nodo.CalcularFCost();
-                }
+                v.gCost = int.MaxValue;
+                v.CalcularFCost();
             }
 
             nodoInicial.gCost = 0; // costo de movimiento
@@ -50,7 +57,7 @@ namespace SkyNet.Entidades
             while (nodosAbiertos.Count > 0 && caminoRet == null)
             {
                 VerticeListaAdy<Localizacion> nodoActual = GetNodoMenorFCost(nodosAbiertos);
-                if (nodoActual == mundo.GetVertice(destino.coordX, destino.coordY))
+                if (nodoActual.GetDato() == mundo.GetVertice(destino.coordX, destino.coordY).GetDato())
                 { /// si es el final recuperamos el camino
                     caminoRet = CalcularCamino(nodoActual);
                 }
@@ -63,14 +70,14 @@ namespace SkyNet.Entidades
                 {
                     nodosAbiertos.Remove(nodoActual);
                     nodosCerrados.Add(nodoActual);
-                    foreach (IArista<Localizacion> v in mundo.GrafoMundo.ListaDeAdyacentes(nodoActual))
+                    foreach (IVertice<Localizacion> v in nodoActual.GetAdyacentes())
                     {
-                        VerticeListaAdy<Localizacion> vAux = (VerticeListaAdy<Localizacion>)v.GetVerticeDestino();
+                        VerticeListaAdy<Localizacion> vAux = (VerticeListaAdy<Localizacion>)v;
                         if (nodosCerrados.Contains(vAux)) continue; // si está en la lista pasa al siguiente
                         int GCostTentativo = nodoActual.gCost + CalcularDistancia(nodoActual.GetDato(), vAux.GetDato());
                         if (!nodosAbiertos.Contains(vAux)) nodosAbiertos.Add(vAux);
                         else if (GCostTentativo >= vAux.gCost) continue;
-
+                        
                         vAux.anterior = nodoActual;
                         vAux.gCost = GCostTentativo;
                         vAux.hCost = CalcularDistancia(vAux.GetDato(), destino);
@@ -78,7 +85,43 @@ namespace SkyNet.Entidades
                     }
                 }
             }
+            if(caminoRet!=null)ConsoleHelper.EscribirCentrado("Tamaño Camino = " + caminoRet.Count);
+            else ConsoleHelper.EscribirCentrado("Camino nulo");
             return caminoRet;
+        }
+        private Dictionary<string,IVertice<Localizacion>> CopiarMapamundi(Dictionary<string,IVertice<Localizacion>> mapaOriginal)
+        {
+            Dictionary<string, IVertice<Localizacion>> mapaCopy = new Dictionary<string, IVertice<Localizacion>>();
+            foreach (KeyValuePair<string, IVertice<Localizacion>> parZona in mapaOriginal) 
+            {
+                mapaCopy[parZona.Key] = new VerticeListaAdy<Localizacion>(parZona.Value.GetDato());
+            }
+
+            IVertice<Localizacion> origen;
+            IVertice<Localizacion> destino;
+
+            for (int j = 0; j < Mundo.GetInstance().MaxCoordY - 1; j++) // conexion vertical
+            {
+                for (int i = 0; i < Mundo.GetInstance().MaxCoordX; i++)
+                {
+                    mapaCopy.TryGetValue($"x{i}y{j}", out origen);
+                    mapaCopy.TryGetValue($"x{i}y{j + 1}", out destino);
+                    origen.Conectar(destino);
+                    destino.Conectar(origen);
+                }
+            }
+            for (int i = 0; i < Mundo.GetInstance().MaxCoordY - 1; i++) // conexion horizontal
+            {
+                for (int j = 0; j < Mundo.GetInstance().MaxCoordY; j++)
+                {
+                    mapaCopy.TryGetValue($"x{i}y{j}", out origen);
+                    mapaCopy.TryGetValue($"x{i + 1}y{j}", out destino);
+                    origen.Conectar(destino);
+                    destino.Conectar(origen);
+                }
+            }
+
+            return mapaCopy;
         }
         private List<Localizacion> CalcularCamino(VerticeListaAdy<Localizacion> final)
         {
@@ -135,13 +178,13 @@ namespace SkyNet.Entidades
                 if (verticeActual.GetDato().TipoZona == zona) zonaRet = verticeActual.GetDato();
                 else
                 {
-                    foreach (IArista<Localizacion> arista in mundo.GrafoMundo.ListaDeAdyacentes(verticeActual))
+                    foreach (IVertice<Localizacion> vertex in mundo.GrafoMundo.ListaDeAdyacentes(verticeActual))
                     { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
                       // lo encola para luego procesarlo y lo visita para bloquearlo
-                        if (!visitados.Contains(arista.GetVerticeDestino()))
+                        if (!visitados.Contains(vertex))
                         {
-                            cola.Enqueue(arista.GetVerticeDestino());
-                            visitados.Add(arista.GetVerticeDestino());
+                            cola.Enqueue(vertex);
+                            visitados.Add(vertex);
                         }
 
                     }

@@ -187,13 +187,13 @@ namespace SkyNet.Entidades.Mundiales
                         if (verticeActual != null) // si no es un separador de nivel
                         {
                             verticeActual.GetDato().TipoZona = (EnumTiposDeZona)PrioridadZonal[i]; // establecemos el tipo de zona correspondiente
-                            foreach (IArista<Localizacion> arista in GrafoMundo.ListaDeAdyacentes(verticeActual))
+                            foreach (IVertice<Localizacion> vertex in GrafoMundo.ListaDeAdyacentes(verticeActual))
                             { // para cada lugar adyacente, si no fue visitado y la expansion no llega al final,
                               // lo encola para luego procesarlo y lo visita para bloquearlo
-                                if (!visitados.Contains(arista.GetVerticeDestino()) && expansion > 1)
+                                if (!visitados.Contains(vertex) && expansion > 1)
                                 {
-                                    colaZonal.Enqueue(arista.GetVerticeDestino());
-                                    visitados.Add(arista.GetVerticeDestino());
+                                    colaZonal.Enqueue(vertex);
+                                    visitados.Add(vertex);
                                 }
 
                             }
@@ -223,15 +223,15 @@ namespace SkyNet.Entidades.Mundiales
                 /// Buscamos siguiente vertice, si ya fue visitado se busca otro, en caso de 
                 /// que todos los adyacentes hayan sido visitados, se deja de buscar y se retorna
                 /// directamente lo que se tiene hasta el momento
-                List<IArista<Localizacion>> adyacentes = GrafoMundo.ListaDeAdyacentes(vertice);
+                List<IVertice<Localizacion>> adyacentes = GrafoMundo.ListaDeAdyacentes(vertice);
                 int indice = rnd.Next(adyacentes.Count - 1);// le restrinjo un lado para evitar cuadrados?
-                IVertice<Localizacion> siguiente = adyacentes[indice].GetVerticeDestino();
+                IVertice<Localizacion> siguiente = adyacentes[indice];
                 int intentos = 1;
                 while (visitados.Contains(siguiente) && intentos < adyacentes.Count)
                 {
                     if (indice < adyacentes.Count - 1) indice++;
                     else indice = 0;
-                    adyacentes[indice].GetVerticeDestino();
+                    siguiente = adyacentes[indice];
                     intentos++;
                 }
 
