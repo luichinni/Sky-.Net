@@ -39,7 +39,7 @@ namespace SkyNet.CommandPattern.Comandos
                 if (receptor.getUbicacion() == donante.getUbicacion())
                 {
                     double bateriaAntes = receptor.GetBateria();
-                    donante.TransferirBateria(receptor, receptor.Bateria.GetBateriaMax());
+                    donante.TransferirBateriaAsync(receptor, receptor.Bateria.GetBateriaMax());
                     ConsoleHelper.EscribirCentrado($"{receptor.Id} recibio {receptor.GetBateria() - bateriaAntes} de energia");
                 }
                 else

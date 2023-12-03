@@ -78,14 +78,14 @@ namespace SkyNet.Entidades.Mundiales
 
         // Métodos de Orden Individual
 
-        public void MoverOperador(Operador operador, Localizacion nuevaUbicacion)
+        public async Task MoverOperador(Operador operador, Localizacion nuevaUbicacion)
         {
-            operador.Mover(nuevaUbicacion, false);
+            await operador.MoverAsync(nuevaUbicacion, false);
         }
 
-        public void RecallOperadorUnico(Operador operador)
+        public async Task RecallOperadorUnico(Operador operador)
         {
-            operador.Mover(GetUbicacion(), false);
+            await operador.MoverAsync(GetUbicacion(), false);
         }
 
         public void PonerStandby(Operador operador)
@@ -103,9 +103,9 @@ namespace SkyNet.Entidades.Mundiales
             Operadores.Remove(robot);
         }
 
-        public void AgregarReserva(Operador robot)
+        public async Task AgregarReserva(Operador robot)
         {
-            RecallOperadorUnico(robot);
+            await RecallOperadorUnico(robot);
             robot.cambiarEstado(EnumEstadoOperador.Reserva);
         }
 
@@ -118,37 +118,55 @@ namespace SkyNet.Entidades.Mundiales
 
         //Métodos de Orden General
 
-        public void TotalRecall()
+        public async Task TotalRecall()
         {
+            List<Task> tasks = new List<Task>();
+
             foreach (Operador operador in Operadores)
             {
-                RecallOperadorUnico(operador);
+                tasks.Add(RecallOperadorUnico(operador));
             }
+
+            await Task.WhenAll(tasks);
         }
 
 
-        public void EnviarInactivosAReciclar()
+        public async Task EnviarInactivosAReciclar()
         {
+            List<Task> tasks = new List<Task>();
+
             foreach (Operador robot in Operadores)
             {
                 if (robot.Estado == EnumEstadoOperador.Inactive)
                 {
-                    robot.Reciclar();
+                    tasks.Add(robot.ReciclarAsync());
                 }
             }
+
+            await Task.WhenAll(tasks);
         }
 
 
-        public void RealizarMantenimiento()
+        public async Task RealizarMantenimiento()
         {
+            List<Task> tasks = new List<Task>();
+
             foreach (Operador robot in Operadores)
             {
-                if(robot.ExisteDaño())
+                if (robot.ExisteDaño())
                 {
-                    robot.Gps.BuscarCercano(EnumTiposDeZona.Cuartel, robot.getUbicacion());
-                    robot.Reparar();
+                    tasks.Add(EnviarAReparar(robot));
                 }
             }
+
+            await Task.WhenAll(tasks);
+        }
+
+        public async Task EnviarAReparar(Operador robot)
+        {
+            Localizacion destino = robot.Gps.BuscarCercano(EnumTiposDeZona.Cuartel, robot.getUbicacion());
+            await robot.MoverAsync(destino, true);
+            robot.Reparar();
         }
 
 

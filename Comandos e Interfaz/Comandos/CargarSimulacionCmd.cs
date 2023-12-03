@@ -37,7 +37,7 @@ namespace SkyNet.CommandPattern.Comandos
                     foreach (KeyValuePair<string,Cuartel> data in m.GetCuarteles())
                     {
                         Cuartel cAux = data.Value;
-                        cAux.Operadores.ForEach(o => o.Mover(m.GetLocalizacion(o.CoordX,o.CoordY),false)); // esto solo es para que se vean en el mapa
+                        cAux.Operadores.ForEach(o => o.MoverAsync(m.GetLocalizacion(o.CoordX,o.CoordY),false)); // esto solo es para que se vean en el mapa
                     }
                 }
             }

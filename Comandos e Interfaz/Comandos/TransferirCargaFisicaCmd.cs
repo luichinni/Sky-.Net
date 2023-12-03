@@ -39,7 +39,7 @@ namespace SkyNet.CommandPattern.Comandos
                 if (receptor.getUbicacion() == donante.getUbicacion())
                 {
                     double cargaAntes = receptor.CargaActual;
-                    donante.TransferirCargaFisica(receptor, receptor.CargaMax);
+                    donante.TransferirCargaFisicaAsync(receptor, receptor.CargaMax);
                     ConsoleHelper.EscribirCentrado($"{receptor.Id} recibio {receptor.CargaActual - cargaAntes}kg de carga");
                 }
                 else

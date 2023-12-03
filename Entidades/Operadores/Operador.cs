@@ -56,9 +56,9 @@ namespace SkyNet.Entidades.Operadores
 
 
         //Métodos de movimiento
-       
 
-        public void Mover(Localizacion nuevaUbicacion, bool rutaDirecta)
+
+        public async Task MoverAsync(Localizacion nuevaUbicacion, bool rutaDirecta)
         {
             cambiarEstado(EnumEstadoOperador.Active);
 
@@ -94,6 +94,8 @@ namespace SkyNet.Entidades.Operadores
 
                     if (CalcularGastoDeBateria(tiempo) <= Bateria.ConsultarBateria())
                     {
+                        await Task.Delay(1000); // En el programa tardará un segundo en recorrer un km para no hacer larga la espera 
+                                                // En el gasto de batería se usa el tiempo correspondiente a la velocidad y distancia
                         ubicacion.Salir(Id);
 
                         ubicacion = camino[i];
@@ -111,7 +113,7 @@ namespace SkyNet.Entidades.Operadores
                     }
                 }
             }
-            
+
 
             cambiarEstado(EnumEstadoOperador.Inactive);
         }
@@ -148,7 +150,7 @@ namespace SkyNet.Entidades.Operadores
             return gastoDeBateria;
         }
 
-        public void Reciclar()
+        public async Task ReciclarAsync ()
         {
             if (!Daños["ServoAtascado"])
             {
@@ -158,15 +160,15 @@ namespace SkyNet.Entidades.Operadores
 
                 Localizacion destino = Gps.BuscarCercano(EnumTiposDeZona.Vertedero, ubicacion);
 
-                Mover(destino, true);
+                await MoverAsync(destino, true);
 
-                Cargar();
+                await CargarAsync();
 
                 destino = Gps.BuscarCercano(EnumTiposDeZona.SitioReciclaje, ubicacion);
 
-                Mover(destino, true);
+                await MoverAsync(destino, true);
 
-                Descargar();
+                await Descargar();
 
                 cambiarEstado(EnumEstadoOperador.Inactive);
             }
@@ -177,23 +179,25 @@ namespace SkyNet.Entidades.Operadores
         
         //Métodos de operaciones con la batería
 
-        public void TransferirBateria(Operador robot, double cantidad)
+        public async Task TransferirBateriaAsync(Operador robot, double cantidad)
         {
             if (!Daños["PuertoBateriaDesconectado"] && !robot.Daños["PuertoBateriaDesconectado"])
             {
                 cambiarEstado(EnumEstadoOperador.Active);
                 robot.cambiarEstado(EnumEstadoOperador.Active);
 
-                if (getUbicacion() != robot.getUbicacion()) Mover(robot.getUbicacion(), false);
+                if (getUbicacion() != robot.getUbicacion()) await MoverAsync(robot.getUbicacion(), false);
 
                 if (Bateria.BateriaActual - cantidad >= 0 && robot.Bateria.BateriaActual + cantidad <= robot.Bateria.BateriaMax)
                 {
+                    await Task.Delay(10 * (int)cantidad); //Tardará 10 segundos cada 1000mHa
                     Bateria.BateriaActual -= cantidad;
                     robot.Bateria.BateriaActual += cantidad;
                 }
                 else
                 {
                     double cantidadPosible = Math.Min(Bateria.BateriaActual, robot.Bateria.BateriaMax - robot.Bateria.BateriaActual);
+                    await Task.Delay(10 * (int)cantidad); //Tardará 10 segundos cada 1000mHa
                     Bateria.BateriaActual -= cantidadPosible;
                     robot.Bateria.BateriaActual += cantidadPosible;
                 }
@@ -205,10 +209,11 @@ namespace SkyNet.Entidades.Operadores
 
         }
 
-        public void RecargarBateria(double cantBateria)
+        public async Task RecargarBateriaAsync(double cantBateria)
         {
             if (!Daños["PuertoBateriaDesconectado"] && (getUbicacion().TipoZona == EnumTiposDeZona.Cuartel || getUbicacion().TipoZona == EnumTiposDeZona.SitioReciclaje))
             {
+                await Task.Delay(10 * (int)cantBateria); //Tardará 10 segundos cada 1000mHa
                 Bateria.CargarBateria(cantBateria);
             }
         }
@@ -227,25 +232,27 @@ namespace SkyNet.Entidades.Operadores
         //Métodos de Carga Física
 
 
-        public void Cargar()
+        public async Task CargarAsync()
         {
             if (!Daños["ServoAtascado"])
             {
+                await Task.Delay(10000); //Tardará 10 segundos en cargar al máximo
                 CargaActual = CargaMax;
             }
 
         }
 
-        public void Descargar()
+        public async Task Descargar()
         {
             if (!Daños["ServoAtascado"])
             {
+                await Task.Delay(10000); //Tardará 10 segundos en descargar todo
                 CargaActual = 0;
             }
 
         }
 
-        public void TransferirCargaFisica(Operador robot, double cantidad)
+        public async Task TransferirCargaFisicaAsync(Operador robot, double cantidad)
         {
 
             if (!Daños["ServoAtascado"] && !robot.Daños["ServoAtascado"])
@@ -253,10 +260,11 @@ namespace SkyNet.Entidades.Operadores
                 cambiarEstado(EnumEstadoOperador.Active);
                 robot.cambiarEstado(EnumEstadoOperador.Active);
 
-                if (getUbicacion() != robot.getUbicacion()) Mover(robot.getUbicacion(), false);
+                if (getUbicacion() != robot.getUbicacion()) await MoverAsync(robot.getUbicacion(), false);
 
                 if (CargaActual - cantidad >= 0 && robot.CargaActual + cantidad <= robot.CargaMax)
                 {
+                    await Task.Delay(100 * (int)cantidad); //Tardará un segundo cada 10kg que transfiera
                     CargaActual -= cantidad;
                     robot.CargaActual += cantidad;
                 }
@@ -264,6 +272,7 @@ namespace SkyNet.Entidades.Operadores
                 else
                 {
                     double cantidadPosible = Math.Min(CargaActual, robot.CargaMax - robot.CargaActual);
+                    await Task.Delay(100 * (int)cantidad); //Tardará un segundo cada 10kg que transfiera
                     CargaActual -= cantidadPosible;
                     robot.CargaActual += cantidadPosible;
                 }
