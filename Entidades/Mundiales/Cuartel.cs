@@ -98,6 +98,13 @@ namespace SkyNet.Entidades.Mundiales
             Operadores.Add(robot);
         }
 
+        public async Task EnviarAReparar(Operador robot)
+        {
+            Localizacion destino = robot.Gps.BuscarCercano(EnumTiposDeZona.Cuartel, robot.getUbicacion());
+            await robot.MoverAsync(destino, true);
+            robot.Reparar();
+        }
+
         public void RemoverOperador(Operador robot)
         {
             Operadores.Remove(robot);
@@ -116,22 +123,23 @@ namespace SkyNet.Entidades.Mundiales
 
 
 
+
         //Métodos de Orden General
 
-        public async Task TotalRecall()
+        public List<Task> TotalRecall()
         {
             List<Task> tasks = new List<Task>();
 
             foreach (Operador operador in Operadores)
             {
-                tasks.Add(RecallOperadorUnico(operador));
+                tasks.Add(Task.Run(()=>RecallOperadorUnico(operador)));
             }
 
-            await Task.WhenAll(tasks);
+            return tasks;
         }
 
 
-        public async Task EnviarInactivosAReciclar()
+        public List<Task> EnviarInactivosAReciclar()
         {
             List<Task> tasks = new List<Task>();
 
@@ -139,15 +147,15 @@ namespace SkyNet.Entidades.Mundiales
             {
                 if (robot.Estado == EnumEstadoOperador.Inactive)
                 {
-                    tasks.Add(robot.ReciclarAsync());
+                    tasks.Add(Task.Run(()=> robot.ReciclarAsync()));
                 }
             }
 
-            await Task.WhenAll(tasks);
+            return tasks;
         }
 
 
-        public async Task RealizarMantenimiento()
+        public List<Task> RealizarMantenimiento()
         {
             List<Task> tasks = new List<Task>();
 
@@ -155,18 +163,11 @@ namespace SkyNet.Entidades.Mundiales
             {
                 if (robot.ExisteDaño())
                 {
-                    tasks.Add(EnviarAReparar(robot));
+                    tasks.Add(Task.Run(()=>EnviarAReparar(robot)));
                 }
             }
 
-            await Task.WhenAll(tasks);
-        }
-
-        public async Task EnviarAReparar(Operador robot)
-        {
-            Localizacion destino = robot.Gps.BuscarCercano(EnumTiposDeZona.Cuartel, robot.getUbicacion());
-            await robot.MoverAsync(destino, true);
-            robot.Reparar();
+            return tasks;
         }
 
 
